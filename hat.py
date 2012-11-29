@@ -269,7 +269,7 @@ if __name__ == "__main__":
 
 	# check argsuments
 	if len(args) != 3:
-		sys.stderr.write("Error: input [transaction file], [value file] and [significance probability].\n")
+		sys.stderr.write("Error: input [target-file], [expression-file] and [significance-level].\n")
 		sys.exit()
 	max_comb = None
 #	if (not (opts.max_comb == None)):
