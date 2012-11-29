@@ -180,30 +180,24 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 	sys.stdout.write("--- results ---\n")
 #	print enrich_lst
 	if lam == 1:
-		sys.stdout.write("Warning: lamda = 1, this means all tests which support >= 1 are tested.\n")
+		sys.stdout.write("Warning: lamda = 1, this means all tests which # target genes >= 1 are tested.\n")
 	if (len(frequent_list) < 1):
-		sys.stdout.write("Warning: there is no test which satisfying support >= " + str(lam_star) + ".\n")
-	sys.stdout.write("revise threshold: " + str(threshold/k) + "\n")
-	sys.stdout.write("K: " + str(k) + ", enrich_set_size: " + str(len(enrich_lst)) + ", lambda*: " + str(lam_star) + "\n")
+		sys.stdout.write("Warning: there is no test which satisfying # target genes >= " + str(lam_star) + ".\n")
+	sys.stdout.write("Threshold: " + str(threshold/k) + ", ")
+	sys.stdout.write("Correction factor: " + str(k) + " (# target genes >= " + str(lam_star) + ")\n" )
+	sys.stdout.write("# of significance: " + str(len(enrich_lst)) + "\n")
 	if len(enrich_lst) > 0:
-		sys.stdout.write("original\tproposed_method\tBonferroni\tenrich_set\tsize\tstatistic_score\n")
+		sys.stdout.write("Raw p-value\tAdjusted p-value\tCombination\t# target genes\tStatistic score\n")
 		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
 	for l in enrich_lst:
-#		t_size = len(l[0])
-		# calculate correction term of Bonferroni
-		# the correction term is defined as the sum of the combination size from 1 to detecting itemset size
-#		bonferroni_k = 0
-#		for i in range(1, t_size+1):
-#			bonferroni_k = bonferroni_k + func_f.combination(len(columnid2name), i)
-#		bonferroni_k = func_f.combination(len(columnid2name), t_size)
-		sys.stdout.write(str(l[1]) + "\t" + str(k*l[1]) + "\t" + str(bonferroni_k*l[1]) + "\t")
+		sys.stdout.write(str(l[1]) + "\t" + str(k*l[1]) + "\t")
 		out_column = ""
 		for i in l[0]:
 			out_column = out_column + columnid2name[i-1] + ","
 		sys.stdout.write(out_column[:-1] + "\t" + l[2][1:-1] + "\t" + str(l[3]) + "\n")
 		
 	# output time cost
-	sys.stdout.write("correction_term: %s, test: %s, all:%s\n" % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time-starttime))
+	sys.stdout.write("Time (sec.): Correction factor %s, P-value %s, Total %s\n" % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time-starttime))
 	return len(enrich_lst) # return the number of enrich set for permutation
 		
 ##
