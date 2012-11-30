@@ -1,71 +1,407 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <meta charset="utf-8">
+    <title>HAT</title>
+    
+    <meta name="author" content="Aika Terada">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Hat by a-terada</title>
+
+    <!-- Le styles -->
+    <link href="assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
   </head>
 
   <body>
-    <div id="container">
-      <div class="inner">
 
-        <header>
-          <h1>Hat</h1>
-          <h2>High-Arity Transcription factor combination discovery</h2>
-        </header>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/"></a>
+          <ul class="nav">
+            
+            
+            
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/a-terada/hat/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/a-terada/hat/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/a-terada/hat" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
 
-        <hr>
+  
+    
+      
+    
+  
 
-        <section id="main_content">
-          <h3>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <footer>
-          Hat is maintained by <a href="https://github.com/a-terada">a-terada</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
+          </ul>
+        </div>
       </div>
     </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+<div class="page-header">
+  <h1>HAT  <small>High-Arity Transcription factor combination discovery</small></h1>
+</div>
+
+<div class="row">
+  <div class="span12">
+    <p>HAT is a code for multiple testing correction. By using the code, you can detect transcription factors (TFs) that work with binary, ternary or more higher-arity combination. The HAT algorithm can control Family-Wise Error Rate (FWER) as well as Bonferroni correction, however there are more advantages:</p>
+
+<ul>
+<li>Listing significant combinations without arity limit</li>
+
+<li>High sensitivity</li>
+
+<li>Fast calculation speed</li>
+</ul>
+
+<p>Of course, FWER is rigorously controlled under the threshold.</p>
+
+<p>This manuscript is written for finding TF combinations, however, the code is useful to discover other combinatorial effects such as miRNA interactions, histone acetylation and methylation and so on.</p>
+
+<h2 id='preparation'>Preparation</h2>
+
+<h3 id='requirements'>Requirements</h3>
+
+<p>This programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Liner time Closed itemset Miner (LCM) ver. 5.3</a> was used. The installation way is written below.</p>
+
+<h3 id='installation'>Installation</h3>
+
+<p><strong>1. HAT</strong></p>
+
+<p>If you have Git, you can clone latest version by running:</p>
+
+<pre><code>$ git clone https://github.com/a-terada/hat</code></pre>
+
+<p>&#8221;$&#8221; is NOT needed to type. It is a symbol to represent command line.</p>
+
+<p>When you do not have Git, you can download HAT in either <a href='https://github.com/a-terada/hat/zipball/master'>zip</a> or <a href='https://github.com/a-terada/hat/tarball/master'>tar</a> formats.</p>
+
+<p><strong>2. LCM ver. 5.3</strong></p>
+
+<p>As the mining program, Liner time Closed itemset Miner (LCM) ver. 5.3 was used. Before running of HAT, you must download LCM ver. 5.3 and compile in the HAT directory by the following command:</p>
+
+<pre><code>$ cd hat
+$ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;
+$ mkdir lcm53
+$ tar zxvf lcm53.zip -C lcm53
+$ pushd lcm53
+$ make
+$ popd</code></pre>
+
+<h2 id='usage'>Usage</h2>
+
+<p>In the HAT directory, you can run HAT program with the following command:</p>
+
+<pre><code>$ python multiple_test.py target-file expression-file significance-level</code></pre>
+
+<p>&#8221;$&#8221; is NOT needed to type. It is a symbol to represent command line.</p>
+
+<p>HAT requires three arguments including two input file names and one one threshold:</p>
+
+<ul>
+<li>
+<dl>
+<dt><strong>target-file</strong></dt>
+
+<dd>The file name to give associations between TFs and genes.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>expression-file</strong></dt>
+
+<dd>The file name to give give gene expression.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>significance-level</strong></dt>
+
+<dd>The threshold used for division whether TF combination is significance or not.</dd>
+</dl>
+</li>
+</ul>
+
+<p>The input file and output format are written below. The first letter of both files must NOT be &#8216;-&#8216;. Otherwise it is regarded as an option.</p>
+
+<p>The above command prints both result and running progress.</p>
+
+<p>To find only result in your console, try:</p>
+
+<pre><code>$ python multiple_test.py target-file expression-file significance-level 2&gt; /dev/null</code></pre>
+
+<p>“/dev/null” is a special file for disposing of unwanted output of a process. Your operating system has already provides the file.</p>
+
+<p>To save the result to &#8216;output-file&#8217;, try:</p>
+
+<pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file</code></pre>
+
+<p>To save the result to output-file and not to show the progress of computation, try:</p>
+
+<pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file 2&gt; /dev/null</code></pre>
+
+<h3 id='note_on_the_running'>Note on the running</h3>
+
+<p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
+
+<p>Thus, if the HAT fail to finish the calculation, please command:</p>
+
+<pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
+
+<p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
+
+<h2 id='input_file_format'>Input File Format</h2>
+
+<p>HAT receives two input files: target-file and expression-file. The user should prepare the files.</p>
+
+<h3 id='targetfile'>Target-file</h3>
+
+<p>Target-file provides the associations between TF and target genes. This file should be formatted according to the CSV format and the deliminator is &#8217;,&#8217; (comma). For example, we write the part of <code>sample/sample_target.csv</code>:</p>
+
+<pre><code>#gene,TF1,TF2,TF3,TF4
+A,1,1,1,0
+B,1,1,1,0
+C,1,0,0,1
+D,0,0,0,0
+...</code></pre>
+
+<p>This file must start with &#8217;#&#8217;. The line provides TFs name. The first column of the line does not used for analysis and you write any characters (or be able to contain only &#8217;#&#8217;). Other columns indicate TFs name and these names are used for output result.</p>
+
+<p>After second lines, each line indicates the associations between a gene and TFs. The first column indicates the gene name. The associations between the gene and TFs are provided after the second columns. If the gene is targeted of the TF, then the column value is &#8216;1&#8217;. Otherwise, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, 2 and 3 in the example.</p>
+
+<p><code>sample/sampe_target.csv</code> contains 15 genes and 4 TFs. Thus, the file must be composed with 16 lines and 5 columns.</p>
+
+<h3 id='expressionfile'>Expression-file</h3>
+
+<p>Expression-file provides gene expressions level. The file is delimited by &#8216;\t&#8217; (tab) and is composed by two columns. For example, we show the content of <code>samples/sample_expressions.tab</code> as the following:</p>
+
+<pre><code>#gene	expression
+A	1
+B	1
+C	0
+D	0
+...</code></pre>
+
+<p>The comment line stars with &#8217;#&#8217; and is ignored from analysis.</p>
+
+<p>Each line contains two columns: gene name and expression level. HAT derives the p-value from Fisher&#8217;s exact test, thus the genes must be classified two groups: up-regulated or unregulated. If the gene is up-regulated then the second column is 1, otherwise 0. In the above example, gene A and B are up-regulated, and gene C and D are unregulated.</p>
+
+<p><code>sample/sampe_expression.tab</code> describes expressions about 15 genes. Thus, the number of rows must be 15 except the comment lines.</p>
+
+<h3 id='note_for_input_files'>Note for Input Files</h3>
+
+<p>In target-file and expression-file, contained gene set is perfectly same. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression.tab</code> are compound with 15 genes from gene A to O. When the given gene sets are different, HAT does not work.</p>
+
+<h2 id='output_format'>Output Format</h2>
+
+<p>When the program is run, the result is printed out after &#8221;&#8212; results &#8212;&#8221;. The first and second lines are formatted as the following:</p>
+
+<pre><code>--- results ---
+Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer])
+# of significance: [integer]</code></pre>
+
+<p>In the actual analysis, the real numbers are derived instead of [integer] and [float]. Each values mean the following:</p>
+
+<ul>
+<li>
+<dt><strong>Threshold</strong></dt>
+
+<dd>The threshold for division whether significance. This value is calibrated by the division the inputted significance level by the correction factor.</dd>
+</li>
+
+<li>
+<dt><strong>Correction factor</strong></dt>
+
+<dd>The number of testable combinations. The adjusted p-value is calibrated by the product of the correction factor and the row p-value.</dd>
+</li>
+
+<li>
+<dt><strong># target genes</strong></dt>
+
+<dd>The minimum number of target genes in testable TF combinations.</dd>
+</li>
+
+<li>
+<dt><strong># of significance:</strong></dt>
+
+<dd>The number of significant combinations.</dd>
+</li>
+</ul>
+
+<p>The detected combinations are shown after the third lines. Each line is compounded 5 columns:</p>
+
+<ul>
+<li>
+<dt><strong>Raw p-value</strong></dt>
+
+<dd>The calculated p-value with Fisher&#8217;s exact test.</dd>
+</li>
+
+<li>
+<dt><strong>Adjusted p-value</strong></dt>
+
+<dd>The multiplied value the correction factor and the raw p-value. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
+</li>
+
+<li>
+<dt><strong>Combination</strong></dt>
+
+<dd>The significant combination. The TFs are delimited by &#8217;,&#8217; (comma).</dd>
+</li>
+
+<li>
+<dt><strong># target genes</strong></dt>
+
+<dd>The number of target genes of the combination.</dd>
+</li>
+
+<li>
+<dt><strong>Statistic score:</strong></dt>
+
+<dd>The number of genes that both target and up-regulated.</dd>
+</li>
+</ul>
+
+<p>The calculation time is shown in the last line (in seconds):</p>
+
+<pre><code>Time (sec.): Correction factor [float], P-value [float], Total [float]</code></pre>
+
+<ul>
+<li>
+<dt><strong>Correction factor</strong></dt>
+
+<dd>The time for calibration the correction term.</dd>
+</li>
+
+<li>
+<dt><strong>P-value</strong></dt>
+
+<dd>The time for calculation p-values whole testable combinations.</dd>
+</li>
+
+<li>
+<dt><strong>Total</strong></dt>
+
+<dd>Total time.</dd>
+</li>
+</ul>
+
+<h2 id='demonstrations'>Demonstrations</h2>
+
+<p>For demonstrations, we prepared two sets files in <code>sample/</code> directory. The target-file (.csv) and expression-file (.tab) are listed in the following:</p>
+
+<ul>
+<li><strong>Small dataset:</strong> sample_target.csv, sample_expression.tab</li>
+
+<li><strong>Yeast dataset:</strong> yeast_heatshock_target.csv, yeast_heatshock_expression.tab</li>
+</ul>
+
+<h3 id='1_demonstration_using_small_dataset'>1. Demonstration Using Small Dataset</h3>
+
+<p>Small dataset contains 4 TFs and 15 genes. To find all significant combinations from the files with significance level &lt;= 0.05, try:</p>
+
+<pre><code>$ python hat.py sample/sample_target.csv sample/sample_expression.tab 0.05 2&gt; /dev/null</code></pre>
+
+<p>When the HAT finishes successfully, the result is printed in your console:</p>
+
+<pre><code>--- results ---
+Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 5)
+# of significance: 1
+Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
+Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
+
+<p>The result means that</p>
+
+<ul>
+<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
+
+<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00699 and the adjusted p-value is 0.0350.</li>
+
+<li>The running time is 0.00561 sec. in total.</li>
+</ul>
+
+<h3 id='2_demonstration_using_yeast_dataset'>2. Demonstration Using Yeast Dataset</h3>
+
+<p>Yeast dataset contains 102 TFs and 6,074 genes. The target-file and the expression-file were generated based on the observations by Gasch <em>et al.</em> (<em>Mol. Biol. Cell</em>, 2000) and Harbison <em>et al.</em> (<em>Nature</em>, 2004). As the demonstration, we show the command for running HAT in the following situation:</p>
+
+<ul>
+<li>Listing combinations of significance level &lt;= 0.05</li>
+
+<li>Output the result to <code>yeast_heatshock_result.txt</code></li>
+</ul>
+
+<p>Try:</p>
+
+<pre><code>$ python hat.py sample/yeast_heatshock_target.csv sample/yeast_heatshock_expression.tab 0.05 &gt; yeast_heatshock_result.txt 2&gt; /dev/null</code></pre>
+
+<p>When the HAT is executed successfully, you will able to the results in <code>yeast_heatshock_result.txt</code>:</p>
+
+<pre><code>--- results ---
+Threshold: 0.00016501650165, Correction factor: 303 (# target genes &gt;= 4)
+# of significance: 8
+Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+1.45436771609e-26	4.40673417977e-24	HSF1	69	41.0
+1.23021335148e-13	3.72754645499e-11	MSN2	21	16.0
+1.75647791664e-06	0.000532212808741	MSN4	24	11.0
+2.76796930228e-05	0.00838694698591	MSN2,MSN4	6	5.0
+2.76796930228e-05	0.00838694698591	SKO1	6	5.0
+6.34343218273e-05	0.0192205995137	SNT2	18	8.0
+8.99096810807e-05	0.0272426333675	PHD1,SUT1,SOK2,SKN7	7	5.0
+0.000135436847122	0.0410373646779	PHD1,SKN7	11	6.0
+Time (sec.): Correction factor 1.310425, P-value 0.170601, Total 1.481026</code></pre>
+
+<p>The output means that</p>
+
+<ul>
+<li>When raw p-value &lt; 0.000165 (calibrated from 0.05/303), the combination is detected as significance.</li>
+
+<li>8 combinations are significant. The result includes binary combination MSN2 and MSN4, and quaternary combination PHD1, SUT1, SOK2 and SKN7.</li>
+
+<li>The running time is 1.48 in total.</li>
+</ul>
+
+<h2 id='contact'>Contact</h2>
+
+<p>Please contact the below address in case you find a bug, need detailed information or need application for different situation and so on.</p>
+
+<ul>
+<li>Aika Terada (terada_AT_ss.cs.titech.ac.jp)</li>
+</ul>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; Aika Terada 2012 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
   </body>
 </html>
+
