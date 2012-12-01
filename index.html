@@ -60,41 +60,37 @@
 
 <div class="row">
   <div class="span12">
-    <p>HAT is a code for multiple testing correction. By using the code, you can detect transcription factors (TFs) that work with binary, ternary or more higher-arity combination. The HAT algorithm can control Family-Wise Error Rate (FWER) as well as Bonferroni correction, however there are more advantages:</p>
+    <p>HAT is a code for multiple testing correction. Given relationships between transcription factors (TFs) and genes and expression levels of genes, the code list up statistically significant combinations of TFs. The HAT algorithm calibrates Family-Wise Error Rate (FWER) as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
 
 <ul>
-<li>Listing significant combinations without arity limit</li>
+<li>Listing up significant combinations without arity limit</li>
 
-<li>High sensitivity</li>
+<li>Higher sensitivity</li>
 
-<li>Fast calculation speed</li>
+<li>Faster calculation speed</li>
 </ul>
 
-<p>Of course, FWER is rigorously controlled under the threshold.</p>
-
-<p>This manuscript is written for finding TF combinations, however, the code is useful to discover other combinatorial effects such as miRNA interactions, histone acetylation and methylation and so on.</p>
+<p>This manuscript is written for finding TF combinations. The code is, however, applicable to discover other combinatorial effects between other datasets such as miRNA interactions, histone acetylation and methylation and so on.</p>
 
 <h2 id='preparation'>Preparation</h2>
 
 <h3 id='requirements'>Requirements</h3>
 
-<p>This programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Liner time Closed itemset Miner (LCM) ver. 5.3</a> was used. The installation way is written below.</p>
+<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Liner time Closed itemset Miner (LCM) ver. 5.3</a> was used. The installation way is written below.</p>
 
 <h3 id='installation'>Installation</h3>
 
 <p><strong>1. HAT</strong></p>
 
-<p>If you have Git, you can clone latest version by running:</p>
+<p>If you have Git, you can clone the latest version by running:</p>
 
 <pre><code>$ git clone https://github.com/a-terada/hat</code></pre>
-
-<p>&#8221;$&#8221; is NOT needed to type. It is a symbol to represent command line.</p>
-
+<!-- "$" is NOT needed to type. It is a symbol to represent command line. -->
 <p>When you do not have Git, you can download HAT in either <a href='https://github.com/a-terada/hat/zipball/master'>zip</a> or <a href='https://github.com/a-terada/hat/tarball/master'>tar</a> formats.</p>
 
 <p><strong>2. LCM ver. 5.3</strong></p>
 
-<p>As the mining program, Liner time Closed itemset Miner (LCM) ver. 5.3 was used. Before running of HAT, you must download LCM ver. 5.3 and compile in the HAT directory by the following command:</p>
+<p>As a frequent itemset mining program, HAT uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the HAT directory before running of HAT by the following command:</p>
 
 <pre><code>$ cd hat
 $ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;
@@ -106,11 +102,9 @@ $ popd</code></pre>
 
 <h2 id='usage'>Usage</h2>
 
-<p>In the HAT directory, you can run HAT program with the following command:</p>
+<p>In the HAT directory, you can run HAT with the following command:</p>
 
 <pre><code>$ python multiple_test.py target-file expression-file significance-level</code></pre>
-
-<p>&#8221;$&#8221; is NOT needed to type. It is a symbol to represent command line.</p>
 
 <p>HAT requires three arguments including two input file names and one one threshold:</p>
 
@@ -119,7 +113,7 @@ $ popd</code></pre>
 <dl>
 <dt><strong>target-file</strong></dt>
 
-<dd>The file name to give associations between TFs and genes.</dd>
+<dd>The file includes associations between TFs and genes.</dd>
 </dl>
 </li>
 
@@ -127,7 +121,7 @@ $ popd</code></pre>
 <dl>
 <dt><strong>expression-file</strong></dt>
 
-<dd>The file name to give give gene expression.</dd>
+<dd>The file of gene expression.</dd>
 </dl>
 </li>
 
@@ -135,21 +129,19 @@ $ popd</code></pre>
 <dl>
 <dt><strong>significance-level</strong></dt>
 
-<dd>The threshold used for division whether TF combination is significance or not.</dd>
+<dd>The statistical significance threshold.</dd>
 </dl>
 </li>
 </ul>
 
-<p>The input file and output format are written below. The first letter of both files must NOT be &#8216;-&#8216;. Otherwise it is regarded as an option.</p>
+<p>The input file and output format are written below.</p>
 
 <p>The above command prints both result and running progress.</p>
 
 <p>To find only result in your console, try:</p>
 
 <pre><code>$ python multiple_test.py target-file expression-file significance-level 2&gt; /dev/null</code></pre>
-
-<p>“/dev/null” is a special file for disposing of unwanted output of a process. Your operating system has already provides the file.</p>
-
+<!-- “/dev/null” is a special file for disposing of unwanted output of a process. --><!-- Your operating system has already provides the file. -->
 <p>To save the result to &#8216;output-file&#8217;, try:</p>
 
 <pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file</code></pre>
@@ -158,23 +150,13 @@ $ popd</code></pre>
 
 <pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file 2&gt; /dev/null</code></pre>
 
-<h3 id='note_on_the_running'>Note on the running</h3>
-
-<p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
-
-<p>Thus, if the HAT fail to finish the calculation, please command:</p>
-
-<pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
-
-<p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
-
 <h2 id='input_file_format'>Input File Format</h2>
 
-<p>HAT receives two input files: target-file and expression-file. The user should prepare the files.</p>
+<p>HAT receives two input files: target-file and expression-file. Their examples are in the <code>sample/</code> directory.</p>
 
 <h3 id='targetfile'>Target-file</h3>
 
-<p>Target-file provides the associations between TF and target genes. This file should be formatted according to the CSV format and the deliminator is &#8217;,&#8217; (comma). For example, we write the part of <code>sample/sample_target.csv</code>:</p>
+<p>Target-file provides the associations between TFs and their target genes. This file should be formatted according in a CSV format. <code>sample/sample_target.csv</code> is an example.</p>
 
 <pre><code>#gene,TF1,TF2,TF3,TF4
 A,1,1,1,0
@@ -183,15 +165,15 @@ C,1,0,0,1
 D,0,0,0,0
 ...</code></pre>
 
-<p>This file must start with &#8217;#&#8217;. The line provides TFs name. The first column of the line does not used for analysis and you write any characters (or be able to contain only &#8217;#&#8217;). Other columns indicate TFs name and these names are used for output result.</p>
+<p>This file must start with &#8217;#&#8217;. The line provides TFs names. Columns except the first indicate TF names used for the result.</p>
 
-<p>After second lines, each line indicates the associations between a gene and TFs. The first column indicates the gene name. The associations between the gene and TFs are provided after the second columns. If the gene is targeted of the TF, then the column value is &#8216;1&#8217;. Otherwise, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, 2 and 3 in the example.</p>
+<p>The second-to-last line includes the associations between a gene and TFs. The first column is the gene name. The second-to-last column is whether the TF targets the gene. If the gene is targeted of the TF, then the column value is &#8216;1&#8217;. If not, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, 2 and 3 in the example.</p>
 
-<p><code>sample/sampe_target.csv</code> contains 15 genes and 4 TFs. Thus, the file must be composed with 16 lines and 5 columns.</p>
+<p><code>sample/sampe_target.csv</code> contains 15 genes and 4 TFs. Thus, the file composes with 16 lines and 5 columns.</p>
 
 <h3 id='expressionfile'>Expression-file</h3>
 
-<p>Expression-file provides gene expressions level. The file is delimited by &#8216;\t&#8217; (tab) and is composed by two columns. For example, we show the content of <code>samples/sample_expressions.tab</code> as the following:</p>
+<p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns. For example, we show the content of <code>samples/sample_expressions.tab</code> as the following:</p>
 
 <pre><code>#gene	expression
 A	1
@@ -200,53 +182,53 @@ C	0
 D	0
 ...</code></pre>
 
-<p>The comment line stars with &#8217;#&#8217; and is ignored from analysis.</p>
+<p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
 
-<p>Each line contains two columns: gene name and expression level. HAT derives the p-value from Fisher&#8217;s exact test, thus the genes must be classified two groups: up-regulated or unregulated. If the gene is up-regulated then the second column is 1, otherwise 0. In the above example, gene A and B are up-regulated, and gene C and D are unregulated.</p>
+<p>Each line contains two columns: a gene name and an expression level. HAT derives the p-value from Fisher&#8217;s exact test, thus the genes are classified two groups: up-regulated or unregulated. If the gene is up-regulated then the second column is 1, otherwise 0. In the above example, gene A and B are up-regulated, and gene C and D are unregulated.</p>
 
-<p><code>sample/sampe_expression.tab</code> describes expressions about 15 genes. Thus, the number of rows must be 15 except the comment lines.</p>
+<p><code>sample/sampe_expression.tab</code> describes expressions of 15 genes.</p>
 
 <h3 id='note_for_input_files'>Note for Input Files</h3>
 
-<p>In target-file and expression-file, contained gene set is perfectly same. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression.tab</code> are compound with 15 genes from gene A to O. When the given gene sets are different, HAT does not work.</p>
+<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, HAT does not work properly.</p>
 
 <h2 id='output_format'>Output Format</h2>
 
-<p>When the program is run, the result is printed out after &#8221;&#8212; results &#8212;&#8221;. The first and second lines are formatted as the following:</p>
+<p>The result is printed out after &#8221;&#8212; results &#8212;&#8221; line. The first and second lines are formatted as the following:</p>
 
 <pre><code>--- results ---
 Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer])
 # of significance: [integer]</code></pre>
 
-<p>In the actual analysis, the real numbers are derived instead of [integer] and [float]. Each values mean the following:</p>
+<p><span>integer</span> and <span>float</span> are replaced with real number in the actual result. Each value means the following:</p>
 
 <ul>
 <li>
 <dt><strong>Threshold</strong></dt>
 
-<dd>The threshold for division whether significance. This value is calibrated by the division the inputted significance level by the correction factor.</dd>
+<dd>The significance threshold.</dd>
 </li>
 
 <li>
 <dt><strong>Correction factor</strong></dt>
 
-<dd>The number of testable combinations. The adjusted p-value is calibrated by the product of the correction factor and the row p-value.</dd>
+<dd>The number of testable combinations. The adjusted p-value is computed with the multiplication of the raw p-value and this value.</dd>
 </li>
 
 <li>
-<dt><strong># target genes</strong></dt>
+<dt><strong># of target genes</strong></dt>
 
-<dd>The minimum number of target genes in testable TF combinations.</dd>
+<dd>The minimum number of target genes targeted by a testable TF combination.</dd>
 </li>
 
 <li>
-<dt><strong># of significance:</strong></dt>
+<dt><strong># of significant combinations:</strong></dt>
 
 <dd>The number of significant combinations.</dd>
 </li>
 </ul>
 
-<p>The detected combinations are shown after the third lines. Each line is compounded 5 columns:</p>
+<p>The detected combinations are shown after the third lines. Each line contains 5 columns:</p>
 
 <ul>
 <li>
@@ -258,7 +240,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Adjusted p-value</strong></dt>
 
-<dd>The multiplied value the correction factor and the raw p-value. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
+<dd>Adjusted p-value. The value of all combinations printed by HAT are smaller than the significance level. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
 </li>
 
 <li>
@@ -268,7 +250,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 
 <li>
-<dt><strong># target genes</strong></dt>
+<dt><strong># of target genes</strong></dt>
 
 <dd>The number of target genes of the combination.</dd>
 </li>
@@ -280,7 +262,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<p>The calculation time is shown in the last line (in seconds):</p>
+<p>The last line includes calculation time (in seconds):</p>
 
 <pre><code>Time (sec.): Correction factor [float], P-value [float], Total [float]</code></pre>
 
@@ -288,13 +270,13 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Correction factor</strong></dt>
 
-<dd>The time for calibration the correction term.</dd>
+<dd>The time to calibrate the correction term.</dd>
 </li>
 
 <li>
 <dt><strong>P-value</strong></dt>
 
-<dd>The time for calculation p-values whole testable combinations.</dd>
+<dd>The time to calculate p-values of testable combinations.</dd>
 </li>
 
 <li>
@@ -304,11 +286,11 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<h2 id='demonstrations'>Demonstrations</h2>
+<h2 id='demonstration'>Demonstration</h2>
 
-<p>For demonstrations, we prepared sample files in <code>sample/</code> directory. The target-file is sample_target.csv and expression-file is sample_expression.tab.</p>
+<p>Two types of files are in in <code>sample/</code> directory. The target-file is sample_target.csv and expression-file is sample_expression.tab.</p>
 
-<p>The dataset contains 4 TFs and 15 genes. To find all significant combinations from the files with significance level &lt;= 0.05, try:</p>
+<p>The dataset contains 4 TFs and 15 genes. The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
 
 <pre><code>$ python hat.py sample/sample_target.csv sample/sample_expression.tab 0.05 2&gt; /dev/null</code></pre>
 
@@ -330,6 +312,20 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <li>The running time is 0.00561 sec. in total.</li>
 </ul>
+
+<h2 id='note_on_the_running'>Note on the running</h2>
+
+<p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
+
+<p>Thus, if the HAT fail to finish the calculation, please command:</p>
+
+<pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
+
+<p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
+
+<h2 id='input_file_format'>Input File Format</h2>
+
+<p>HAT receives two input files: target-file and expression-file. The user should prepare the files.</p>
 
 <h2 id='contact'>Contact</h2>
 
