@@ -306,17 +306,9 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 
 <h2 id='demonstrations'>Demonstrations</h2>
 
-<p>For demonstrations, we prepared two sets files in <code>sample/</code> directory. The target-file (.csv) and expression-file (.tab) are listed in the following:</p>
+<p>For demonstrations, we prepared sample files in <code>sample/</code> directory. The target-file is sample_target.csv and expression-file is sample_expression.tab.</p>
 
-<ul>
-<li><strong>Small dataset:</strong> sample_target.csv, sample_expression.tab</li>
-
-<li><strong>Yeast dataset:</strong> yeast_heatshock_target.csv, yeast_heatshock_expression.tab</li>
-</ul>
-
-<h3 id='1_demonstration_using_small_dataset'>1. Demonstration Using Small Dataset</h3>
-
-<p>Small dataset contains 4 TFs and 15 genes. To find all significant combinations from the files with significance level &lt;= 0.05, try:</p>
+<p>The dataset contains 4 TFs and 15 genes. To find all significant combinations from the files with significance level &lt;= 0.05, try:</p>
 
 <pre><code>$ python hat.py sample/sample_target.csv sample/sample_expression.tab 0.05 2&gt; /dev/null</code></pre>
 
@@ -337,46 +329,6 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00699 and the adjusted p-value is 0.0350.</li>
 
 <li>The running time is 0.00561 sec. in total.</li>
-</ul>
-
-<h3 id='2_demonstration_using_yeast_dataset'>2. Demonstration Using Yeast Dataset</h3>
-
-<p>Yeast dataset contains 102 TFs and 6,074 genes. The target-file and the expression-file were generated based on the observations by Gasch <em>et al.</em> (<em>Mol. Biol. Cell</em>, 2000) and Harbison <em>et al.</em> (<em>Nature</em>, 2004). As the demonstration, we show the command for running HAT in the following situation:</p>
-
-<ul>
-<li>Listing combinations of significance level &lt;= 0.05</li>
-
-<li>Output the result to <code>yeast_heatshock_result.txt</code></li>
-</ul>
-
-<p>Try:</p>
-
-<pre><code>$ python hat.py sample/yeast_heatshock_target.csv sample/yeast_heatshock_expression.tab 0.05 &gt; yeast_heatshock_result.txt 2&gt; /dev/null</code></pre>
-
-<p>When the HAT is executed successfully, you will able to the results in <code>yeast_heatshock_result.txt</code>:</p>
-
-<pre><code>--- results ---
-Threshold: 0.00016501650165, Correction factor: 303 (# target genes &gt;= 4)
-# of significance: 8
-Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
-1.45436771609e-26	4.40673417977e-24	HSF1	69	41.0
-1.23021335148e-13	3.72754645499e-11	MSN2	21	16.0
-1.75647791664e-06	0.000532212808741	MSN4	24	11.0
-2.76796930228e-05	0.00838694698591	MSN2,MSN4	6	5.0
-2.76796930228e-05	0.00838694698591	SKO1	6	5.0
-6.34343218273e-05	0.0192205995137	SNT2	18	8.0
-8.99096810807e-05	0.0272426333675	PHD1,SUT1,SOK2,SKN7	7	5.0
-0.000135436847122	0.0410373646779	PHD1,SKN7	11	6.0
-Time (sec.): Correction factor 1.310425, P-value 0.170601, Total 1.481026</code></pre>
-
-<p>The output means that</p>
-
-<ul>
-<li>When raw p-value &lt; 0.000165 (calibrated from 0.05/303), the combination is detected as significance.</li>
-
-<li>8 combinations are significant. The result includes binary combination MSN2 and MSN4, and quaternary combination PHD1, SUT1, SOK2 and SKN7.</li>
-
-<li>The running time is 1.48 in total.</li>
 </ul>
 
 <h2 id='contact'>Contact</h2>
