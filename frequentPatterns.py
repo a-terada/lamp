@@ -100,8 +100,17 @@ class LCM():
 				itemset_line = f.readline()
 			# check the lcm result file finishing successfuly.
 			if not last_line.endswith(")"):
-				e_out = result_lcm_file + " is broken\n"
-				e_out = e_out + "          Please remake the file."
+				input_file = result_lcm_file.split("/")
+				print input_file
+#				e_out = result_lcm_file + " is broken\n"
+#				e_out = "          Please remake the file."
+				e_out = "LCM result file may be broken. Please command\n"
+				e_out = e_out + "          $ rm -rf "
+				for i in range(0, len(input_file) - 2):
+					e_out = e_out + input_file[i] + "/"
+				e_out = e_out + input_file[-2] + "*"
+				e_out = e_out + "\n       Then rerun this script.\n"
+				sys.stdout.write("Error: %s" % e_out)
 				sys.exit()
 #				raise LCMError, e_out
 			f.close()
