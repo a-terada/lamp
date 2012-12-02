@@ -42,6 +42,10 @@
       
     
   
+    
+  
+    
+  
 
 
 
@@ -100,15 +104,103 @@ $ pushd lcm53
 $ make
 $ popd</code></pre>
 
+<h2 id='demonstrations'>Demonstrations</h2>
+
+<p>Here, we show two demonstrations for running HAT. The detail of arguments, input and output format are described below.</p>
+
+<h3 id='sample_files'>Sample files</h3>
+
+<p>There are three sample files in <code>sample/</code> directory.</p>
+
+<ul>
+<li>
+<dt>sample_target.csv</dt>
+
+<dd>The example file of target-file</dd>
+</li>
+
+<li>
+<dt>sample_expression_value.tab</dt>
+
+<dd>The sample file of expression-file. The file is used when Mann-Whitney&#8217;s U-test is selected to calibrate p-value.</dd>
+</li>
+
+<li>
+<dt>sample_expression_over1.tab</dt>
+
+<dd>The sample file of expression-file. The file is used when Fisher&#8217;s exact test is selected to calibrate p-value.</dd>
+</li>
+</ul>
+
+<p>The dataset contains 4 TFs and 15 genes.</p>
+
+<h3 id='demonstration_1_mannwhitneys_utest'>Demonstration 1: Mann-Whitney&#8217;s U-test</h3>
+
+<p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
+
+<pre><code>$ python hat.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt 2&gt; sample_u_test_log.txt</code></pre>
+
+<p>When the HAT finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
+
+<pre><code>--- results ---
+Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 3)
+# of significance: 1
+Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+0.00602414187918	0.0301207093959	TF1,TF2,TF3	5	45.5
+Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code></pre>
+
+<p>The result means that</p>
+
+<ul>
+<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
+
+<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00602 and the adjusted p-value is 0.0301.</li>
+
+<li>The running time is 0.0117 sec. in total.</li>
+</ul>
+
+<h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
+
+<p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
+
+<pre><code>$ python hat.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt 2&gt; sample_fisher_log.txt</code></pre>
+
+<p>When the HAT finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
+
+<pre><code>--- results ---
+Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 5)
+# of significance: 1
+Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
+Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
+
+<p>The result means that</p>
+
+<ul>
+<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
+
+<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00699 and the adjusted p-value is 0.0350.</li>
+
+<li>The running time is 0.00561 sec. in total.</li>
+</ul>
+
 <h2 id='usage'>Usage</h2>
 
 <p>In the HAT directory, you can run HAT with the following command:</p>
 
-<pre><code>$ python multiple_test.py target-file expression-file significance-level</code></pre>
+<pre><code>$ python hat.py -p p-value-procedure target-file expression-file significance-level &gt; output-file</code></pre>
 
-<p>HAT requires three arguments including two input file names and one one threshold:</p>
+<p>HAT requires one option and three arguments:</p>
 
 <ul>
+<li>
+<dl>
+<dt><strong>option -p</strong></dt>
+
+<dd>Select calculation procedure from Fisher&#8217;s exact test or Mann-Whitney&#8217;s U-test. The p-value-procedure is &#8220;fisher&#8221; (Fisher&#8217;s exact test) or &#8220;u_test&#8221; (Mann-Whitney&#8217;s U-test).</dd>
+</dl>
+</li>
+
 <li>
 <dl>
 <dt><strong>target-file</strong></dt>
@@ -132,23 +224,21 @@ $ popd</code></pre>
 <dd>The statistical significance threshold.</dd>
 </dl>
 </li>
+
+<li>
+<dl>
+<dt><strong>output-file</strong></dt>
+
+<dd>The file to output the result.</dd>
+</dl>
+</li>
 </ul>
 
 <p>The input file and output format are written below.</p>
 
-<p>The above command prints both result and running progress.</p>
+<p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try:</p>
 
-<p>To find only result in your console, try:</p>
-
-<pre><code>$ python multiple_test.py target-file expression-file significance-level 2&gt; /dev/null</code></pre>
-<!-- “/dev/null” is a special file for disposing of unwanted output of a process. --><!-- Your operating system has already provides the file. -->
-<p>To save the result to &#8216;output-file&#8217;, try:</p>
-
-<pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file</code></pre>
-
-<p>To save the result to output-file and not to show the progress of computation, try:</p>
-
-<pre><code>$ python hat.py target-file expression-file significance-level &gt; output-file 2&gt; /dev/null</code></pre>
+<pre><code>$ python hat.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
 
 <h2 id='input_file_format'>Input File Format</h2>
 
@@ -173,7 +263,32 @@ D,0,0,0,0
 
 <h3 id='expressionfile'>Expression-file</h3>
 
-<p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns. For example, we show the content of <code>samples/sample_expressions.tab</code> as the following:</p>
+<p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns: a gene name and an expression level.</p>
+
+<p>When HAT derives the p-value from Mann-Whitney&#8217;s U-test, the expressions levels take any real values. However, HAT calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
+
+<p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
+
+<p>For examples, we show the content of sample files.</p>
+
+<ul>
+<li><code>samples/sample_expression_value.tab</code></li>
+</ul>
+
+<p>This file is prepared for Mann-Whitney&#8217;s U-test. The second column includes real values.</p>
+
+<pre><code>#gene	expression
+A	1.5
+B	1.2
+C	0.9
+D	0.8
+...</code></pre>
+
+<ul>
+<li><code>samples/sample_expression_over1.tab</code></li>
+</ul>
+
+<p>This file is prepared for Fisher&#8217;s exact test. The second column are 1 or 0.</p>
 
 <pre><code>#gene	expression
 A	1
@@ -182,15 +297,13 @@ C	0
 D	0
 ...</code></pre>
 
-<p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
+<p>This file was made from <code>samples/sample_expression_value.tab</code>. If the gene expression is higher than 1.0 then expression level is 1, otherwise 0.</p>
 
-<p>Each line contains two columns: a gene name and an expression level. HAT derives the p-value from Fisher&#8217;s exact test, thus the genes are classified two groups: up-regulated or unregulated. If the gene is up-regulated then the second column is 1, otherwise 0. In the above example, gene A and B are up-regulated, and gene C and D are unregulated.</p>
-
-<p><code>sample/sampe_expression.tab</code> describes expressions of 15 genes.</p>
+<p>Both <code>sample/sampe_expression_value.tab</code> and <code>sample/sampe_expression_over1.tab</code> describe expressions of 15 genes.</p>
 
 <h3 id='note_for_input_files'>Note for Input Files</h3>
 
-<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, HAT does not work properly.</p>
+<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression_value.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, HAT does not work properly.</p>
 
 <h2 id='output_format'>Output Format</h2>
 
@@ -258,7 +371,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Statistic score:</strong></dt>
 
-<dd>The number of genes that both target and up-regulated.</dd>
+<dd>The value to derive the p-value. In case of calibration by Fisher&#8217;s exact test, the value means the number of genes that both target and up-regulated. In case of calibration by Mann-Whitney&#8217;s U-test, the value is U-score.</dd>
 </li>
 </ul>
 
@@ -286,33 +399,6 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<h2 id='demonstration'>Demonstration</h2>
-
-<p>Two types of files are in in <code>sample/</code> directory. The target-file is sample_target.csv and expression-file is sample_expression.tab.</p>
-
-<p>The dataset contains 4 TFs and 15 genes. The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
-
-<pre><code>$ python hat.py sample/sample_target.csv sample/sample_expression.tab 0.05 2&gt; /dev/null</code></pre>
-
-<p>When the HAT finishes successfully, the result is printed in your console:</p>
-
-<pre><code>--- results ---
-Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 5)
-# of significance: 1
-Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
-0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
-Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
-
-<p>The result means that</p>
-
-<ul>
-<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
-
-<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00699 and the adjusted p-value is 0.0350.</li>
-
-<li>The running time is 0.00561 sec. in total.</li>
-</ul>
-
 <h2 id='note_on_the_running'>Note on the running</h2>
 
 <p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
@@ -322,10 +408,6 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
 
 <p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
-
-<h2 id='input_file_format'>Input File Format</h2>
-
-<p>HAT receives two input files: target-file and expression-file. The user should prepare the files.</p>
 
 <h2 id='contact'>Contact</h2>
 
