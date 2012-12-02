@@ -23,8 +23,8 @@ import frequentPatterns
 from optparse import OptionParser
 
 import functionsSuper as fs
-import functions4fisher
-#set_opts = ("fisher", "t_test", "u_test") # methods which used each test
+import functions4fisher, functions4u_test
+set_opts = ("fisher", "u_test") # methods which used each test
 
 class MASLError(Exception):
 	def __init__(self, e):
@@ -45,7 +45,11 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 	lam_star = 1
 	func_f = None
 	try:
-		func_f = functions4fisher.FunctionOfX(transaction_list)
+		if set_method == "fisher":
+			func_f = functions4fisher.FunctionOfX(transaction_list)
+		else:
+			func_f = functions4u_test.FunctionOfX(transaction_list)
+				
 	except fs.TestMethodError, e:
 		sys.exit()
 	try:
@@ -253,7 +257,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
 	p = OptionParser(usage = usage)
-#	p.add_option('-t', '--test', dest = "test_method", help = "Decide a method using the each test. (fisher, t_test, u_test)")
+	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Chose the p-value calculation procedure from 'fiehser' (Fisher's exact test) or 'u_test' (Mann-Whitney's U-test)")
 
 #	p.add_option('--lcm', dest = "lcm_pass", help = "Set LCM program pass if you do not have it the directory in multiple_test/lcm25/fim_closed")
 
@@ -272,8 +276,14 @@ if __name__ == "__main__":
 #		else:
 #			sys.stderr.write("Error: max_comb must be an integer value.\n")
 #			sys.exit()
-	opts.test_method = "fisher"
+#	opts.test_method = "fisher"
 	opts.lcm_pass = None
+
+	# check p-vlaue procedure
+	if not opts.pvalue_procedure in set_opts:
+		sys.stderr.write("Error: Choose \"fisher\" or \"u_test\" by using -p option\n")
+		sys.exit()
+
 	
 	# check the file exist.
 	if not os.path.isfile(args[0]):
@@ -287,7 +297,7 @@ if __name__ == "__main__":
 		if (sig_pro < 0) or (sig_pro > 1):
 			sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
 			sys.exit()
-		run(args[0], args[1], float(args[2]), opts.test_method, opts.lcm_pass, max_comb)
+		run(args[0], args[1], float(args[2]), opts.pvalue_procedure, opts.lcm_pass, max_comb)
 	except ValueError:
 		sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
 		sys.exit()

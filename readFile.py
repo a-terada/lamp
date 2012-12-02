@@ -20,10 +20,12 @@ class ReadFileError(Exception):
 # transaction_file: 
 ##
 def readFiles(transaction_file, value_file):
-	transaction_list, gene2id, columnid2name, lcm2transaction_id = readTransactionFile(transaction_file)
+	transaction_list, gene2id, columnid2name = readTransactionFile(transaction_file)
 	transaction_list = readValueFile(value_file, transaction_list, gene2id)
+	transaction_list.sort() # sort transaction_list according to transaction_value
 	# check transaction names two
-	checkTransName(transaction_list, transaction_file)
+	checkTransName(transaction_list, transaction_file) # check transaction names two
+	lcm2transaction_id = makeLCM2TransactionList(transaction_list) # make transaction id list to convert LCM result to transaction_list
 	return transaction_list, columnid2name, lcm2transaction_id
 
 ##
@@ -34,7 +36,6 @@ def readTransactionFile(transaction_file):
 	transaction_list = []
 	gene2id = {} # dictionary that gene name -> transaction ID
 	columnid2name = [] # list about mapping column id to column name
-	lcm2transaction_id = [] # line number in LCM arguments file.
 	for line in open(transaction_file, 'r'):
 		# If line is header line, read column name
 		if line.startswith("#"):
@@ -53,11 +54,8 @@ def readTransactionFile(transaction_file):
 			flag = flag.strip() # If flag includes spaces, remove them.
 			if flag == "1":
 				t.addItem(i)
-#				t.addItem(i-1)
-		if ( len(t.itemset) > 0 ):
-			lcm2transaction_id.append(len(transaction_list))
 		transaction_list.append(t)
-	return transaction_list, gene2id, columnid2name, lcm2transaction_id
+	return transaction_list, gene2id, columnid2name
 
 
 ##
@@ -102,6 +100,18 @@ def checkTransName(transaction_list, transaction_file):
 		if t.value == None:
 			e_out = "\"" + t.name + "\" only appears in " + transaction_file
 			raise ReadFileError, e_out
+
+
+##
+# make list to convert LCM result to transaction_list index
+##
+def makeLCM2TransactionList(transaction_list):
+	lcm2transaction_id = []
+	for i in range(0, len(transaction_list)):
+		t = transaction_list[i]
+		if ( len(t.itemset) > 0 ):
+			lcm2transaction_id.append(i)
+	return lcm2transaction_id
 
 ##
 #
