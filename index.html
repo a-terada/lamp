@@ -46,6 +46,12 @@
   
     
   
+    
+  
+    
+  
+    
+  
 
 
 
@@ -143,9 +149,9 @@ $ popd</code></pre>
 <p>When the HAT finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
 
 <pre><code>--- results ---
-Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 3)
+Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 3)
 # of significance: 1
-Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
 0.00602414187918	0.0301207093959	TF1,TF2,TF3	5	45.5
 Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code></pre>
 
@@ -168,9 +174,9 @@ Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code>
 <p>When the HAT finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
 
 <pre><code>--- results ---
-Threshold: 0.01, Correction factor: 5 (# target genes &gt;= 5)
+Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 5)
 # of significance: 1
-Raw p-value	Adjusted p-value	Combination	# target genes	Statistic score
+Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
 0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
 Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
 
@@ -408,6 +414,10 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
 
 <p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
+
+<h2 id='licence'>Licence</h2>
+
+<p>HAT is open source code issued under the BSD License.</p>
 
 <h2 id='contact'>Contact</h2>
 
