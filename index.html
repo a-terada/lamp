@@ -103,11 +103,16 @@
 
 <p><strong>2. LCM ver. 5.3</strong></p>
 
-<p>As a frequent itemset mining program, HAT uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the HAT directory before running of HAT by the following command:</p>
+<p>As a frequent itemset mining program, HAT uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the HAT directory before running of HAT. The zip file is downloaded as the following command:</p>
 
 <pre><code>$ cd hat
-$ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;
-$ mkdir lcm53
+$ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;</code></pre>
+
+<p>If wget command is not installed, please download <a href='http://research.nii.ac.jp/~uno/code/lcm53.zip'>LCM ver. 5.3 (zip)</a> in the HAT directory.</p>
+
+<p>Then, the zip file is archived and compiled:</p>
+
+<pre><code>$ mkdir lcm53
 $ tar zxvf lcm53.zip -C lcm53
 $ pushd lcm53
 $ make
