@@ -188,10 +188,10 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 	if (len(frequent_list) < 1):
 		sys.stdout.write("Warning: there is no test which satisfying # target genes >= " + str(lam_star) + ".\n")
 	sys.stdout.write("Threshold: " + str(threshold/k) + ", ")
-	sys.stdout.write("Correction factor: " + str(k) + " (# target genes >= " + str(lam_star) + ")\n" )
+	sys.stdout.write("Correction factor: " + str(k) + " (# of target genes >= " + str(lam_star) + ")\n" )
 	sys.stdout.write("# of significance: " + str(len(enrich_lst)) + "\n")
 	if len(enrich_lst) > 0:
-		sys.stdout.write("Raw p-value\tAdjusted p-value\tCombination\t# target genes\tStatistic score\n")
+		sys.stdout.write("Raw p-value\tAdjusted p-value\tCombination\t# of target genes\tStatistic score\n")
 		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
 	for l in enrich_lst:
 		sys.stdout.write(str(l[1]) + "\t" + str(k*l[1]) + "\t")
