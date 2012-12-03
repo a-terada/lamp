@@ -1,21 +1,16 @@
-#!/usr/local/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
-# execute multiple test.
-# This script need transaction file, flag file and significance probability.
-# transaction file: Each line indicates a gene.
-#                   If gene has item then value is 1. The othre case 0.
-# flag file: Each line indicates a gene. The column1 is gene name.
-#            If gene has the feature, the column2 is 1. The other case 0.
-# significance probability: threshold for hypothesis test.
-# @author aika 26, June, 2011
-# @editor aika 2, Nov, 2011
-#         Add options to choose testing method (fisher or t-test)
-# @editor aika 8, Nov, 2011
-#         Add option -t u_test testing method. (fisher or t-test or u-test)
-# @editor aika, 8, Dec, 2011
-#         Add option --max_comb. max_comb means the max combinations size in test.
-#         If the user does not specify the value, test the all combinations.
+# Run multiple testing correction.
+# This script need transaction file, expression-file and significance-level.
+# transaction-file: The file includes associations between TFs and genes.
+#     Each line indicates a gene.
+#     If gene is targeted by the TF, then value is 1, otherwise 0.
+# expression-file: Each line indicates a gene. The column1 is gene name.
+#     If gene has the feature, the column2 is 1. The other case 0.
+# significance-level: The statistical significance threshold.
+# @author Terada 26, June, 2011
+# @editor Terada 8, Nov, 2011
+#     Add option -t u_test testing method. (fisher or t-test)
 
 import sys, os.path, time
 import readFile, transaction
@@ -31,13 +26,13 @@ class MASLError(Exception):
 		sys.stderr.write("MASLError: " + e + "\n")
 
 ##
-# execute multiple test using Tarone-Bonferroni.
-# transaction_list: list of itemset and flag
-# trans4lcm: file name for argument of LCM program. This file can make in this method.
-# threshold: significance probability for hypothesis test.
-# columnid2name: mapping between item id to item name
-# lcm2transaction_id: mapping between lcm id to transaction id.
-# set_method: method used in the each test
+# Run multiple test.
+# transaction_list: List of itemset and expression value.
+# trans4lcm: File name for argument of LCM program. This file is made in this method.
+# threshold: The statistical significance threshold.
+# columnid2name: Mapping between TS id to TF name.
+# lcm2transaction_id: Mapping between LCM ID to transaction id.
+# set_method: The procedure name for calibration p-value (fisher/u_test).
 ##
 def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2transaction_id, set_method, lcm_pass, max_comb):
 	starttime = time.clock()
@@ -67,12 +62,6 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 		if not os.path.isfile(trans4lcm):
 			fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
 		# If file for Lcm30 exist, comfiem that overwrite the file.
-#		ans = 'y'
-#		if os.path.isfile(trans4lcm):
-#			ans = raw_input("File " + trans4lcm+ " exists. Do you overwrite this file? [y/n]: ")
-		# If file needs to update, make a new file.
-#		if ans == 'y':
-#			frequentPatterns.makeFile4Lem(transaction_list, trans4lcm)
 		# solve K and lambda
 		while lam > 1:
 			sys.stderr.write("--- lambda: " + str(lam) + " ---\n")
@@ -116,21 +105,13 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 				break
 			sys.stderr.write("  " + str(m_lambda) + " > " + str(top) + "?\n")
 			if m_lambda > top: # branch on condition of line 8
-#				k = top + 1
 				lam_star = lam
-#				frequent_list = fre_pattern.frequentPatterns(trans4lcm, lam_star, max_comb)
-#				k = len(frequent_list)
 				break
 			lam = lam -1
 	except fs.TestMethodError, e:
 		sys.exit()
 	except frequentPatterns.LCMError, e:
 		sys.exit()
-#	except functions4t_test.TestMethodError, e:
-		sys.exit()
-		
-
-#	correction_term_time = time.clock()
 	
 	try:
 		frequent_list = fre_pattern.frequentPatterns(trans4lcm, lam_star, max_comb) # P_lambda* at line 13
@@ -163,7 +144,6 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 			flag_transaction_list.append(lcm2transaction_id[t])
 #		print " ---"
 		p, stat_score = func_f.calPValue(transaction_list, flag_transaction_list)
-#		p, stat_score = func_f.calPValue_pre(transaction_list, item_set_and_size[0])
 		sys.stderr.write("p: " + str(p) + "\n")
 		if p < (threshold/k):
 			enrich_lst.append([item_set, p, item_set_and_size[1], stat_score])
@@ -205,34 +185,43 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 	return len(enrich_lst) # return the number of enrich set for permutation
 		
 ##
-# return max lambda.
-# That is, max size itemset.
+# Return max lambda. That is, max size itemset.
 ##
 def maxLambda(transaction_list):
-	# count each item size
+	# Count each item size
 	item_sizes = {}
 	for t in transaction_list:
 #		print t.itemset
 		for item in t.itemset:
 #			print item
-			# if item does not exist in item_size, then make mapping to 0
+			# If item does not exist in item_size, then make mapping to 0
 			if not item_sizes.has_key(item):
 				item_sizes[item] = 0
 			item_sizes[item] = item_sizes[item] + 1
 	
-	# get max value in item_sizes
+	# Get max value in item_sizes
 	max_value = 0
 	for i in item_sizes.itervalues():
 		if i > max_value:
 			max_value = i
 	return max_value
+
+# transaction-file: The file includes associations between TFs and genes.
+#     Each line indicates a gene.
+#     If gene is targeted by the TF, then value is 1, otherwise 0.
+# expression-file: Each line indicates a gene. The column1 is gene name.
+#     If gene has the feature, the column2 is 1. The other case 0.
+# significance-level: The statistical significance threshold.
 	
 ##
-# execute multiple test.
-# itemset_file: Each line indicates a gene. If gene has item then value is 1. The othre case 0.
-# flag_file: The column1 is gene name. If gene has the feature, the column2 is 1. The other case 0.
-# threshold: significance probability for hypothesis test.
-# set_method: method used the each test.
+# Run multiple test.
+# itemset_file: The file includes associations between TFs and genes.
+#     Each line indicates a gene.
+#     If gene is targeted by the TF, then value is 1, otherwise 0.
+# flag_file: Each line indicates a gene. The column1 is gene name.
+#     If gene has the feature, the column2 is 1. The other case 0.
+# threshold: The statistical significance threshold.
+# set_method: The procedure name for calibration p-value (fisher/u_test).
 # max_comb: the maxmal size which the largest combination size in tests set.
 ##
 def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):

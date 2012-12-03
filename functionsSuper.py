@@ -1,9 +1,9 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Define functions which is used the each test method (fisher, t_test, u_test and so on.).
 # Definition about Errors and combinations.
-# @author aika 10, Nov., 2011
+# @author Terada 10, Nov., 2011
 import sys
 
 class TestMethodError:
@@ -14,9 +14,9 @@ class FunctionsSuper:
 	def __init__(self): pass
 	
 	##
-	# calculate combination C(n, m)
+	# Calculate combination C(n, m)
 	# return the number of pattern that select m things from n things.
-	# this function use for correcting by Bonferroni method and fisher's exact test
+	# This function use for correcting by Bonferroni method and fisher's exact test
 	##
 	def combination(self, n, m):
 #		print "calcluate combination ..."
@@ -28,12 +28,11 @@ class FunctionsSuper:
 		c_sum = 1.0
 		while t > 0:
 			c_sum = c_sum*(n-m+t)/t
-#			c_sum = (float)(c_sum*(n-m+t))/t
 			t = t-1
 		return c_sum
 
 	##
-	# divide transaction_list to two groups.
+	# Divide transaction_list to two groups.
 	# One group is transactions which included itemset, the other is not.
 	# itemset: itemset. transaction_list is divided which includes this itemset or not.
 	##

@@ -1,31 +1,29 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Define fuctions that is used in multiple_test.py
 # This source include calculate combination
 # and function f which is defined in paper (C(n1, x)/C(n0+n1, x)).
-# @author aika, 26, June, 2011
-# @editor aika, 24, Feb, 2012, If x > n1 in caluclation MASL, then raise error and exit.
-#                              (This case does not treat.)
+# @author Terada, 26, June, 2011
+# @editor Terada, 24, Feb, 2012,
+#     If x > n1 in caluclation MASL, then raise error and exit (This case does not treat the case).
 
 from __future__ import division
 import sys
 import functionsSuper as fs
 import readFile
-#import scipy.stats
 
 ##
 # Define class
 # This class calculate function f that define in paper. (C(n1, x)/C(n0+n1, x))
 # transaction_list: list of transactions
-##TestMethod
+##
 class FunctionOfX(fs.FunctionsSuper):
 	def __init__(self, transaction_list):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__f_size = self.sumValue(transaction_list) # transaction size which have flag = 1 (n1)
-#		self.__f_size = self.__countFlagSize(transaction_list) # transaction size which have flag = 1 (n1)
-
+		
 		# Check the transaction value.
 		# If the value is not 1 or 0, raise error.
 		# Because fisher's exact test does not handle numerical value.
@@ -33,10 +31,7 @@ class FunctionOfX(fs.FunctionsSuper):
 			if not (t.value == 1.0 or t.value == 0.0):
 				sys.stderr.write("Error: \"" + t.name + "\" value is " + str(t.value)+".\n")
 				sys.stderr.write("       But value is 1 or 0 if you test by fisher's exact test.\n")
-#				e_out = "\"" + t.name + "\" value is " + str(t.value)+".\n"
-#				e_out = e_out + "            But value is 1 or 0 if you test by fisher's exact test."
 				sys.exit()
-#				raise fs.TestMethodError, e_out
 		
 		# check the support size.
 		# If support size larger than half of all data size, raise error.
@@ -49,18 +44,6 @@ class FunctionOfX(fs.FunctionsSuper):
 	def getN1(self):
 		return self.__f_size
 	
-	##
-	# count transaction which is flag = 1
-	# transaction_list: list of transactions
-	##
-#	def __countFlagSize(self, transaction_list):
-#		print "count flag size ..."
-#		f_size = 0
-#		for t in transaction_list:
-#			f_size = f_size + t.value
-#		print "finish: " + str(f_size)
-#		return f_size
-
 	def funcF(self, x):
 		n1 = self.__f_size
 		n1_n0 = self.__t_size # the number of all genes
@@ -93,12 +76,6 @@ class FunctionOfX(fs.FunctionsSuper):
 		n1 = self.__f_size
 		n1_n0 = self.__t_size
 #		print "x: " + str(x)
-		# If x > n1, then print error and exit calculation.
-		# (MASL may not follow the monotonic decrease.)
-#		if (x > n1):
-#			sys.stderr.write("Error: a support %s is larther than n1 %s.\n" % (x, n1))
-#			sys.stderr.write("       this code cannot consider the case.\n")
-#			sys.exit()
 		all_x = n1_n0 - x
 #		print "all transaction size: " + str(n1_n0)
 #		print "n1+n0-x: " + str(all_x)
@@ -137,9 +114,9 @@ class FunctionOfX(fs.FunctionsSuper):
 			return sum_f
 
 	##
-	# calculate p-value by using fisher's exact test
-	# transaction_list: list of transactions
-	# flag_itemset_id: transactions which have items
+	# Calculate p-value by using fisher's exact test.
+	# transaction_list: List of transactions
+	# flag_itemset_id: Transactions which have items
 	##
 	def calPValue(self, transaction_list, flag_transactions_id):
 		all_size = self.__t_size # the number of all transaction (n1 + n0)
@@ -161,24 +138,21 @@ class FunctionOfX(fs.FunctionsSuper):
 		p0 = self.__probabilityTable(item_flag, item_not_flag, all_flag_size, all_not_flag_size)
 #		print "p0: " + str(p0)
 
-		# calculate hypergeometric distribution p
-		# change a from 0 to x,
-		# and if probability of table less than p0, then add p.
+		# Calculate hypergeometric distribution p
+		# Change a from 0 to x, and if probability of table less than p0, then add p.
 		p = 0
 		a = item_flag
-#		a = 0
 		while ( a <= item_all ) and ( a <= all_flag_size ):
 			b = item_all - a
 			pa = self.__probabilityTable(a, b, all_flag_size, all_not_flag_size)
 #			print "a: p = " + str(pa)
-#			if pa <= p0:
 			p = p + pa
 			a = a + 1
 #		print p
 		return p, item_flag
 	
 	##
-	# calculate p-value by using fisher's exact test
+	# Calculate p-value by using fisher's exact test
 	# transaction_list: list of transactions
 	# itemset: testing item set
 	##
@@ -208,9 +182,8 @@ class FunctionOfX(fs.FunctionsSuper):
 		p0 = self.__probabilityTable(item_flag, item_not_flag, all_flag_size, all_not_flag_size)
 #		print "p0: " + str(p0)
 
-		# calculate hypergeometric distribution p
-		# change a from 0 to x,
-		# and if probability of table less than p0, then add p.
+		# Calculate hypergeometric distribution p
+		# Change a from 0 to x, and if probability of table less than p0, then add p.
 		p = 0
 		a = 0
 		while a <= item_all:
@@ -223,12 +196,12 @@ class FunctionOfX(fs.FunctionsSuper):
 		return p, item_flag
 	
 	##
-	# calculate probability of occurrence probability about table.
-	# return C(n1, a)*C(n0, b)/C(n1+n0, a+b)
-	# a: top left of table
-	# b: top right of table
-	# n1: sum of top and bottom left (a + c)
-	# n0: sum of top and bottom right (b + d)
+	# Calculate probability of occurrence probability about table.
+	# Return C(n1, a)*C(n0, b)/C(n1+n0, a+b)
+	# a: Top left of table
+	# b: Top right of table
+	# n1: Sum of top and bottom left (a + c)
+	# n0: Sum of top and bottom right (b + d)
 	##
 	def __probabilityTable(self, a, b, n1, n0):
 		n1_n0 = n1 + n0 # the number of all transaction (n1 + n0)
@@ -251,27 +224,6 @@ class FunctionOfX(fs.FunctionsSuper):
 			time = time + 1
 #			print p
 		return p	
-
-
-def run2(xls_file, value_file, itemset_str_lst):
-	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file)
-	func = FunctionOfX(transaction_list)
-	colname2id_dict = readFile.colname2id(columnid2name)
-	itemset = set()
-	for i in itemset_str_lst:
-		item_id = colname2id_dict[i]
-		itemset.add(item_id + 1)
-#		print i
-#		print item_id
-#		print columnid2name[item_id]
-#	print itemset
-#	for t in transaction_list:
-#		print t.itemset
-#	p_value, stat_value = func.calPValue_pre(transaction_list, itemset)
-	p_value, stat_value = func.calPValue(transaction_list, itemset)
-	n = len(transaction_list)
-	n1 = func.getN1()
-	sys.stdout.write("p-value: %s (N: %s, n1: %s, a: %s)\n" % (p_value, n, n1, stat_value))
 
 
 def run(xls_file, value_file, itemset_str_lst):

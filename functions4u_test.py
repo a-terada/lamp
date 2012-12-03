@@ -1,14 +1,13 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Define fuctions that is used in multiple_test.py
-# This source include method p-value by t-test
-# and function f which represents the minimum p-value. (MASL)
-# @author aika, 8, Nov, 2011
-#         This source is improved in functions4t_test.py
-# @editor aika, 28, Jan, 2011
+# This source include method p-value by Mann-Whitne's U-test.
+# Function f which represents the minimum p-value. (MASL)
+# @author Terada, 8, Nov, 2011
+# @editor Terada, 28, Jan, 2011
 #         Add main method. When user run this code alone, calculate p-value by U-test.
-# @editor aika, 10, Feb, 2012
+# @editor Terada, 10, Feb, 2012
 #         For speeding up, the binary search list (t_group_y in uValue) cut off the smaller part
 #         that find the less value in previous fase.
 
@@ -31,7 +30,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
 	
 	##
-	# calculate probability of standard normal distribution.
+	# Calculate probability of standard normal distribution.
 	# this function returns the probability of one-sided test.
 	# x: 
 	##
@@ -56,7 +55,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		return p
 
 	##
-	# search the group which t.value less than threshold
+	# Search the group which t.value less than threshold.
 	# threshold: search value
 	# tgroup: list to search threshold
 	# left_index: start index of tgroup to search
@@ -138,7 +137,7 @@ class FunctionOfX(fs.FunctionsSuper):
 
 	
 	##
-	# calculate u value which measurs difference rank sum of two groups.
+	# Calculate u value which measurs difference rank sum of two groups.
 	# tgroup_x: test group 1. This is consisted of transactions.
 	# tgroup_y: test group 2. This is consisted of transactions.
 	# tgroup_x and t_group_y already sorted by transaction value.
@@ -149,11 +148,11 @@ class FunctionOfX(fs.FunctionsSuper):
 #		print ""
 	
 		u_value = 0.0
-		previous_u_x_min = 0 # the rank of transaction in previous search
-		previous_u_x_max = 0 # the rank of transaction in previous search
-		previous_value = None # the previous expression value
-		left_index = 0 # the start point of searching value.
-		right_index = len(tgroup_y) - 1 # the end point of searching value.
+		previous_u_x_min = 0 # The rank of transaction in previous search
+		previous_u_x_max = 0 # The rank of transaction in previous search
+		previous_value = None # The previous expression value
+		left_index = 0 # The start point of searching value.
+		right_index = len(tgroup_y) - 1 # The end point of searching value.
  		for t_x in tgroup_x:
 #			print t_x.value
 			# u_x_min: rank sum of transaction which the value < t_x in tgroup_y
@@ -164,7 +163,7 @@ class FunctionOfX(fs.FunctionsSuper):
 			if (t_x.value == previous_value):
 				u_x_min = previous_u_x_min
 				u_x_max = previous_u_x_max
-			# caluclate u_value because tgroup_x value exists between tgroup_y range
+			# Caluclate u_value because tgroup_x value exists between tgroup_y range
 			else:
 				u_x_min, u_x_max = self.__binarySearch(t_x.value, tgroup_y, left_index, right_index)
 #				for t_y in tgroup_y:
@@ -173,7 +172,7 @@ class FunctionOfX(fs.FunctionsSuper):
 				left_index = u_x_max
 			
 #			print "min: " + str(u_x_min) + ", max: " + str(u_x_max)
-			# add rank of t_x to u_value
+			# Add rank of t_x to u_value
 			u_value = u_value + (u_x_min+u_x_max)/2
 #			print "u_value: %f" % u_value
 			previous_u_x_min = u_x_min
@@ -183,7 +182,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		return u_value
 	
 	##
-	# this function returns mean and variance which is used in U test.
+	# This function returns mean and variance which is used in U test.
 	##
 	def __calStatValue(self, tgroup_x, tgroup_y):
 		size_x = len(tgroup_x)
@@ -193,7 +192,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		return (mean_u, var_u)
 	
 	##
-	# calculate p-value by using Mann-Whitney U test
+	# Calculate p-value by using Mann-Whitney U test
 	# tgroup_x: test group 1. This is consisted of transactions.
 	# tgroup_y: test group 2. This is consisted of transactions.
 	# tgroup_x and t_group_y already sorted by transaction value.
@@ -291,7 +290,9 @@ class FunctionOfX(fs.FunctionsSuper):
 #			p = self.stdNorDistribution(i)
 #			print str(i) + " " + str(p)
 
-# make mapping from column_name to column ID
+##
+# Make mapping from column_name to column ID
+##
 def columnName2ID(columnid2name):
 	columname2id = {}
 	i = 0
@@ -301,7 +302,7 @@ def columnName2ID(columnid2name):
 	return columname2id
 
 def comma2List(item_list_str, columnid2name):
-	columnname2id = columnName2ID(columnid2name) # make mapping from column_name to column ID
+	columnname2id = columnName2ID(columnid2name) # Make mapping from column_name to column ID
 	item_list = []
 	item_list_s = item_list_str.split(",")
 	for i in item_list_s:

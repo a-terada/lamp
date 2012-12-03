@@ -1,12 +1,12 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Define methods to read transaction and flag files
-# @author aika 26, June, 2011
+# @author Terada 26, June, 2011
 # @editor aika 1, Nov. 2011
-#   developing the readValueFile for handling the value.
+#    Developing the readValueFile for handling the value.
 # @editor aika 10, Nov. 2011
-#   change readTransactionFile. If file has space the front and the rear, remove them.
+#    Change readTransactionFile. If file has space the front and the end, remove them.
 
 import sys, transaction
 
@@ -15,8 +15,7 @@ class ReadFileError(Exception):
 		print "ReadFileError: " + e
 		
 ##
-# read transaction and flag file
-# and return transaction matrix.
+# Read transaction and flag file and return transaction matrix.
 # transaction_file: 
 ##
 def readFiles(transaction_file, value_file):
@@ -29,7 +28,7 @@ def readFiles(transaction_file, value_file):
 	return transaction_list, columnid2name, lcm2transaction_id
 
 ##
-# read transaction file and return list of transactions.
+# Read transaction file and return list of transactions.
 # item ID is integer value and begin from 0.
 ##
 def readTransactionFile(transaction_file):
@@ -59,10 +58,11 @@ def readTransactionFile(transaction_file):
 
 
 ##
-# read flag file and add information about flags to transaction list.
-# value_file: read flag file. The column1 is gene name and the column2 is vlue (for example, gene expression).
-# transaction_list: list of transactions. This is made of readTransactionFile method.
-# gene2id: dictionary that key indicates gene name and value is transaction ID(location of list)
+# Read flag file and add information about flags to transaction list.
+# value_file: Read flag file.
+#     The column1 is gene name and the column2 is vlue (for example, gene expression).
+# transaction_list: List of transactions. This is made of readTransactionFile method.
+# gene2id: Dictionary that key indicates gene name and value is transaction ID(location of list)
 ##
 def readValueFile(value_file, transaction_list, gene2id):
 	line_num = 0
@@ -82,7 +82,7 @@ def readValueFile(value_file, transaction_list, gene2id):
 #			print t.itemset
 #			print t.value
 			
-		# this error raise if gene does not include in itemset file.
+		# This error raise if gene does not include in itemset file.
 		except KeyError, e:
 			e_out =  "line " + str(line_num) + ", \"" + line[:-1] + "\"" + "\n       " + str(e) + " does not exist in item set file."
 			raise ReadFileError, e_out
@@ -92,8 +92,8 @@ def readValueFile(value_file, transaction_list, gene2id):
 	return transaction_list
 
 ##
-# check two files transaction name are same
-# If transaction contains only one file, flag is -1
+# Check two files transaction name are same
+# If transaction contains only one file, flag is -1.
 ##
 def checkTransName(transaction_list, transaction_file):
 	for t in transaction_list:
@@ -103,7 +103,7 @@ def checkTransName(transaction_list, transaction_file):
 
 
 ##
-# make list to convert LCM result to transaction_list index
+# Make list to convert LCM result to transaction_list index
 ##
 def makeLCM2TransactionList(transaction_list):
 	lcm2transaction_id = []
@@ -123,6 +123,3 @@ def colname2id(columnid2name):
 		colname2id_dict[i] = index
 		index = index + 1
 	return colname2id_dict
-
-
-# readFiles(sys.argv[1], sys.argv[2])

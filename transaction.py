@@ -1,19 +1,17 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Define Class that indicate a transaction.
 # The transaction has name and item set
 # @author aika 26, June, 2011
-# @edotor aika 1, Nov, 2011
-#         advance for t-test. before: flag, after: value
 
 ##
 # Define Class
-# name: transaction name
-# itemset: items that is belonged to transaction
-# value: indicate this transaction related to feature.
-#        if fisher's exact test, the value is 1 or 0.
-#        t-test, the example is gene expression.
+# name: Transaction name (Gene name)
+# itemset: Items that is belonged to transaction (associated TFs set)
+# value: Indicate this transaction related to feature.
+#        If fisher's exact test, the value is 1 or 0.
+#        If Mann-Whitney's u-test, the value takes any value.
 ##
 class Transaction:
 	def __init__(self, name):
@@ -22,7 +20,7 @@ class Transaction:
 		self.value = None
 	
 	##
-	# This function is used for sort transaction list in t_test
+	# This function is used for sort transaction list in u_test
 	##
 	def __cmp__(self, other):
 #		print str(self.value) + " " + str(other.value)
