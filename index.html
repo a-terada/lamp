@@ -83,7 +83,7 @@
 <p>This manuscript is written for finding TF combinations. The code is, however, applicable to discover other combinatorial effects between other datasets such as miRNA interactions, histone acetylation and methylation and so on.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitneys_utest'>Demonstration 1: Mann-Whitney&#8217;s U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note_on_the_running'>Note on the running</a></li><li><a href='#licence'>Licence</a></li><li><a href='#contact'>Contact</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitneys_utest'>Demonstration 1: Mann-Whitney&#8217;s U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#codes_for_preparation_input_files'>Codes for Preparation Input Files</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
 
 <h2 id='preparation'>Preparation</h2>
 
@@ -413,7 +413,125 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<h2 id='note_on_the_running'>Note on the running</h2>
+<h2 id='codes_for_preparation_input_files'>Codes for Preparation Input Files</h2>
+
+<p>We prepare codes for analysis of real data. These codes were written under the following assumptions:</p>
+
+<ul>
+<li>Using <a href='http://www.broadinstitute.org/gsea/msigdb/index.jsp'>Molecular Signatures Database</a> (MSigDB) as the associations between the genes and the TFs.</li>
+
+<li>Expression profile is observed with microarray of Affymetrix.</li>
+</ul>
+
+<p>For an example, <a href='http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE6462'>GSE6462</a> dataset, which is stored in Gene Expression Omnibus (GEO), is used for the expression profile data. This example requires the three files:</p>
+
+<ul>
+<li>
+<dt>c3.tft.v3.0.entrez.gmt [<a href='http://www.broadinstitute.org/gsea/msigdb/download_file.jsp?filePath=/resources/msigdb/3.1/c3.tft.v3.1.entrez.gmt'>Download</a> (registration required)].</dt>
+
+<dd>Associations between TF binding site and genes which are collected in MSigDB. The motif gene sets (c3) is used to give associations between TFs and genes.</dd>
+</li>
+
+<li>
+<dt>GSE6462_series_matrix.txt [<a href='ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/SeriesMatrix/GSE6462/GSE6462_series_matrix.txt.gz'>Download zip file</a>]</dt>
+
+<dd>Expression profiling in human breast cancer cells.</dd>
+</li>
+
+<li>
+<dt>HG-U133_Plus_2.na33.annot.csv [<a href='http://www.affymetrix.com/Auth/analysis/downloads/na33/ivt/HG-U133_Plus_2.na33.annot.csv.zip'>Download zip file</a> (registration required)]</dt>
+
+<dd>The annotation file for Affymetrix Human Genome U133A 2.0 Array. The file is released by Affymetrix.</dd>
+</li>
+</ul>
+
+<p>At first, please download these files and decompress in <code>hat</code> directory. Then, try the following five commands:</p>
+
+<pre><code>$ python convert_id.py HG-U133_Plus_2.na33.annot.csv GSE6462_series_matrix.txt to_exp.tab
+$ python exp2ratio.py -c 1,2 -t 3 to_exp.tab gse6462_expression.tab
+$ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
+$ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
+$ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
+
+<p><code>gse6462_expression.tab</code> and <code>gse6462_target.csv</code> are generated by the above commands, and the files are expression-file and target-file for HAT. The commands generate other two intermediate files, <code>to_exp1.txt</code> and <code>to_target1.csv</code>. The next figure illustrates the flow of conversion files.</p>
+
+<p><img alt='Image not found' src='images/flow.png' /></p>
+
+<p>The flow is composed from the five codes:</p>
+
+<ol>
+<li>
+<dl>
+<dt>convert_id.py</dt>
+
+<dd>Conversion the prob ID to GenBank ID in Affymetrix microarray data.</dd>
+
+<dd>Argument 1: The annotation file which is downloaded from Affymetrix.</dd>
+
+<dd>Argument 2: GEO Series matrix file.</dd>
+
+<dd>Argument 3: Output file (intermediate-file1)</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt>exp2ratio.py</dt>
+
+<dd>Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene. If there are several control condisions, the average of them are used for the control expression level.</dd>
+
+<dd>Option -c: The control condition column numbers. The number starts 1 (column 0 is for gene name).</dd>
+
+<dd>Option -t: The target condition column number. The number starts 1 (column 0 is for gene name).</dd>
+
+<dd>Argument1: The intermediate-file1.</dd>
+
+<dd>Argument2: Output file (expression-file to HAT)</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt>gsea4csv.py</dt>
+
+<dd>The downloaded file from MSigDB is changed to CSV format.</dd>
+
+<dd>Argument 1: MSigDB collection file.</dd>
+
+<dd>Argument 2: Output file (intermediate-file2).</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt>merge_exp_csv.py</dt>
+
+<dd>Addition/deletion genes in CSV formatting file to become a same gene set in expression-file. This code is available for any situation.</dd>
+
+<dd>Argument 1: The expression-file.</dd>
+
+<dd>Argument 2: CSV format file which contains associations between gene and TF.</dd>
+
+<dd>Argument 3: Output file (target-file to HAT)</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt>check_files.py</dt>
+
+<dd>Check the gene set in both target-file and expression-file. When there are different genes between the two files, the genes is printed. This code is available for any situation.</dd>
+
+<dd>Argument 1: The target-file for HAT.</dd>
+
+<dd>Argument 2: The expression-file for HAT.</dd>
+</dl>
+</li>
+</ol>
+
+<p>These codes are available for the other situations because the codes are run individually.</p>
+
+<h2 id='note_on_the_running'>Note on the Running</h2>
 
 <p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
 
@@ -423,7 +541,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 
 <p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
 
-<h2 id='licence'>Licence</h2>
+<h2 id='license'>License</h2>
 
 <p>HAT is open source code issued under the BSD License.</p>
 
