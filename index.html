@@ -50,8 +50,6 @@
   
     
   
-    
-  
 
 
 
@@ -83,7 +81,7 @@
 <p>This manuscript is written for finding TF combinations. The code is, however, applicable to discover other combinatorial effects between other datasets such as miRNA interactions, histone acetylation and methylation and so on.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitneys_utest'>Demonstration 1: Mann-Whitney&#8217;s U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#codes_for_preparation_input_files'>Codes for Preparation Input Files</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#codes_for_preparation_input_files'>Codes for Preparation Input Files</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
 
 <h2 id='preparation'>Preparation</h2>
 
@@ -136,7 +134,7 @@ $ popd</code></pre>
 <li>
 <dt>sample_expression_value.tab</dt>
 
-<dd>The sample file of expression-file. The file is used when Mann-Whitney&#8217;s U-test is selected to calibrate p-value.</dd>
+<dd>The sample file of expression-file. The file is used when Mann-Whitney U-test is selected to calibrate p-value.</dd>
 </li>
 
 <li>
@@ -148,7 +146,7 @@ $ popd</code></pre>
 
 <p>The dataset contains 4 TFs and 15 genes.</p>
 
-<h3 id='demonstration_1_mannwhitneys_utest'>Demonstration 1: Mann-Whitney&#8217;s U-test</h3>
+<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
 
 <p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
 
@@ -211,7 +209,7 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <dl>
 <dt><strong>option -p</strong></dt>
 
-<dd>Select calculation procedure from Fisher&#8217;s exact test or Mann-Whitney&#8217;s U-test. The p-value-procedure is &#8220;fisher&#8221; (Fisher&#8217;s exact test) or &#8220;u_test&#8221; (Mann-Whitney&#8217;s U-test).</dd>
+<dd>Select calculation procedure from Fisher&#8217;s exact test or Mann-Whitney U-test. The p-value-procedure is &#8220;fisher&#8221; (Fisher&#8217;s exact test) or &#8220;u_test&#8221; (Mann-Whitney U-test).</dd>
 </dl>
 </li>
 
@@ -279,7 +277,7 @@ D,0,0,0,0
 
 <p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns: a gene name and an expression level.</p>
 
-<p>When HAT derives the p-value from Mann-Whitney&#8217;s U-test, the expressions levels take any real values. However, HAT calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
+<p>When HAT derives the p-value from Mann-Whitney U-test, the expressions levels take any real values. However, HAT calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
 
 <p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
 
@@ -289,7 +287,7 @@ D,0,0,0,0
 <li><code>samples/sample_expression_value.tab</code></li>
 </ul>
 
-<p>This file is prepared for Mann-Whitney&#8217;s U-test. The second column includes real values.</p>
+<p>This file is prepared for Mann-Whitney U-test. The second column includes real values.</p>
 
 <pre><code>#gene	expression
 A	1.5
@@ -385,7 +383,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Statistic score:</strong></dt>
 
-<dd>The value to derive the p-value. In case of calibration by Fisher&#8217;s exact test, the value means the number of genes that both target and up-regulated. In case of calibration by Mann-Whitney&#8217;s U-test, the value is U-score.</dd>
+<dd>The value to derive the p-value. In case of calibration by Fisher&#8217;s exact test, the value means the number of genes that both target and up-regulated. In case of calibration by Mann-Whitney U-test, the value is U-score.</dd>
 </li>
 </ul>
 
@@ -449,11 +447,12 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 
 <pre><code>$ python convert_id.py HG-U133_Plus_2.na33.annot.csv GSE6462_series_matrix.txt to_exp.tab
 $ python exp2ratio.py -c 1,2 -t 3 to_exp.tab gse6462_expression.tab
+$ python ratio2flag.py gse6462_expression.tab 1.0 gse6462_expression_over1.tab
 $ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
 $ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
 $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
-<p><code>gse6462_expression.tab</code> and <code>gse6462_target.csv</code> are generated by the above commands, and the files are expression-file and target-file for HAT. The commands generate other two intermediate files, <code>to_exp1.txt</code> and <code>to_target1.csv</code>. The next figure illustrates the flow of conversion files.</p>
+<p><code>gse6462_expression.tab</code>, <code>gse6462_expression_over1.tab</code> and <code>gse6462_target.csv</code> are generated by the above commands. The commands generate other two intermediate files, <code>to_exp1.txt</code> and <code>to_target1.csv</code>. The next figure illustrates the flow of conversion files.</p>
 
 <p><img alt='Image not found' src='images/flow.png' /></p>
 
@@ -478,7 +477,7 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 <dl>
 <dt>exp2ratio.py</dt>
 
-<dd>Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene. If there are several control condisions, the average of them are used for the control expression level.</dd>
+<dd>Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene. If there are several control conditions, the average of them are used for the control expression level.</dd>
 
 <dd>Option -c: The control condition column numbers. The number starts 1 (column 0 is for gene name).</dd>
 
@@ -486,7 +485,21 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <dd>Argument1: The intermediate-file1.</dd>
 
-<dd>Argument2: Output file (expression-file to HAT)</dd>
+<dd>Argument2: Output file (expression-file when Mann-Whitney U-test is selected to calibrate p-value)</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt>ratio2flag.py</dt>
+
+<dd>Classification gene expression level to 1 (up-regulated) or 0 (unregulated). This code is available to generate expression-file for the calibration p-value using Fisher&#8217;s exact test.</dd>
+
+<dd>Argument1: The expression-file for the Mann-Whitney U-test.</dd>
+
+<dd>Argument2: Threshold for division genes to 1 or 0.</dd>
+
+<dd>Argument3: Output file (expression-file when Fisher&#8217;s exact test is selected to calibrate p-value)</dd>
 </dl>
 </li>
 
