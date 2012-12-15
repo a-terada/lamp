@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>HAT</title>
+    <title>LAMP</title>
     
     <meta name="author" content="Aika Terada">
 
@@ -63,12 +63,12 @@
       <div class="content">
         
 <div class="page-header">
-  <h1>HAT  <small>High-Arity Transcription factor combination discovery</small></h1>
+  <h1>LAMP  <small>Limitless-Arity Multiple-testing Procedure</small></h1>
 </div>
 
 <div class="row">
   <div class="span12">
-    <p>HAT is a code for multiple testing correction. Given relationships between transcription factors (TFs) and genes and expression levels of genes, the code list up statistically significant combinations of TFs. The HAT algorithm calibrates Family-Wise Error Rate (FWER) as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
+    <p>LAMP is a code for multiple testing correction. <!--This code is available for discovery of combinatorial effects such as--> Given relationships between transcription factors (TFs) and genes and expression levels of genes, the code list up statistically significant combinations of TFs. The LAMP algorithm calibrates Family-Wise Error Rate (FWER) as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
 
 <ul>
 <li>Listing up significant combinations without arity limit</li>
@@ -91,22 +91,22 @@
 
 <h3 id='installation'>Installation</h3>
 
-<p><strong>1. HAT</strong></p>
+<p><strong>1. LAMP</strong></p>
 
 <p>If you have Git, you can clone the latest version by running:</p>
 
-<pre><code>$ git clone https://github.com/a-terada/hat</code></pre>
+<pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
 <!-- "$" is NOT needed to type. It is a symbol to represent command line. -->
-<p>When you do not have Git, you can download HAT in either <a href='https://github.com/a-terada/hat/zipball/master'>zip</a> or <a href='https://github.com/a-terada/hat/tarball/master'>tar</a> formats.</p>
+<p>When you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats.</p>
 
 <p><strong>2. LCM ver. 5.3</strong></p>
 
-<p>As a frequent itemset mining program, HAT uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the HAT directory before running of HAT. The zip file is downloaded as the following command:</p>
+<p>As a frequent itemset mining program, LAMP uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the LAMP directory before running of LAMP. The zip file is downloaded as the following command:</p>
 
-<pre><code>$ cd hat
+<pre><code>$ cd lamp
 $ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;</code></pre>
 
-<p>If wget command is not installed, please download <a href='http://research.nii.ac.jp/~uno/code/lcm53.zip'>LCM ver. 5.3 (zip)</a> in the HAT directory.</p>
+<p>If wget command is not installed, please download <a href='http://research.nii.ac.jp/~uno/code/lcm53.zip'>LCM ver. 5.3 (zip)</a> in the LAMP directory.</p>
 
 <p>Then, the zip file is archived and compiled:</p>
 
@@ -118,7 +118,7 @@ $ popd</code></pre>
 
 <h2 id='demonstrations'>Demonstrations</h2>
 
-<p>Here, we show two demonstrations for running HAT. The detail of arguments, input and output format are described below.</p>
+<p>Here, we show two demonstrations for running LAMP. The detail of arguments, input and output format are described below.</p>
 
 <h3 id='sample_files'>Sample files</h3>
 
@@ -150,9 +150,9 @@ $ popd</code></pre>
 
 <p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
 
-<pre><code>$ python hat.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt 2&gt; sample_u_test_log.txt</code></pre>
+<pre><code>$ python lamp.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt 2&gt; sample_u_test_log.txt</code></pre>
 
-<p>When the HAT finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
+<p>When the LAMP finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
 
 <pre><code>--- results ---
 Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 3)
@@ -175,9 +175,9 @@ Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code>
 
 <p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
 
-<pre><code>$ python hat.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt 2&gt; sample_fisher_log.txt</code></pre>
+<pre><code>$ python lamp.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt 2&gt; sample_fisher_log.txt</code></pre>
 
-<p>When the HAT finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
+<p>When the LAMP finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
 
 <pre><code>--- results ---
 Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 5)
@@ -198,11 +198,11 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <h2 id='usage'>Usage</h2>
 
-<p>In the HAT directory, you can run HAT with the following command:</p>
+<p>In the LAMP directory, you can run LAMP with the following command:</p>
 
-<pre><code>$ python hat.py -p p-value-procedure target-file expression-file significance-level &gt; output-file</code></pre>
+<pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file</code></pre>
 
-<p>HAT requires one option and three arguments:</p>
+<p>LAMP requires one option and three arguments:</p>
 
 <ul>
 <li>
@@ -250,11 +250,11 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try:</p>
 
-<pre><code>$ python hat.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
+<pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
 
 <h2 id='input_file_format'>Input File Format</h2>
 
-<p>HAT receives two input files: target-file and expression-file. Their examples are in the <code>sample/</code> directory.</p>
+<p>LAMP receives two input files: target-file and expression-file. Their examples are in the <code>sample/</code> directory.</p>
 
 <h3 id='targetfile'>Target-file</h3>
 
@@ -277,7 +277,7 @@ D,0,0,0,0
 
 <p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns: a gene name and an expression level.</p>
 
-<p>When HAT derives the p-value from Mann-Whitney U-test, the expressions levels take any real values. However, HAT calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
+<p>When LAMP derives the p-value from Mann-Whitney U-test, the expressions levels take any real values. However, LAMP calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
 
 <p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
 
@@ -315,7 +315,7 @@ D	0
 
 <h3 id='note_for_input_files'>Note for Input Files</h3>
 
-<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression_value.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, HAT does not work properly.</p>
+<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression_value.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, LAMP does not work properly.</p>
 
 <h2 id='output_format'>Output Format</h2>
 
@@ -365,7 +365,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Adjusted p-value</strong></dt>
 
-<dd>Adjusted p-value. The value of all combinations printed by HAT are smaller than the significance level. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
+<dd>Adjusted p-value. The value of all combinations printed by LAMP are smaller than the significance level. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
 </li>
 
 <li>
@@ -443,7 +443,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<p>At first, please download these files and decompress in <code>hat</code> directory. Then, try the following five commands:</p>
+<p>At first, please download these files and decompress in <code>lamp</code> directory. Then, try the following five commands:</p>
 
 <pre><code>$ python convert_id.py HG-U133_Plus_2.na33.annot.csv GSE6462_series_matrix.txt to_exp.tab
 $ python exp2ratio.py -c 1,2 -t 3 to_exp.tab gse6462_expression.tab
@@ -525,7 +525,7 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <dd>Argument 2: CSV format file which contains associations between gene and TF.</dd>
 
-<dd>Argument 3: Output file (target-file to HAT)</dd>
+<dd>Argument 3: Output file (target-file to LAMP)</dd>
 </dl>
 </li>
 
@@ -535,9 +535,9 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <dd>Check the gene set in both target-file and expression-file. When there are different genes between the two files, the genes is printed. This code is available for any situation.</dd>
 
-<dd>Argument 1: The target-file for HAT.</dd>
+<dd>Argument 1: The target-file for LAMP.</dd>
 
-<dd>Argument 2: The expression-file for HAT.</dd>
+<dd>Argument 2: The expression-file for LAMP.</dd>
 </dl>
 </li>
 </ol>
@@ -546,9 +546,9 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <h2 id='note_on_the_running'>Note on the Running</h2>
 
-<p>HAT produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, HAT reads LCM result files instead of running LCM.</p>
+<p>LAMP produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, LAMP reads LCM result files instead of running LCM.</p>
 
-<p>Thus, if the HAT fail to finish the calculation, please command:</p>
+<p>Thus, if the LAMP fail to finish the calculation, please command:</p>
 
 <pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
 
@@ -556,7 +556,7 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <h2 id='license'>License</h2>
 
-<p>HAT is open source code issued under the BSD License.</p>
+<p>LAMP is open source code issued under the BSD License.</p>
 
 <h2 id='contact'>Contact</h2>
 
