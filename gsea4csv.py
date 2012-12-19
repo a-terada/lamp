@@ -15,63 +15,65 @@ from optparse import OptionParser
 
 ##
 # read GMT file and return gene dictionary.
-# The dictionary map gene name and interacted miRNAs list.
+# The dictionary map gene name and interacted TFs list.
 ##
 def readGmtFile( gmt_file ):
-	gene_dict = {} # key: gene, value: miRNA list
-	all_tf_list = []
-	try:
-		f = open( gmt_file, 'r' ); line = ""
-		for line in f:
-			s = line[:-1].split('\t')
-			tf = s[0] # TF name
-			tf = tf.replace( ',', ' ' ) # Replace comma in TF name to space
-			if tf in all_tf_list:
-				sys.stderr.write("Error: %s is duplicate\n" % tf)
-				sys.exit()
-			# mapping gene and the TF
-			all_tf_list.append( tf )
-			regulated_genes = s[2:] # regulated genes
-			for gene in regulated_genes:
-				if gene in gene_dict:
-					tf_set = gene_dict[ gene ]
-					tf_set.append( tf )
-				else:
-					gene_dict[ gene ] = [ tf ]
-		f.close()
-		return all_tf_list, gene_dict
-	except IOError, e:
-		sys.stderr.write("Error in read gmt-file\n")
-		sys.exit()
-
+	gene_dict = {} # key: gene, value: TFs list
+	all_motif_lst = [] # TFs list which appear in gme file
+	for line in open(gmt_file, 'r'):
+		line = line[:-1]
+		s = line.split('\t')
+		tf_set = s[0] # TFs set include represent motif
+		motif = ""
+		# If the TF does not known
+		if (tf_set.find("$") < 0):
+			motif = tf_set
+		else:
+			s_tf_set = tf_set.split('$')
+			motif = s_tf_set[1].split("_")[0]
+			
+		if not motif in all_motif_lst:
+			all_motif_lst.append(motif)
+		
+		# mapping gene and the tf motif
+		interacted_genes = s[2:] # interacted genes
+		for gene in interacted_genes:
+			try:
+				motif_set = gene_dict[gene]
+				if not motif in motif_set:
+					motif_set.append(motif)
+					gene_dict[gene] = motif_set
+			except KeyError, e:
+				gene_dict[gene] = [motif]
+	return all_motif_lst, gene_dict
+	
 ##
 # output CSV format.
 # all_tf_list: List of all TFs included GMT file.
 # gene_dict: [key] gene, [value] regulate TF list.
 # output_file: The filename to print CSV format.
 ##
-def outCSVFormat( all_tf_list, gene_dict, output_file ):
+def outCSVFormat( all_tf_lst, gene_dict, output_file ):
 	try:
 		f = open( output_file, 'w' )
 		# output header
 		f.write( "#EntrezGene" )
-		for tf in all_tf_list:
+		for tf in all_tf_lst:
 			f.write( ",%s" % tf )
-		f.write( "\n" )
+		f.write("\n")
 		
 		for gene in gene_dict:
 			f.write( "%s" % gene )
 			regulated_tfs = gene_dict[ gene ]
-			for tf in all_tf_list:
+			for tf in all_tf_lst:
 				if tf in regulated_tfs:
 					f.write( ",1" )
 				else:
 					f.write( ",0" )
-			f.write( "\n" )
+			f.write("\n")
 	except IOError, e:
 		sys.stderr.write("Error in output CSV file.\n")
 		sys.exit()
-
 	
 def run( gmt_file, output_file ):
 	sys.stderr.write( "Read GMT file...\n" )
@@ -79,6 +81,7 @@ def run( gmt_file, output_file ):
 	sys.stderr.write( "Make GSV file...\n" )
 	outCSVFormat(all_tf_list, gene_dict, output_file)
 	sys.stdout.write( "# of TFs: %s, # of genes: %s\n" % ( len(all_tf_list), len(gene_dict)) )
+		
 
 if __name__ == "__main__":
 	usage = "usage: %prog gmt_file"
