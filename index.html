@@ -448,7 +448,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <p>At first, please download these files and decompress in <code>lamp</code> directory. Then, try the following five commands:</p>
 
 <pre><code>$ python convert_id.py HG-U133_Plus_2.na32.annot.csv GSE6462_series_matrix.txt to_exp.tab
-$ python exp2ratio.py -c 1,2 -t 3 to_exp.tab gse6462_expression.tab
+$ python exp2ratio.py -t 6 to_exp.tab gse6462_expression.tab
 $ python ratio2flag.py gse6462_expression.tab 1.0 gse6462_expression_over1.tab
 $ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
 $ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
@@ -479,9 +479,7 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 <dl>
 <dt>exp2ratio.py</dt>
 
-<dd>Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene. If there are several control conditions, the average of them are used for the control expression level.</dd>
-
-<dd>Option -c: The control condition column numbers. The number starts 1 (column 0 is for gene name).</dd>
+<dd>This code is dedicated to <code>GSE6462_series_matrix.txt</code>. Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene.</dd>
 
 <dd>Option -t: The target condition column number. The number starts 1 (column 0 is for gene name).</dd>
 
