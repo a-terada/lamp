@@ -81,7 +81,7 @@
 <p>This manuscript is written for finding TF combinations. The code is, however, applicable to discover other combinatorial effects between other datasets such as miRNA interactions, histone acetylation and methylation and so on.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#analysis_example'>Analysis Example</a><ul style='list-style: none;'><li><a href='#geo_and_msigdb_data'>GEO and MSigDB data</a></li></ul></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#analysis_example_geo_and_msigdb_data'>Analysis Example: GEO and MSigDB data</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
 
 <h2 id='preparation'>Preparation</h2>
 
@@ -411,11 +411,11 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<h2 id='analysis_example'>Analysis Example</h2>
+<h2 id='analysis_example_geo_and_msigdb_data'>Analysis Example: GEO and MSigDB data</h2>
 
-<h3 id='geo_and_msigdb_data'>GEO and MSigDB data</h3>
+<p>We prepare codes for analysis of real data. In the analysis of the generated data, the LAMP takes a few hours.</p>
 
-<p>We prepare codes for analysis of real data. These codes were written under the following assumptions:</p>
+<p>These codes were written under the following assumptions:</p>
 
 <ul>
 <li>Using <a href='http://www.broadinstitute.org/gsea/msigdb/index.jsp'>Molecular Signatures Database</a> (MSigDB) as the associations between the genes and the TFs.</li>
@@ -448,7 +448,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <p>At first, please download these files and decompress in <code>lamp</code> directory. Then, try the following five commands:</p>
 
 <pre><code>$ python convert_id.py HG-U133_Plus_2.na32.annot.csv GSE6462_series_matrix.txt to_exp.tab
-$ python exp2ratio.py -t 6 to_exp.tab gse6462_expression.tab
+$ python exp2ratio.py -t 12 to_exp.tab gse6462_expression.tab
 $ python ratio2flag.py gse6462_expression.tab 1.0 gse6462_expression_over1.tab
 $ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
 $ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
@@ -481,7 +481,7 @@ $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
 <dd>This code is dedicated to <code>GSE6462_series_matrix.txt</code>. Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene.</dd>
 
-<dd>Option -t: The target condition column number. The number starts 1 (column 0 is for gene name).</dd>
+<dd>Option -t: The target condition column number. The number starts 3 (column 0 is for gene name, and column 2 and 3 are control conditions).</dd>
 
 <dd>Argument1: The intermediate-file1.</dd>
 
