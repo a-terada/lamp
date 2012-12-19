@@ -9,9 +9,14 @@ __author__ = "Aika TERADA"
 import sys, os, math
 from optparse import OptionParser
 
+EGF_COLS = range(3,30) # column numbers of the EGF-induced condition. 
+HRG_COLS = range(30,58) # column numbers of the HRG-induced condition. 
+CONTROL_COLS = (1, 2) # column numbers of the control condition.
+MIN_THRESHOLD = 4 # If the gene expresses less than this value in all condition, the gene does not use for the analysis.
+#DEFAULT_CONTROL = "1" # default number of control expression
+
 NAME_COLUMN = 0 # gene name column number
 SEPARATOR = '\t' # file separator
-DEFAULT_CONTROL = "1" # default number of control expression
 
 def log2( value ):
 	if value == 1:
@@ -22,24 +27,26 @@ def log2( value ):
 ##
 # Read expression file
 # exp_file: The expression-file name
-# control_column: List of control expression column
+# control_column: Integer of control expression column
 # target_column: Integer of target expression
+# obj_cols: Integer list of experimented conditions
 # return: the list of tuple:
 #    tuple[0]: gene name
-#    tuple[1]: List of control expressions vlaues
+#    tuple[1]: Float value of control expressions
 #    tuple[2]: Float value of target expression
 ##
-def readExpFile( exp_file, control_column, target_column ):
+def readExpFile( exp_file, control_column, target_column, obj_cols ):
 	exp_list = []
 	try:
 		f = open( exp_file, 'r' )
 		line = None
 		for line in f:
 			s = line[:-1].split(SEPARATOR)
-			control_list = []
-			for i in control_column:
-				control_list.append( float(s[i]) )
-			exp_list.append( tuple( [s[NAME_COLUMN], control_list, float(s[target_column])]) )
+			log_values = map(lambda x: log2(float(x)), s[1:]) # log2 expression values
+			# If the gene expresses lower than the given threshold, then continue.
+			if len([x for x in obj_cols if log_values[x-1] > MIN_THRESHOLD]) == 0:
+				continue
+			exp_list.append( tuple( [s[NAME_COLUMN], log_values[ control_column - 1 ], log_values[target_column - 1]] ) )
 		f.close()
 		return exp_list
 	except IOError, e:
@@ -56,16 +63,11 @@ def readExpFile( exp_file, control_column, target_column ):
 #    tuple[0]: gene name
 #    tuple[1]: ratio
 ##
-def changeRatio( exp_list, min_threshold ):
+def changeRatio( exp_list ):
 	ratio_list = []
 	for t in exp_list:
-		control_log_list = map(lambda x: log2(x), t[1]) # control exp log2
-		target_log = log2(t[2]) # target exp log2
-		# If exp >= min_threshold of controls and target expressions at least,
-		# calculate ratio and save ratio_list
-		if (len([x for x  in control_log_list if x >= min_threshold]) > 0) or (target_log >= min_threshold):
-			ratio = target_log - sum(control_log_list)/len(control_log_list)
-			ratio_list.append(tuple([t[0], ratio]))
+		ratio = t[2] - t[1]
+		ratio_list.append(tuple([t[0], ratio]))
 	return ratio_list
 
 def mergeID( ratio_list ):
@@ -86,10 +88,25 @@ def output( ratio_list, output_file ):
 	except IOError, e:
 		sys.stderr.write("Error during output the result to %s" % output_file)
 		sys.exit()
-	
-def run( exp_file, output_file, control_column, target_column ):
-	exp_list = readExpFile( exp_file, control_column, target_column )
-	ratio_list = changeRatio( exp_list, 4 )
+
+##
+# return columun numbers for the control column and the experimented condition
+# target_column: Integer of the analyzed condition
+##
+def getColumnNumbers( target_column ):
+	base_col = -1; obj_cols = None;
+	if target_column in EGF_COLS: # if control is EGS
+		base_col = 1
+		obj_cols = EGF_COLS
+	else: # if control is HRG
+		base_col = 2
+		obj_cols = HRG_COLS
+	return base_col, obj_cols
+
+def run( exp_file, output_file, target_column ):
+	control_column, obj_cols = getColumnNumbers( target_column ) # get columun numbers for the control column and the experimented condition
+	exp_list = readExpFile( exp_file, control_column, target_column, obj_cols )
+	ratio_list = changeRatio( exp_list )
 	ratio_list = mergeID( ratio_list ) # reduce the duplicate gene names
 	output( ratio_list, output_file )
 	sys.stdout.write("%s genes are included.\n" % len(ratio_list))
@@ -98,8 +115,6 @@ if __name__ == "__main__":
 	usage = "usage: %prog expression-file output-file"
 	p = OptionParser(usage = usage)
 	# Option to set control column
-	p.add_option('-c', '--control', dest = "control_column", default = DEFAULT_CONTROL,
-				 help = "Control expression column number. When there are several controls, the columns are delimited by ','. The default is 1.")
 	p.add_option('-t', '--target', dest = "target_column",
 				 help = "Analyzed expression column number.")
 		
@@ -109,9 +124,7 @@ if __name__ == "__main__":
 	if len(args) < 2:
 		sys.stderr.write("Error: input expression-file and output-file\n")
 		sys.exit()
-
-	# Convert control column number to integer.
-	control_column = map(int, opts.control_column.split(','))
+		
 	# Convert target column number to integer.
 	target_column = None
 	try:
@@ -127,4 +140,4 @@ if __name__ == "__main__":
 		sys.stderr.write("IOError: No such file: \'" + args[0] + "\'\n")
 		sys.exit()
 		
-	run( args[0], args[1], control_column, target_column )
+	run( args[0], args[1], target_column )
