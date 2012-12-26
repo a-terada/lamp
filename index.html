@@ -13,8 +13,8 @@
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="./assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
 
     <!-- Le fav and touch icons -->
   <!-- Update these with your own images
@@ -68,7 +68,19 @@
 
 <div class="row">
   <div class="span12">
-    <p>LAMP is a code for multiple testing correction. <!--This code is available for discovery of combinatorial effects such as--> Given relationships between transcription factors (TFs) and genes and expression levels of genes, the code list up statistically significant combinations of TFs. The LAMP algorithm calibrates Family-Wise Error Rate (FWER) as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
+    <p>LAMP is a code for multiple testing correction to discover combinatorial effects, for example:</p>
+
+<ul>
+<li>Combination of the transcription factors (TFs) works together to regulate gene expression</li>
+
+<li>Combination of single-nucleotide polymorphisms (SNPs) associates with the phenotype</li>
+
+<li>Combination of histone acetylations and methylations influences gene transcription</li>
+</ul>
+
+<p>and so on.</p>
+
+<p>The LAMP lists up statistically significant combinations from the given dataset while its Family-Wise Error Rate (FWER) is calibrated as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
 
 <ul>
 <li>Listing up significant combinations without arity limit</li>
@@ -78,7 +90,7 @@
 <li>Faster calculation speed</li>
 </ul>
 
-<p>This manuscript is written for finding TF combinations. The code is, however, applicable to discover other combinatorial effects between other datasets such as miRNA interactions, histone acetylation and methylation and so on.</p>
+<p>In the following manuscript, we take an example of finding TF combinations.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
 <div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#analysis_example_geo_and_msigdb_data'>Analysis Example: GEO and MSigDB data</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
@@ -121,7 +133,7 @@ $ popd</code></pre>
 <p>Here, we show two demonstrations for running LAMP. The detail of arguments, input and output format are described below.</p>
 
 <h3 id='sample_files'>Sample files</h3>
-
+<!--###Setting of the Analysis--><!--As the example, --><!--we take an example of finding TF combinations which work together for regulating gene expression.-->
 <p>There are three sample files in <code>sample/</code> directory.</p>
 
 <ul>
