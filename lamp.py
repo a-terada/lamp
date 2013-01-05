@@ -58,9 +58,7 @@ def executeMultTest(transaction_list, trans4lcm, threshold, columnid2name, lcm2t
 				lam = int(n1)
 			
 		fre_pattern = frequentPatterns.LCM(lcm_pass)
-		# If the file for Lcm does not exist, comfiem that overwrite the file.
-		if not os.path.isfile(trans4lcm):
-			fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
+		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
 		# If file for Lcm30 exist, comfiem that overwrite the file.
 		# solve K and lambda
 		while lam > 1:

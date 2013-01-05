@@ -123,22 +123,20 @@ class LCM():
 		# file name for LCM result is add "usize" + max_size
 		if (max_size > 0):
 			out_file = out_file + ".usize" + str(max_size) + ".all"
-		# If out_file does not exist, execute lcm program and output the file.
-		if not os.path.exists(out_file):
-			itemset_list = []
-			try:
-				# If user does not set limit to itemse size,
-				# run LCM to get closed frequent pattern.
-				if (max_size < 0):
-					subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(min_sup), out_file], stdout=subprocess.PIPE)
-					itemset_list = self.readResultLCMFile(out_file)
-				# If user set limit to itemset size,
-				# Run normal LCM and reduce itemset to obtain closed itemset.
-				else:
-					subprocess.check_call([self.__LCMPASS, "FIf", "-u", str(max_size), input_file, str(min_sup), out_file], stdout=subprocess.PIPE)
-			except subprocess.CalledProcessError, (p):
-				print 'subprocess.CalledProcessError: cmd:%s returncode:%s' % (p.cmd, p.returncode)
-				sys.exit()
+		itemset_list = []
+		try:
+			# If user does not set limit to itemse size,
+			# run LCM to get closed frequent pattern.
+			if (max_size < 0):
+				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(min_sup), out_file], stdout=subprocess.PIPE)
+				itemset_list = self.readResultLCMFile(out_file)
+			# If user set limit to itemset size,
+			# Run normal LCM and reduce itemset to obtain closed itemset.
+			else:
+				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str(max_size), input_file, str(min_sup), out_file], stdout=subprocess.PIPE)
+		except subprocess.CalledProcessError, (p):
+			print 'subprocess.CalledProcessError: cmd:%s returncode:%s' % (p.cmd, p.returncode)
+			sys.exit()
 		
 		# convert output of lcm_basic to item set list
 		itemset_list = self.readResultLCMFile(out_file)
