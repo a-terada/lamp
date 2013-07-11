@@ -13,8 +13,10 @@
 
 from __future__ import division
 import sys, math, os
-import readFile
 import functionsSuper as fs
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/tlamp")
+import readFile
 
 ##
 # Define class
@@ -26,33 +28,9 @@ class FunctionOfX(fs.FunctionsSuper):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__transaction_list = transaction_list[:]
-		self.__range20_1 = range(1, 21)
-		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
-	
-	##
-	# Calculate probability of standard normal distribution.
-	# this function returns the probability of one-sided test.
-	# x: 
-	##
-	def __stdNorDistribution(self, x):
-		pi2 = 0.398942280401432677940
-		is_value = -1
-		y = abs(x)
-		c = y*y
-		p = 0.0
-		z = math.exp(-c*0.5)*pi2
-		if (y < 2.5):
-			for i in self.__range20_1:
-				p = i*c/(i*2+1+is_value*p)
-				is_value = -is_value
-			p = 0.5-z*y/(1.0-p)
-		else:
-			for i in self.__range20_1:
-				p = i/(y+p)
-			p = z/(y+p)
-#		p = 2 * p # double p-value because returens about two-sided test.
-#		print str(x) + " " + str(p)
-		return p
+		self.calTime = 0 # Total number of calculate P-value
+#		self.__range20_1 = range(1, 21)
+#		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
 
 	##
 	# Search the group which t.value less than threshold.
@@ -201,15 +179,12 @@ class FunctionOfX(fs.FunctionsSuper):
 		u_value = self.__uValue(tgroup_x, tgroup_y) # u-value of two groups.
 		# z value of u-value
 		mean_u, var_u = self.__calStatValue(tgroup_x, tgroup_y)
-#		print "u-value: " + str(u_value) + ",",
-#		print "mean: " + str(mean_u) + ", var: " + str(var_u)
-#		print (u_value - mean_u)/math.sqrt(var_u)
 		z_value = (u_value - mean_u)/math.sqrt(var_u)
-#		print "mean: " + str(mean_u) + ", var: " + str(var_u) + ", z_value: " + str(z_value)
+#		sys.stderr.write("u: %s, mean: %s, var: %s, z_value: %s, " % (u_value, mean_u, var_u, z_value))
 		
 		# calculate p-value from z_value
 		# this value approximation of standard normal distribution
-		return self.__stdNorDistribution(z_value), u_value
+		return self.stdNorDistribution(z_value), u_value
 		
 	##
 	# divide transaction_list to two groups.
@@ -227,14 +202,12 @@ class FunctionOfX(fs.FunctionsSuper):
 				in_t_list.append(t)
 			else:
 				out_t_list.append(t)
-#		print "in_t_list: "
+#		sys.stderr.write("in_t_list: \n")
 #		for t in in_t_list:
-#			print t.name,
-#			print t.value
-#		print "out_t_list: "
+#			sys.stderr.write("%s %s\n" % (t.name, t.value) )
+#		sys.stderr.write("out_t_list: \n")
 #		for t in out_t_list:
-#			print t.name,
-#			print t.value
+#			sys.stderr.write("%s %s\n" % (t.name, t.value) )
 		return in_t_list, out_t_list
 
 	##
@@ -265,7 +238,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		mean_u, var_u = self.__calStatValue(min_t_list, max_t_list)
 		min_z = mean_u/math.sqrt(var_u) # minimum z-value limited x.
 #		print "  mean: " + str(mean_u) + " var: " + str(var_u) + " z-value: " + str(min_z)
-		p = self.__stdNorDistribution(min_z) # p-value if transaction divided into max x and other.
+		p = self.stdNorDistribution(min_z) # p-value if transaction divided into max x and other.
 		return p
 	
 	##
@@ -279,6 +252,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		all_size = self.__t_size # the number of all transaction (n1 + n0)
 		in_t_list, out_t_list = self.__divideGroup(frequent_itemset) # dvide transactions to itemset or not.
 		p_value, z_value = self.__uTest(in_t_list, out_t_list)
+		self.calTime = self.calTime + 1
 		return p_value, z_value
 	
 	##
@@ -311,18 +285,27 @@ def comma2List(item_list_str, columnid2name):
 	return item_list
 
 def run(xls_file, value_file, itemset_str_lst):
-	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file)
+	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file)
+#	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file)
 	func = FunctionOfX(transaction_list)
 	colname2id_dict = readFile.colname2id(columnid2name)
 	itemset = set()
 	for i in itemset_str_lst:
 		item_id = colname2id_dict[i]
-		itemset.add(item_id)
+		itemset.add(item_id + 1)
+
+	flag_transactions_id = []
+	for i in xrange( len(transaction_list) ):
+		t = transaction_list[i]
+		if len( itemset & t.itemset ) == len(itemset):
+			flag_transactions_id.append( i )
+	p_value, stat_score = func.calPValue(transaction_list, flag_transactions_id)
 #		print i
 #		print item_id
 #		print columnid2name[item_id]
-	p, stat_score = func.calPValue(transaction_list, itemset)
-	sys.stdout.write("p-value: %g, z-score: %f\n" % (p, stat_score))
+#	p, stat_score = func.calPValue(transaction_list, itemset)
+	
+	sys.stdout.write("p-value: %g, z-score: %f\n" % (p_value, stat_score))
 
 if __name__ == "__main__":
 	# chech the arguments
