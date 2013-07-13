@@ -13,8 +13,8 @@
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="./assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="http://a-terada.github.com/lamp/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://a-terada.github.com/lamp/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
 
     <!-- Le fav and touch icons -->
   <!-- Update these with your own images
@@ -30,13 +30,21 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="/"></a>
+          <a class="brand" href="http://a-terada.github.com/lamp">LAMP</a>
           <ul class="nav">
             
             
             
 
 
+  
+    
+      
+      	
+      	<li><a href="http://a-terada.github.com/lamp/example.html">Analysis example</a></li>
+      	
+      
+    
   
     
       
@@ -68,67 +76,50 @@
 
 <div class="row">
   <div class="span12">
-    <p>LAMP is a code for multiple testing correction. Given relationships between transcription factors (TFs) and genes and expression levels of genes, the code list up statistically significant combinations of TFs. The LAMP algorithm calibrates Family-Wise Error Rate (FWER) as the same level of Bonferroni correction. Applying our method to your data instead of Bonferroni correction gives you the below advantages:</p>
+    <p>LAMP is a code for multiple testing correction. Given the relationships between transcription factors (TFs) and genes and gene expression levels, the code lists up statistically significant combinations of TFs. The LAMP algorithm calibrates the Family-Wise Error Rate (FWER) at the same level of Bonferroni correction. Applying our method to your data instead of using the Bonferroni correction gives you the below advantages:</p>
 
 <ul>
-<li>Listing up significant combinations without arity limit</li>
+<li>Listing up significant combinations without an arity limit</li>
 
 <li>Higher sensitivity</li>
 
 <li>Faster calculation speed</li>
 </ul>
 
-<p>This manuscript is written for finding TF combinations. The LAMP is, however, applicable to discover other combinatorial effects, for example:</p>
+<p>This manuscript is written for finding TF combinations. The LAMP is, however, capable of discovering other combinatorial effects, including, but not limited to, the following examples:</p>
 
 <ul>
-<li>Combination of miRNA interacts when regulate gene expression</li>
+<li>Combinations of miRNA interactions that regulate gene expression</li>
 
-<li>Combination of histone acetylations and methylations influences gene transcription</li>
+<li>Combinations of histone acetylations and methylations that influence gene transcription</li>
 
-<li>Combination of single-nucleotide polymorphisms (SNPs) associates with the phenotype</li>
+<li>Combinations of single-nucleotide polymorphisms (SNPs) associates with the phenotype</li>
 </ul>
 
-<p>and so on.</p>
-
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#analysis_example_geo_and_msigdb_data'>Analysis Example: GEO and MSigDB data</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note_on_the_running'>Note on the Running</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li></ul></div>
 
 <h2 id='preparation'>Preparation</h2>
 
 <h3 id='requirements'>Requirements</h3>
 
-<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Liner time Closed itemset Miner (LCM) ver. 5.3</a> was used. The installation way is written below.</p>
+<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Linear time Closed itemset Miner (LCM) ver. 5.3</a> is used.</p>
 
 <h3 id='installation'>Installation</h3>
-
-<p><strong>1. LAMP</strong></p>
 
 <p>If you have Git, you can clone the latest version by running:</p>
 
 <pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
-<!-- "$" is NOT needed to type. It is a symbol to represent command line. -->
-<p>When you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats.</p>
 
-<p><strong>2. LCM ver. 5.3</strong></p>
+<p>If you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats. The <code>lamp/</code> directory contains <code>lcm53.zip</code> which is the code to run frequent pattern mining. This zip file is redistributed and was downloaded from <a href='http://research.nii.ac.jp/~uno/codes.htm'>here</a>.</p>
 
-<p>As a frequent itemset mining program, LAMP uses Liner time Closed itemset Miner (LCM) ver. 5.3 was used. It should be downloaded and compiled in the LAMP directory before running of LAMP. The zip file is downloaded as the following command:</p>
+<p>You set up the LAMP by the following command in <code>lamp/</code> directory.</p>
 
-<pre><code>$ cd lamp
-$ wget &quot;http://research.nii.ac.jp/~uno/code/lcm53.zip&quot;</code></pre>
-
-<p>If wget command is not installed, please download <a href='http://research.nii.ac.jp/~uno/code/lcm53.zip'>LCM ver. 5.3 (zip)</a> in the LAMP directory.</p>
-
-<p>Then, the zip file is archived and compiled:</p>
-
-<pre><code>$ mkdir lcm53
-$ tar zxvf lcm53.zip -C lcm53
-$ pushd lcm53
-$ make
-$ popd</code></pre>
+<pre><code>$ make</code></pre>
 
 <h2 id='demonstrations'>Demonstrations</h2>
 
-<p>Here, we show two demonstrations for running LAMP. The detail of arguments, input and output format are described below.</p>
+<p>Here, we present two examples of running LAMP by using the sample files. The details of the arguments and input and output formats are described below.</p>
 
 <h3 id='sample_files'>Sample files</h3>
 
@@ -144,13 +135,13 @@ $ popd</code></pre>
 <li>
 <dt>sample_expression_value.tab</dt>
 
-<dd>The sample file of expression-file. The file is used when Mann-Whitney U-test is selected to calibrate p-value.</dd>
+<dd>A sample file of expression-file. This file is used when Mann-Whitney U-test is selected to compute p-value.</dd>
 </li>
 
 <li>
 <dt>sample_expression_over1.tab</dt>
 
-<dd>The sample file of expression-file. The file is used when Fisher&#8217;s exact test is selected to calibrate p-value.</dd>
+<dd>A sample file of expression-file. This file is used when Fisher&#8217;s exact test is selected to compute p-value.</dd>
 </li>
 </ul>
 
@@ -158,7 +149,7 @@ $ popd</code></pre>
 
 <h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
 
-<p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
+<p>The following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
 
 <pre><code>$ python lamp.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt 2&gt; sample_u_test_log.txt</code></pre>
 
@@ -171,19 +162,19 @@ Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
 0.00602414187918	0.0301207093959	TF1,TF2,TF3	5	45.5
 Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code></pre>
 
-<p>The result means that</p>
+<p>The result indicates the following:</p>
 
 <ul>
 <li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
 
-<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00602 and the adjusted p-value is 0.0301.</li>
+<li>There is one significant combination. The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00602, and the adjusted p-value is 0.0301.</li>
 
 <li>The running time is 0.0117 sec. in total.</li>
 </ul>
 
 <h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
 
-<p>The following command finds all significant combinations from the files with significance level &lt;= 0.05:</p>
+<p>The following command finds all significant combinations from the files with a significance level &lt;= 0.05:</p>
 
 <pre><code>$ python lamp.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt 2&gt; sample_fisher_log.txt</code></pre>
 
@@ -196,30 +187,32 @@ Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
 0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
 Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
 
-<p>The result means that</p>
+<p>The result indicates the following:</p>
 
 <ul>
 <li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
 
-<li>There is one significant combination. Ternary TFs TF1, 2 and 3 is significant. The raw p-value is 0.00699 and the adjusted p-value is 0.0350.</li>
+<li>There is one significant combination. The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00699, and the adjusted p-value is 0.0350.</li>
 
 <li>The running time is 0.00561 sec. in total.</li>
 </ul>
 
+<p>As the example of real data analysis, we demonstrate how to prepare the input files by using gene expression profiles in human breast cancer in <a href='example.html'>Analysis example</a>.</p>
+
 <h2 id='usage'>Usage</h2>
 
-<p>In the LAMP directory, you can run LAMP with the following command:</p>
+<p>In the LAMP directory, you can run LAMP using the following command:</p>
 
 <pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file</code></pre>
 
-<p>LAMP requires one option and three arguments:</p>
+<p>The result is saved to the &#8216;output-file&#8217;. LAMP requires one option and three arguments:</p>
 
 <ul>
 <li>
 <dl>
 <dt><strong>option -p</strong></dt>
 
-<dd>Select calculation procedure from Fisher&#8217;s exact test or Mann-Whitney U-test. The p-value-procedure is &#8220;fisher&#8221; (Fisher&#8217;s exact test) or &#8220;u_test&#8221; (Mann-Whitney U-test).</dd>
+<dd>This option selects the p-value calculation procedure. &#8220;fisher&#8221; selects the Fisher&#8217;s exact test, and &#8220;u_test&#8221; selects the Mann-Whitney U-test.</dd>
 </dl>
 </li>
 
@@ -227,7 +220,7 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <dl>
 <dt><strong>target-file</strong></dt>
 
-<dd>The file includes associations between TFs and genes.</dd>
+<dd>The file that includes associations between TFs and genes.</dd>
 </dl>
 </li>
 
@@ -235,7 +228,7 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <dl>
 <dt><strong>expression-file</strong></dt>
 
-<dd>The file of gene expression.</dd>
+<dd>The gene expression file.</dd>
 </dl>
 </li>
 
@@ -246,19 +239,9 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 <dd>The statistical significance threshold.</dd>
 </dl>
 </li>
-
-<li>
-<dl>
-<dt><strong>output-file</strong></dt>
-
-<dd>The file to output the result.</dd>
-</dl>
-</li>
 </ul>
 
-<p>The input file and output format are written below.</p>
-
-<p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try:</p>
+<p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try using the following command:</p>
 
 <pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
 
@@ -268,7 +251,7 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <h3 id='targetfile'>Target-file</h3>
 
-<p>Target-file provides the associations between TFs and their target genes. This file should be formatted according in a CSV format. <code>sample/sample_target.csv</code> is an example.</p>
+<p>The target-file provides the associations between TFs and their target genes. This file should be formatted according in the CSV format. <code>sample/sample_target.csv</code> is an example.</p>
 
 <pre><code>#gene,TF1,TF2,TF3,TF4
 A,1,1,1,0
@@ -277,27 +260,27 @@ C,1,0,0,1
 D,0,0,0,0
 ...</code></pre>
 
-<p>This file must start with &#8217;#&#8217;. The line provides TFs names. Columns except the first indicate TF names used for the result.</p>
+<p>This file must start with the &#8217;#&#8217; symbol. The first line provides the names of TFs.</p>
 
-<p>The second-to-last line includes the associations between a gene and TFs. The first column is the gene name. The second-to-last column is whether the TF targets the gene. If the gene is targeted of the TF, then the column value is &#8216;1&#8217;. If not, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, 2 and 3 in the example.</p>
+<p>The following lines include the associations between a gene and TFs. The first column indicates the gene name. The other columns indicate whether the TF targets the gene. If the gene is targeted by the TF, the column value is &#8216;1&#8217;. If not, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, TF2 and TF3 in the example.</p>
 
-<p><code>sample/sampe_target.csv</code> contains 15 genes and 4 TFs. Thus, the file composes with 16 lines and 5 columns.</p>
+<p><code>sample/sampe_target.csv</code> contains 15 genes and 4 TFs. Thus, the file consists of 16 lines and 5 columns.</p>
 
 <h3 id='expressionfile'>Expression-file</h3>
 
-<p>Expression-file provides gene expressions levels. The file is tab-delimited format with two columns: a gene name and an expression level.</p>
+<p>The expression-file provides the gene expressions levels. The file is the tab-delimited format with two columns: the gene name and the expression level.</p>
 
-<p>When LAMP derives the p-value from Mann-Whitney U-test, the expressions levels take any real values. However, LAMP calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated then the second column is 1, otherwise 0.</p>
+<p>When LAMP derives the p-value using the Mann-Whitney U-test, the expressions levels are any real values. However, when LAMP calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated, then the second column is 1. Otherwise, it is 0.</p>
 
-<p>The comment line stars with &#8217;#&#8217; and is ignored from the analysis.</p>
+<p>The comment lines start with &#8217;#&#8217; and are ignored by the analysis.</p>
 
-<p>For examples, we show the content of sample files.</p>
+<p>As examples, we show the content of the sample files.</p>
 
 <ul>
 <li><code>samples/sample_expression_value.tab</code></li>
 </ul>
 
-<p>This file is prepared for Mann-Whitney U-test. The second column includes real values.</p>
+<p>This file is prepared for the Mann-Whitney U-test. The second column takes real values.</p>
 
 <pre><code>#gene	expression
 A	1.5
@@ -310,7 +293,7 @@ D	0.8
 <li><code>samples/sample_expression_over1.tab</code></li>
 </ul>
 
-<p>This file is prepared for Fisher&#8217;s exact test. The second column are 1 or 0.</p>
+<p>This file is prepared for Fisher&#8217;s exact test. The values in the second column are 1 or 0.</p>
 
 <pre><code>#gene	expression
 A	1
@@ -319,23 +302,23 @@ C	0
 D	0
 ...</code></pre>
 
-<p>This file was made from <code>samples/sample_expression_value.tab</code>. If the gene expression is higher than 1.0 then expression level is 1, otherwise 0.</p>
+<p>This file was generated from <code>samples/sample_expression_value.tab</code>. If the gene expression is higher than 1.0 then expression level is 1. Otherwise, it is 0.</p>
 
-<p>Both <code>sample/sampe_expression_value.tab</code> and <code>sample/sampe_expression_over1.tab</code> describe expressions of 15 genes.</p>
+<p>Both <code>sample/sampe_expression_value.tab</code> and <code>sample/sampe_expression_over1.tab</code> describe the expressions of 15 genes.</p>
 
 <h3 id='note_for_input_files'>Note for Input Files</h3>
 
-<p>Gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression_value.tab</code> consist of 15 genes from gene A to O. When the given gene sets are different, LAMP does not work properly.</p>
+<p>The gene orders in the target-file and the expression-file should be identical. For example, both <code>sample/sample_target.csv</code> and <code>sample/sample_expression_value.tab</code> consist of 15 genes from gene A to O. If the given gene sets are different or are in a different order, LAMP does not run properly.</p>
 
 <h2 id='output_format'>Output Format</h2>
 
-<p>The result is printed out after &#8221;&#8212; results &#8212;&#8221; line. The first and second lines are formatted as the following:</p>
+<p>The result is printed out after the &#8221;&#8212; results &#8212;&#8221; line. The first and second lines are formatted as the following:</p>
 
 <pre><code>--- results ---
 Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer])
 # of significance: [integer]</code></pre>
 
-<p><span>integer</span> and <span>float</span> are replaced with real number in the actual result. Each value means the following:</p>
+<p><span>integer</span> and <span>float</span> are replaced with a real number in the actual result. Each value means the following:</p>
 
 <ul>
 <li>
@@ -347,7 +330,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Correction factor</strong></dt>
 
-<dd>The number of testable combinations. The adjusted p-value is computed with the multiplication of the raw p-value and this value.</dd>
+<dd>The number of testable combinations. The adjusted p-value is computed by multiplying the raw p-value by this value.</dd>
 </li>
 
 <li>
@@ -357,25 +340,25 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 
 <li>
-<dt><strong># of significant combinations:</strong></dt>
+<dt><strong># of significance</strong></dt>
 
 <dd>The number of significant combinations.</dd>
 </li>
 </ul>
 
-<p>The detected combinations are shown after the third lines. Each line contains 5 columns:</p>
+<p>The detected combinations are shown after the third line. Each line contains 5 columns:</p>
 
 <ul>
 <li>
 <dt><strong>Raw p-value</strong></dt>
 
-<dd>The calculated p-value with Fisher&#8217;s exact test.</dd>
+<dd>The p-value calculated using Fisher&#8217;s exact test.</dd>
 </li>
 
 <li>
 <dt><strong>Adjusted p-value</strong></dt>
 
-<dd>Adjusted p-value. The value of all combinations printed by LAMP are smaller than the significance level. If the value is smaller than the inputted significance level, the combination becomes significant.</dd>
+<dd>The adjusted p-value. The value of each combination printed by LAMP is smaller than the significance level. If the value is smaller than the inputted significance level, the combination is significant.</dd>
 </li>
 
 <li>
@@ -393,11 +376,11 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Statistic score:</strong></dt>
 
-<dd>The value to derive the p-value. In case of calibration by Fisher&#8217;s exact test, the value means the number of genes that both target and up-regulated. In case of calibration by Mann-Whitney U-test, the value is U-score.</dd>
+<dd>The value used to compute the p-value. In case of calculation by Fisher&#8217;s exact test, the value means the number of genes that are both targeted and up-regulated. In the case of calculation by Mann-Whitney U-test, the value is the U-score.</dd>
 </li>
 </ul>
 
-<p>The last line includes calculation time (in seconds):</p>
+<p>The last line includes the calculation time (in seconds):</p>
 
 <pre><code>Time (sec.): Correction factor [float], P-value [float], Total [float]</code></pre>
 
@@ -405,13 +388,13 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Correction factor</strong></dt>
 
-<dd>The time to calibrate the correction term.</dd>
+<dd>The time to compute the correction term.</dd>
 </li>
 
 <li>
 <dt><strong>P-value</strong></dt>
 
-<dd>The time to calculate p-values of testable combinations.</dd>
+<dd>The time required to calculate the p-values of the testable combinations.</dd>
 </li>
 
 <li>
@@ -421,149 +404,14 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 </li>
 </ul>
 
-<h2 id='analysis_example_geo_and_msigdb_data'>Analysis Example: GEO and MSigDB data</h2>
-
-<p>We prepare codes for analysis of real data. In the analysis of the generated data, the LAMP takes a few hours.</p>
-
-<p>These codes were written under the following assumptions:</p>
-
-<ul>
-<li>Using <a href='http://www.broadinstitute.org/gsea/msigdb/index.jsp'>Molecular Signatures Database</a> (MSigDB) as the associations between the genes and the TFs.</li>
-
-<li>Expression profile is observed with microarray of Affymetrix.</li>
-</ul>
-
-<p>For an example, <a href='http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE6462'>GSE6462</a> dataset, which is stored in Gene Expression Omnibus (GEO), is used for the expression profile data. This example requires the three files:</p>
-
-<ul>
-<li>
-<dt>c3.tft.v3.0.entrez.gmt [<a href='http://www.broadinstitute.org/gsea/msigdb/download_file.jsp?filePath=/resources/msigdb/3.1/c3.tft.v3.1.entrez.gmt'>Download</a> (registration required)].</dt>
-
-<dd>Associations between TF binding site and genes which are collected in MSigDB. The motif gene sets (c3) is used to give associations between TFs and genes.</dd>
-</li>
-
-<li>
-<dt>GSE6462_series_matrix.txt [<a href='ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/SeriesMatrix/GSE6462/GSE6462_series_matrix.txt.gz'>Download zip file</a>]</dt>
-
-<dd>Expression profiling in human breast cancer cells.</dd>
-</li>
-
-<li>
-<dt>HG-U133_Plus_2.na32.annot.csv [<a href='http://www.affymetrix.com/Auth/analysis/downloads/na32/ivt/HG-U133_Plus_2.na32.annot.csv.zip'>Download zip file</a> (registration required)]</dt>
-
-<dd>The annotation file for Affymetrix Human Genome U133A 2.0 Array. The file is released by Affymetrix.</dd>
-</li>
-</ul>
-
-<p>At first, please download these files and decompress in <code>lamp</code> directory. Then, try the following five commands:</p>
-
-<pre><code>$ python convert_id.py HG-U133_Plus_2.na32.annot.csv GSE6462_series_matrix.txt to_exp.tab
-$ python exp2ratio.py -t 12 to_exp.tab gse6462_expression.tab
-$ python ratio2flag.py gse6462_expression.tab 1.0 gse6462_expression_over1.tab
-$ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
-$ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
-$ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
-
-<p><code>gse6462_expression.tab</code>, <code>gse6462_expression_over1.tab</code> and <code>gse6462_target.csv</code> are generated by the above commands. The commands generate other two intermediate files, <code>to_exp.txt</code> and <code>to_target.csv</code>. The next figure illustrates the flow of conversion files.</p>
-
-<p><img alt='Image not found' src='images/flow.png' /></p>
-
-<p>The flow is composed from the five codes:</p>
-
-<ol>
-<li>
-<dl>
-<dt>convert_id.py</dt>
-
-<dd>Conversion the prob ID to GenBank ID in Affymetrix microarray data.</dd>
-
-<dd>Argument 1: The annotation file which is downloaded from Affymetrix.</dd>
-
-<dd>Argument 2: GEO Series matrix file.</dd>
-
-<dd>Argument 3: Output file (intermediate-file1)</dd>
-</dl>
-</li>
-
-<li>
-<dl>
-<dt>exp2ratio.py</dt>
-
-<dd>This code is dedicated to <code>GSE6462_series_matrix.txt</code>. Calculation of target-condition&#8217;s log2 ratio of expression levels to control conditions for each gene.</dd>
-
-<dd>Option -t: The target condition column number. The number starts 3 (column 0 is for gene name, and column 2 and 3 are control conditions).</dd>
-
-<dd>Argument1: The intermediate-file1.</dd>
-
-<dd>Argument2: Output file (expression-file when Mann-Whitney U-test is selected to calibrate p-value)</dd>
-</dl>
-</li>
-
-<li>
-<dl>
-<dt>ratio2flag.py</dt>
-
-<dd>Classification gene expression level to 1 (up-regulated) or 0 (unregulated). This code is available to generate expression-file for the calibration p-value using Fisher&#8217;s exact test.</dd>
-
-<dd>Argument1: The expression-file for the Mann-Whitney U-test.</dd>
-
-<dd>Argument2: Threshold for division genes to 1 or 0.</dd>
-
-<dd>Argument3: Output file (expression-file when Fisher&#8217;s exact test is selected to calibrate p-value)</dd>
-</dl>
-</li>
-
-<li>
-<dl>
-<dt>gsea4csv.py</dt>
-
-<dd>The downloaded file from MSigDB is changed to CSV format.</dd>
-
-<dd>Argument 1: MSigDB collection file.</dd>
-
-<dd>Argument 2: Output file (intermediate-file2).</dd>
-</dl>
-</li>
-
-<li>
-<dl>
-<dt>merge_exp_csv.py</dt>
-
-<dd>Addition/deletion genes in CSV formatting file to become a same gene set in expression-file. This code is available for any situation.</dd>
-
-<dd>Argument 1: The expression-file.</dd>
-
-<dd>Argument 2: CSV format file which contains associations between gene and TF.</dd>
-
-<dd>Argument 3: Output file (target-file to LAMP)</dd>
-</dl>
-</li>
-
-<li>
-<dl>
-<dt>check_files.py</dt>
-
-<dd>Check the gene set in both target-file and expression-file. When there are different genes between the two files, the genes is printed. This code is available for any situation.</dd>
-
-<dd>Argument 1: The target-file for LAMP.</dd>
-
-<dd>Argument 2: The expression-file for LAMP.</dd>
-</dl>
-</li>
-</ol>
-
-<p>These codes are available for the other situations because the codes are run individually.</p>
-
 <h2 id='note_on_the_running'>Note on the Running</h2>
 
-<p>LAMP produces an LCM argument file and result files of LCM. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. When these files exist, LAMP reads LCM result files instead of running LCM.</p>
-
-<p>Thus, if the LAMP fail to finish the calculation, please command:</p>
+<p>LAMP produces an LCM argument file and the LCM result files. One is saved as <code>target-file.4lcm53</code>, and the others are saved in <code>target-file.4lcm53.results/</code> directory. <!--When these files exist, LAMP reads LCM result files instead of running LCM.--></p>
+<!--Thus, if the LAMP fail to finish the calculation, please command: -->
+<p>If you want to remove these files, please use the following command:</p>
 
 <pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
-
-<p>LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.</p>
-
+<!--LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.-->
 <h2 id='license'>License</h2>
 
 <p>LAMP is open source code issued under the BSD License.</p>
