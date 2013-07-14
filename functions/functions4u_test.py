@@ -15,7 +15,8 @@ from __future__ import division
 import sys, math, os
 import functionsSuper as fs
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/tlamp")
+currdir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currdir.replace("/functions", ""))
 import readFile
 
 ##

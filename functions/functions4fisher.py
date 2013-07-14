@@ -15,7 +15,8 @@ import sys, os
 import functionsSuper as fs
 import pvalTable
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/tlamp")
+currdir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currdir.replace("/functions", ""))
 import readFile
 
 ##
@@ -159,8 +160,8 @@ def run(xls_file, value_file, itemset_str_lst):
 	p_value, stat_value = func.calPValue(transaction_list, flag_transactions_id)
 	n = len(transaction_list)
 	n1 = func.getN1()
-#	sys.stdout.write("p-value: %s (N: %s, n1: %s, x: %s, a: %s)\n"
-#					 % (p_value, n, n1, len(flag_transactions_id), stat_value))
+	sys.stdout.write("p-value: %s (N: %s, n1: %s, x: %s, a: %s)\n"
+					 % (p_value, n, n1, len(flag_transactions_id), stat_value))
 
 
 ##

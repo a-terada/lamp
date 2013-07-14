@@ -10,7 +10,8 @@ import sys, os
 import functionsSuper as fs
 import pvalTable
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/tlamp")
+currdir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currdir.replace("/functions", ""))
 import readFile
 
 ##
