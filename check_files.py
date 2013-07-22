@@ -17,6 +17,11 @@ def readFile( input_file, separator ):
 		for line in f:
 			if line.startswith("#"):
 				continue
+			gene = line.split(separator)[0]
+			if gene in genes_set:
+				sys.stderr.write("%s is contained two or more times in %s.\n" \
+								 % (gene, input_file))
+				sys.exit()
 			genes_set.add( line.split(separator)[0] )
 		f.close()
 		return genes_set
