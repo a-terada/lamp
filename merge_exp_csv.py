@@ -21,6 +21,8 @@ def readEXPFile( exp_file ):
 	try:
 		f = open( exp_file, 'r' ); line = ""
 		for line in f:
+			if line.startswith("#"):
+				continue
 			s = line[:-1].split(SEPARATOR_EXP)
 			gene_list.append(s[0] )
 		f.close()
