@@ -35,6 +35,7 @@ def readTransactionFile(transaction_file):
 	transaction_list = []
 	gene2id = {} # dictionary that gene name -> transaction ID
 	columnid2name = [] # list about mapping column id to column name
+	gene_set = set([])
 	for line in open(transaction_file, 'r'):
 		# If line is header line, read column name
 		if line.startswith("#"):
@@ -46,6 +47,11 @@ def readTransactionFile(transaction_file):
 			continue
 		s = line[:-1].split(',')
 		t_name = s[0].strip()
+		if t_name in gene_set:
+			sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
+							 % (t_name, transaction_file))
+			sys.exit()
+		gene_set.add(t_name)
 		t = transaction.Transaction(t_name)
 		gene2id[t_name] = len(transaction_list)
 		for i in range(1, len(s)):
@@ -65,7 +71,7 @@ def readTransactionFile(transaction_file):
 # gene2id: Dictionary that key indicates gene name and value is transaction ID(location of list)
 ##
 def readValueFile(value_file, transaction_list, gene2id):
-	line_num = 0
+	line_num = 0; gene_set = set([])
 	for line in open(value_file, 'r'):
 		line_num = line_num + 1
 		if (line.startswith("#")):
@@ -74,6 +80,11 @@ def readValueFile(value_file, transaction_list, gene2id):
 		try:
 			genename = s[0].strip()
 			value = float(s[1].strip())
+			if genename in gene_set:
+				sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
+								 % (genename, value_file))
+				sys.exit()
+			gene_set.add(genename)
 			geneid = gene2id[genename]
 			t = transaction_list[geneid]
 			t.value = value
@@ -84,11 +95,13 @@ def readValueFile(value_file, transaction_list, gene2id):
 			
 		# This error raise if gene does not include in itemset file.
 		except KeyError, e:
-			e_out =  "line " + str(line_num) + ", \"" + line[:-1] + "\"" + "\n       " + str(e) + " does not exist in item set file."
-			raise ReadFileError, e_out
+			sys.stderr.write("Error: line %s in %s, \"%s\"\n" % (line_num, value_file, line[:-1]))
+			sys.stderr.write("       %s is not contained in itemset file.\n" % e)
+			sys.exit()
 		except ValueError, e:
-			e_out = "line " + str(line_num) + ", \"" + line[:-1] + "\"" + "\n       " + str(e) + " does not numerical value."
-			raise ReadFileError, e_out
+			sys.stderr.write("Error: line %s in %s, \"%s\"\n" % (line_num, value_file, line[:-1]))
+			sys.stderr.write("       %s\n" % e)
+			sys.exit()
 	return transaction_list
 
 ##
@@ -98,9 +111,8 @@ def readValueFile(value_file, transaction_list, gene2id):
 def checkTransName(transaction_list, transaction_file):
 	for t in transaction_list:
 		if t.value == None:
-			e_out = "\"" + t.name + "\" only appears in " + transaction_file
-			raise ReadFileError, e_out
-
+			sys.stderr.write("\"%s\" only appears in %s\n" % (t.name, transaction_file))
+			sys.exit()
 
 ##
 # Make list to convert LCM result to transaction_list index
