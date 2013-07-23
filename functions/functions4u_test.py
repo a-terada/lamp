@@ -15,8 +15,8 @@ from __future__ import division
 import sys, math, os
 import functionsSuper as fs
 
-currdir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(currdir.replace("/functions", ""))
+pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
+sys.path.append(pardir)
 import readFile
 
 ##
