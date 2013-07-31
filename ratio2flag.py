@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Convert the expression to 1 or 0 according to the gene expression profile.
-# If the gene profile >= threshold, the expression is 1, otherwise 0.
+# If the gene profile > threshold, the expression is 1, otherwise 0.
 # @author A. Terada
 
 __author__ = "Aika TERADA"
@@ -48,8 +48,8 @@ def readExpFile( exp_file ):
 def deriveFlag( exp_list, threshold ):
 	flag_list = []; flag1 = 0;
 	for t in exp_list:
-		# If exp >= threshold the expressions to 1, otherwise 0
-		if ( t[1] >= threshold ):
+		# If exp > threshold the expressions to 1, otherwise 0
+		if ( t[1] > threshold ):
 			flag_list.append(tuple([t[0], 1]))
 			flag1 = flag1 + 1
 		else:
