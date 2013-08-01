@@ -91,7 +91,7 @@
 
 <ul>
 <li>
-<dt>c3.tft.v3.0.entrez.gmt [<a href='http://www.broadinstitute.org/gsea/msigdb/download_file.jsp?filePath=/resources/msigdb/3.1/c3.tft.v3.1.entrez.gmt'>Download</a> (registration required)].</dt>
+<dt>c3.tft.v3.0.entrez.gmt [<a href='http://www.broadinstitute.org/gsea/msigdb/download_file.jsp?filePath=/resources/msigdb/3.0/c3.tft.v3.0.entrez.gmt'>Download</a> (registration required)].</dt>
 
 <dd>Associations between TF binding sites and genes which are collected in MSigDB. The motif gene set (c3) is used to give the associations between TFs and genes.</dd>
 </li>
@@ -114,7 +114,7 @@
 <pre><code>$ python convert_id.py HG-U133_Plus_2.na32.annot.csv GSE6462_series_matrix.txt to_exp.tab
 $ python exp2ratio.py -t 12 to_exp.tab gse6462_expression.tab
 $ python ratio2flag.py gse6462_expression.tab 1.0 gse6462_expression_over1.tab
-$ python gsea4csv.py c3.tft.v3.1.entrez.gmt to_target.csv
+$ python gsea4csv.py c3.tft.v3.0.entrez.gmt to_target.csv
 $ python merge_exp_csv.py gse6462_expression.tab to_target.csv gse6462_target.csv
 $ python check_files.py gse6462_target.csv gse6462_expression.tab</code></pre>
 
