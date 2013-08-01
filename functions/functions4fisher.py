@@ -162,7 +162,7 @@ def run(xls_file, value_file, itemset_str_lst):
 	n1 = func.getN1()
 	sys.stdout.write("p-value: %s (N: %s, n1: %s, x: %s, a: %s)\n"
 					 % (p_value, n, n1, len(flag_transactions_id), stat_value))
-
+	return (p_value, len(flag_transactions_id))
 
 ##
 # Return max lambda. That is, max size itemset.
@@ -196,4 +196,4 @@ if __name__ == "__main__":
 	xls_file = sys.argv[1]
 	value_file = sys.argv[2]
 	itemset_str_lst = sys.argv[3].split(',')
-	run(xls_file, value_file, itemset_str_lst)
+	p_value, down_size = run(xls_file, value_file, itemset_str_lst)

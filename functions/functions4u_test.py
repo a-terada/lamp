@@ -305,8 +305,11 @@ def run(xls_file, value_file, itemset_str_lst):
 #		print item_id
 #		print columnid2name[item_id]
 #	p, stat_score = func.calPValue(transaction_list, itemset)
+	n = len(transaction_list)
 	
-	sys.stdout.write("p-value: %g, z-score: %f\n" % (p_value, stat_score))
+	sys.stdout.write("p-value: %g (N: %s, x: %s, z-score: %f)\n" \
+					 % (p_value, n, len(flag_transactions_id), stat_score))
+	return (p_value, len(flag_transactions_id))
 
 if __name__ == "__main__":
 	# chech the arguments
@@ -326,4 +329,4 @@ if __name__ == "__main__":
 		print "IOError: No such file: \'" + value_file + "\'"
 		sys.exit()
 
-	run(transaction_file, value_file, itemset_str_lst)
+	p_value, down_size = run(transaction_file, value_file, itemset_str_lst)
