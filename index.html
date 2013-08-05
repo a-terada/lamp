@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>LAMP - Multiple testing procedure for finding higher order effects</title>
+    <title>LAMP</title>
     
     <meta name="author" content="Aika Terada">
 
@@ -50,14 +50,6 @@
       
     
   
-    
-  
-    
-  
-    
-  
-    
-  
 
 
 
@@ -99,7 +91,7 @@
 <p>The technical detail is available on <a href='http://www.pnas.org/content/early/2013/07/22/1302233110.abstract'>PNAS paper (Early Edition)</a>.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#preparation'>Preparation</a><ul style='list-style: none;'><li><a href='#requirements'>Requirements</a></li><li><a href='#installation'>Installation</a></li></ul></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
 
 <h2 id='preparation'>Preparation</h2>
 
@@ -203,7 +195,41 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <p>As the example of real data analysis, we demonstrate how to prepare the input files by using gene expression profiles in human breast cancer in <a href='example.html'>Analysis example</a>.</p>
 
+<p>After the preparation, the following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
+
+<pre><code>$ python lamp.py -p &quot;fisher&quot; gse6462_target.csv gse6462_expression_over1.tab 0.05 &gt; gse6462_expression_over1_result.txt 2&gt; gse6462_expression_over1_log.txt</code></pre>
+
+<p>When the LAMP finishes successfully, the result is printed in <code>gse6462_expression_over1_result.txt</code>:</p>
+
+<pre><code>--- results ---
+Threshold: 1.33321387737e-08, Correction factor: 3750336 (# of target genes &gt;= 8)
+# of significance: 3
+Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
+3.70833823477e-10	0.00139075143821	TATA	957	141
+2.94593585787e-09	0.0110482493015	TATA,NFAT,PAX,AR	10	9
+3.64221611304e-09	0.0136595342085	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8
+Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.474024057</code></pre>
+
+<p>The combinations &#8220;TATA,NFAT,PAX,AR&#8221; has a possibility of the redundant combination because one of the members &#8220;TATA&#8221; has smaller P-value than the combination. The following command eliminates these combinations as the post-processing:</p>
+
+<pre><code>$ python eliminate_comb.py gse6462_expression_over1_result.txt &gt; gse6462_expression_over1_result_eliminated.txt </code></pre>
+
+<p>The result is printed in <code>gse6462_expression_over1_result_eliminated.txt</code>:</p>
+
+<pre><code># Eliminated combinations
+--- results ---
+Threshold: 1.33321387737e-08, Correction factor: 3750336 (# of target genes &gt;= 8)
+# of significance: 3
+Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
+3.70833823477e-10	3.70833823477e-10	0.00139075143821	TATA	957	141
+3.64221611304e-09	3.64221611304e-09	0.0136595342085	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8
+Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.474024057</code></pre>
+
+<p>This script prints &#8220;# Eliminated combinations&#8221; in the first line. The other lines are same as the <code>gse6462_expression_over1_result.txt</code> excepting the elimination of &#8220;TATA,NFAT,PAX,AR&#8221;.</p>
+
 <h2 id='usage'>Usage</h2>
+
+<h3 id='lamp'>LAMP</h3>
 
 <p>In the LAMP directory, you can run LAMP using the following command:</p>
 
@@ -245,9 +271,49 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 </li>
 </ul>
 
+<p>You can change the setting by using the following option:</p>
+
+<ul>
+<li>
+<dt><strong>--max_comb [integer]</strong></dt>
+
+<dd>Set the maximum arity of the tested combinations. The default setting is no limit.</dd>
+</li>
+</ul>
+
 <p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try using the following command:</p>
 
 <pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
+
+<h3 id='postprocessing'>Post-processing</h3>
+
+<p>As the post-processing, we prepare the script <code>eliminate_comb.py</code>. This script eliminates the combinations that have an inclusion relation to clarify most significant combination.</p>
+
+<p>Suppose that the combinations A and B are significant, and A has smaller P-value than that of B. When A comprises B or A is comprised by B, the significance of B would be due to A. By using <code>eliminate_comb.py</code>, we remove the combinations such as B from the results of LAMP. When the P-values are equal between A and B, the smaller combination is eliminated.</p>
+
+<p>In the LAMP directory, you can run this script using the following command:</p>
+
+<pre><code>$ python eliminate_comb.py lamp-output-file &gt; eliminated-output-file</code></pre>
+
+<p><code>eliminate_comb.py</code> requires two filenames.</p>
+
+<ul>
+<li>
+<dl>
+<dt><strong>lamp-output-file</strong></dt>
+
+<dd>The result file of LAMP.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>eliminated-output-file</strong></dt>
+
+<dd>The filename to output the result of this script.</dd>
+</dl>
+</li>
+</ul>
 
 <h2 id='input_file_format'>Input File Format</h2>
 
