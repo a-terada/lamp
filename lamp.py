@@ -138,8 +138,9 @@ def executeMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass
 	sys.stderr.write("%s\n" % lam_star)
 	if (lam_star > max_lambda):
 		lam_star = max_lambda
-		
-	correction_term_time = time.clock()
+
+	correction_term_time = time.time()
+#	correction_term_time = time.clock()
 	return (fre_pattern, lam_star, max_lambda, correction_term_time, func_f)
 
 # list up the combinations p_i <= alpha/k
@@ -172,9 +173,9 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 #			print "p: " + str(p)+ "  ",
 #			print item_set
 
-	finish_test_time = time.clock()
+	finish_test_time = time.time()
+#	finish_test_time = time.clock()
 	
-			
 	sys.stdout.write("--- results ---\n")
 	if (fre_pattern.getTotal( lam_star ) < 1):
 		sys.stdout.write("Warning: there is no test which satisfying # target genes >= " + str(lam_star) + ".\n")
@@ -244,8 +245,9 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
 	
 	# run multiple test
 	transaction4lcm53 = transaction_file + ".4lcm53"
-	# run 
-	starttime = time.clock()
+	# run
+	starttime = time.time()
+#	starttime = time.clock()
 	fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
 				 = executeMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
 								   lcm_pass, max_comb)
