@@ -20,14 +20,14 @@ def readResult( filename ):
 		detection_size = 0 # number of detection sets.
 		for line in f:
 			line = line[:-1]
+			if ( line.startswith("Time (sec.): ") ):
+				time_line = line
+				flag_broken = False
+				continue
 			if not flag_comb:
 				meta_line_list.append( line )
 				if ( line.startswith("Raw") ):
 					flag_comb = True
-				continue
-			if ( line.startswith("Time (sec.): ") ):
-				time_line = line
-				flag_broken = False
 				continue
 			# [0]: Raw p-value, [1]: Adjusted P-value,
 			# [2]: detections, [3]: support, [4]: statistic_score.
