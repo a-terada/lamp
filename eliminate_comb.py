@@ -90,7 +90,7 @@ def output( out_filename, detections_list, meta_line_list, time_line ):
 		sys.stdout.write("%s\n" % i)
 	for detect in detections_list:
 		sys.stdout.write("%s" % detect[0])
-		for i in detect[:-1]:
+		for i in detect[1:-1]:
 			sys.stdout.write("\t%s" % i)
 		sys.stdout.write("\n")
 	sys.stdout.write("%s\n" % time_line)
