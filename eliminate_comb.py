@@ -74,7 +74,7 @@ def mergeResult( detections_list ):
 # Sort detections_list by P-value.
 # If comb1 and comb2 have equal P-values, the larger combination gives high rank.
 def sortComb( detections_list ):
-	sorted( detections_list, key = itemgetter( 0, 5 ) )
+	detections_list = sorted( detections_list, key = itemgetter( 0, 5 ) )
 	return detections_list
 
 # output result
