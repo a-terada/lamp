@@ -95,13 +95,13 @@
 
 <h2 id='installation'>Installation</h2>
 
-<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. As the mining program, <a href='http://research.nii.ac.jp/~uno/codes.htm'>Linear time Closed itemset Miner (LCM) ver. 5.3</a> is used.</p>
+<p>The programs are written in python (&gt;=2.6) except frequent pattern mining.</p>
 
 <p>If you have Git, you can clone the latest version by running:</p>
 
 <pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
 
-<p>If you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats. The <code>lamp/</code> directory contains <code>lcm53.zip</code> which is the code to run frequent pattern mining. This zip file is redistributed and was downloaded from <a href='http://research.nii.ac.jp/~uno/codes.htm'>here</a>.</p>
+<p>If you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats. The <code>lamp/</code> directory contains <code>lcm53.zip</code> which is the code to run frequent pattern mining (LCM ver. 5.3). This zip file is redistributed and was downloaded from <a href='http://research.nii.ac.jp/~uno/codes.htm'>here</a>.</p>
 
 <p>You set up the LAMP by the following command in <code>lamp/</code> directory.</p>
 
@@ -189,7 +189,7 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <h3 id='demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</h3>
 
-<p>As the example of real data analysis, we demonstrate how to prepare the input files by using gene expression profiles in human breast cancer in <a href='example.html'>Analysis example</a>.</p>
+<p>As the example of real data analysis, we demonstrate how to prepare the input files by using gene expression profiles in human breast cancer in <a href='example.html'>Data preparation</a>.</p>
 
 <p>After the preparation, the following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
 
