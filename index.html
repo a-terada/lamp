@@ -91,7 +91,7 @@
 <p>The technical detail is available on <a href='http://www.pnas.org/content/110/32/12996.abstract'>our paper</a>.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#sample_files'>Sample files</a></li><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
 
 <h2 id='installation'>Installation</h2>
 
@@ -109,35 +109,29 @@
 
 <h2 id='demonstrations'>Demonstrations</h2>
 
-<p>Here, we present two examples of running LAMP by using the sample files. The details of the arguments and input and output formats are described below.</p>
+<p>Here, we present three examples of running LAMP. LAMP is run by using the following command:</p>
 
-<h3 id='sample_files'>Sample files</h3>
+<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file] 2&gt; [log-file]</code></pre>
 
-<p>There are three sample files in <code>sample/</code> directory.</p>
+<p>The details of the arguments, options and input and output formats are described in <a href='#usage'>Usage</a>.</p>
+
+<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
+
+<p>We show an example of running LAMP when Mann-Whitney U-test is selected to compute p-value by using the following two samples in <code>sample/</code> directory.</p>
 
 <ul>
 <li>
 <dt>sample_target.csv</dt>
 
-<dd>The example file of target-file</dd>
+<dd>The example file of target-file.</dd>
 </li>
 
 <li>
 <dt>sample_expression_value.tab</dt>
 
-<dd>A sample file of expression-file. This file is used when Mann-Whitney U-test is selected to compute p-value.</dd>
-</li>
-
-<li>
-<dt>sample_expression_over1.tab</dt>
-
-<dd>A sample file of expression-file. This file is used when Fisher&#8217;s exact test is selected to compute p-value.</dd>
+<dd>A sample file of expression-file to use Mann-Whitney U-test.</dd>
 </li>
 </ul>
-
-<p>The dataset contains 4 TFs and 15 genes.</p>
-
-<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
 
 <p>The following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
 
@@ -163,6 +157,22 @@ Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code>
 </ul>
 
 <h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
+
+<p>We show an example of running LAMP when Fisher&#8217;s exact test is selected to compute p-value by using the following two samples in <code>sample/</code> directory.</p>
+
+<ul>
+<li>
+<dt>sample_target.csv</dt>
+
+<dd>The example file of target-file</dd>
+</li>
+
+<li>
+<dt>sample_expression_over1.tab</dt>
+
+<dd>A sample file of expression-file to use Fisher&#8217;s exact test.</dd>
+</li>
+</ul>
 
 <p>The following command finds all significant combinations from the files with a significance level &lt;= 0.05:</p>
 
@@ -229,7 +239,7 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <p>In the LAMP directory, you can run LAMP using the following command:</p>
 
-<pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file</code></pre>
+<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file]</code></pre>
 
 <p>The result is saved to the &#8216;output-file&#8217;. LAMP requires one option and three arguments:</p>
 
@@ -279,7 +289,7 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try using the following command:</p>
 
-<pre><code>$ python lamp.py -p p-value-procedure target-file expression-file significance-level &gt; output-file 2&gt; log-file</code></pre>
+<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file] 2&gt; [log-file]</code></pre>
 
 <h3 id='postprocessing'>Post-processing</h3>
 
@@ -289,7 +299,7 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <p>In the LAMP directory, you can run this script using the following command:</p>
 
-<pre><code>$ python eliminate_comb.py lamp-output-file &gt; eliminated-output-file</code></pre>
+<pre><code>$ python eliminate_comb.py [lamp-output-file] &gt; [eliminated-output-file]</code></pre>
 
 <p><code>eliminate_comb.py</code> requires two filenames.</p>
 
