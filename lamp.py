@@ -32,6 +32,8 @@ class MASLError(Exception):
 # Return the bound of given minimum support.
 ##
 def calBound( func_f, min_sup, fre_pattern ):
+	if min_sup == 0:
+		return 1.0
 	# If lower bound is not calculated, calculate the value and save to fre_pattern.
 	if fre_pattern.getBound( min_sup ) > 1:
 		bound = func_f.funcF( min_sup ) # minimum support value
