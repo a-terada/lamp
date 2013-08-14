@@ -60,6 +60,8 @@ def readResult( filename ):
 			# [0]: Raw p-value, [1]: Adjusted P-value,
 			# [2]: detections, [3]: support, [4]: statistic_score.
 			detections = line.split('\t')
+			detections[0] = float(detections[0])
+			detections[1] = float(detections[1])
 			detections.append( -1*len(detections[2].split(',')) ) # [5]: # of targeted genes
 			detections_list.append( tuple( detections ) )
 		# if the file does not have results, output error.
