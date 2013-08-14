@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>LAMP - Multiple testing procedure for finding higher order effects</title>
     
-    <meta name="author" content="Aika Terada">
+    <meta name="author" content="LAMP development team">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -40,12 +40,11 @@
   
     
       
+      	
       	<li><a href="#installation">Installation</a></li>
       	<li><a href="#demonstrations">Demonstrations</a></li>
       	<li><a href="#usage">Usage</a></li>
       	<li><a href="#reference">Reference</a></li>
-<!--		<li class="navbar-text">|</li>
-		<li><a href="data_preparation.html">Data preparation</a></li>-->
       	
       
     
@@ -95,33 +94,37 @@
 <p>The technical detail is available on <a href='http://www.pnas.org/content/110/32/12996.abstract'>our paper</a>.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a></li><li><a href='#demonstrations'>Demonstrations</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_lamp_with_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
 
 <h2 id='installation'>Installation</h2>
 
-<p>The programs are written in python (&gt;=2.6) except frequent pattern mining.</p>
+<h3 id='download'>Download</h3>
 
-<p>If you have Git, you can clone the latest version by running:</p>
+<p>If you have Git, you can download the latest version by running:</p>
 
 <pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
 
-<p>If you do not have Git, you can download LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats. The <code>lamp/</code> directory contains <code>lcm53.zip</code> which is the code to run frequent pattern mining (LCM ver. 5.3). This zip file is redistributed and was downloaded from <a href='http://research.nii.ac.jp/~uno/codes.htm'>here</a>.</p>
+<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats, you need to extract the archive with unzip or tar command. <!-- The `lamp/` directory contains `lcm53.zip` which is the code to run frequent pattern mining (LCM ver. 5.3). This zip file is redistributed and was downloaded from [here](http://research.nii.ac.jp/~uno/codes.htm).--></p>
 
-<p>You set up the LAMP by the following command in <code>lamp/</code> directory.</p>
+<h3 id='install'>Install</h3>
+
+<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. You set up the LAMP by the following command in <code>lamp/</code> directory.</p>
 
 <pre><code>$ make</code></pre>
 
-<h2 id='demonstrations'>Demonstrations</h2>
-
-<p>Here, we present three examples of running LAMP. LAMP is run by using the following command:</p>
+<p>In lamp directory, you can use LAMP by using the following command:</p>
 
 <pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file] 2&gt; [log-file]</code></pre>
 
 <p>The details of the arguments, options and input and output formats are described in <a href='#usage'>Usage</a>.</p>
 
-<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
+<h2 id='examples'>Examples</h2>
 
-<p>We show an example of running LAMP when Mann-Whitney U-test is selected to compute p-value by using the following two samples in <code>sample/</code> directory.</p>
+<p>Here, we present three examples of running LAMP. First two examples are toy examples, and the last one generates the exactly identical result shown in our paper.</p>
+
+<h3 id='demonstration_1_lamp_with_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
+
+<p>We here use two small files in <code>sample/</code> directory.</p>
 
 <ul>
 <li>
@@ -492,6 +495,10 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 
 <pre><code>$ rm -rf target-file.4lcm53.*</code></pre>
 <!--LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.-->
+<h2 id='acknowledgment'>Acknowledgment</h2>
+
+<p>LCM to find frequent patterns used in LAMP is kindly provided from <a href='http://research.nii.ac.jp/~uno/codes.htm'>Program Codes of Takeaki Uno and Hiroki Arimura</a>.</p>
+
 <h2 id='license'>License</h2>
 
 <p>LAMP is open source code issued under the BSD License.</p>
@@ -516,7 +523,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
       </div>
 
       <footer>
-        <p>&copy; Aika Terada 2012 
+        <p>&copy; LAMP development team 2013 
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
         </p>
