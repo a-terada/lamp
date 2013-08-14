@@ -40,7 +40,6 @@
   
     
       
-      	
       	<li><a href="#installation">Installation</a></li>
       	<li><a href="#demonstrations">Demonstrations</a></li>
       	<li><a href="#usage">Usage</a></li>
@@ -94,7 +93,7 @@
 <p>The technical detail is available on <a href='http://www.pnas.org/content/110/32/12996.abstract'>our paper</a>.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_lamp_with_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
 
 <h2 id='installation'>Installation</h2>
 
@@ -122,7 +121,7 @@
 
 <p>Here, we present three examples of running LAMP. First two examples are toy examples, and the last one generates the exactly identical result shown in our paper.</p>
 
-<h3 id='demonstration_1_lamp_with_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
+<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
 
 <p>We here use two small files in <code>sample/</code> directory.</p>
 
@@ -130,13 +129,13 @@
 <li>
 <dt>sample_target.csv</dt>
 
-<dd>The example file of target-file.</dd>
+<dd>An example file of target-file. This file contains the associations between 15 genes and four motifs.</dd>
 </li>
 
 <li>
 <dt>sample_expression_value.tab</dt>
 
-<dd>A sample file of expression-file to use Mann-Whitney U-test.</dd>
+<dd>A sample file of expression-file to use Mann-Whitney U-test. The gene orders should be exactly identical to target-file (<code>sample_target.csv</code>).</dd>
 </li>
 </ul>
 
@@ -165,19 +164,19 @@ Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code>
 
 <h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
 
-<p>We show an example of running LAMP when Fisher&#8217;s exact test is selected to compute p-value by using the following two samples in <code>sample/</code> directory.</p>
+<p>By changing the file &#8220;sample/sample_expression_value.tab&#8221; and the option &#8220;-p u_test&#8221; with &#8220;sample/sample_expression_over1.tab&#8221; and &#8220;-p fisher&#8221; in Demonstration 1, you can perform LAMP with Fisher&#8217;s exact test. We here use the following two samples in <code>sample/</code> directory.</p>
 
 <ul>
 <li>
 <dt>sample_target.csv</dt>
 
-<dd>The example file of target-file</dd>
+<dd>The example file of target-file. This file is same as the file used in Demonstration 1.</dd>
 </li>
 
 <li>
 <dt>sample_expression_over1.tab</dt>
 
-<dd>A sample file of expression-file to use Fisher&#8217;s exact test.</dd>
+<dd>A sample file of expression-file to use Fisher&#8217;s exact test. Expression levels should be &#8220;0&#8221; or &#8220;1&#8221;.</dd>
 </li>
 </ul>
 
@@ -206,11 +205,11 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <h3 id='demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</h3>
 
-<p>As the example of real data analysis, we demonstrate how to prepare the input files by using gene expression profiles in human breast cancer in <a href='data_preparation.html'>Data preparation</a>.</p>
+<p>We here show the example of public microarray data analysis. Before performing LAMP, we need to convert the public breast cancer data into file format used in LAMP. The procedure is in <a href='data_preparation.html'>Data preparation</a>.</p>
 
-<p>After the preparation, the following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
+<p>The preparation generates target file &#8220;gse6462_target.csv&#8221; and expression file &#8220;gse6462_expression_over1.tab&#8221;. The following command finds all of the significant combinations from the files with Fisher&#8217;s exact test of significance level &lt;= 0.05:</p>
 
-<pre><code>$ python lamp.py -p &quot;fisher&quot; gse6462_target.csv gse6462_expression_over1.tab 0.05 &gt; gse6462_expression_over1_result.txt 2&gt; gse6462_expression_over1_log.txt</code></pre>
+<pre><code>$ python lamp.py -p fisher gse6462_target.csv gse6462_expression_over1.tab 0.05 &gt; gse6462_expression_over1_result.txt 2&gt; gse6462_expression_over1_log.txt</code></pre>
 
 <p>When the LAMP finishes successfully, the result is printed in <code>gse6462_expression_over1_result.txt</code>:</p>
 
@@ -223,7 +222,7 @@ Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
 3.64221611304e-09	0.0136595342085	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8
 Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.474024057</code></pre>
 
-<p>The combinations &#8220;TATA,NFAT,PAX,AR&#8221; has a possibility of the redundant combination because one of the members &#8220;TATA&#8221; has smaller P-value than the combination. The following command eliminates these combinations as the post-processing:</p>
+<p>In some application, the combinations &#8220;TATA,NFAT,PAX,AR&#8221; may be regard as redundant combination because one of the members &#8220;TATA&#8221; has smaller P-value than the combination. In the case that you would like to reduce the combinations, we prepared a python script to eliminate the redundant combinations as the post-processing:</p>
 
 <pre><code>$ python eliminate_comb.py gse6462_expression_over1_result.txt &gt; gse6462_expression_over1_result_eliminated.txt </code></pre>
 
@@ -240,11 +239,13 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <p>This script prints &#8220;# Eliminated combinations&#8221; in the first line. The other lines are same as the <code>gse6462_expression_over1_result.txt</code> excepting the elimination of &#8220;TATA,NFAT,PAX,AR&#8221;.</p>
 
+<p>Note that the running time of LAMP depends on the data (not only data size but also density of the data etc.). In the worst case, a few days and more than a hundred gigabytes of memory might be used. In general, the running time of Mann-Whitney U-test is longer than that of Fisher&#8217;s exact test.</p>
+
 <h2 id='usage'>Usage</h2>
 
 <h3 id='lamp'>LAMP</h3>
 
-<p>In the LAMP directory, you can run LAMP using the following command:</p>
+<p>In the <code>lamp</code> directory, you can run LAMP using the following command:</p>
 
 <pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file]</code></pre>
 
@@ -300,9 +301,7 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <h3 id='postprocessing'>Post-processing</h3>
 
-<p>As the post-processing, we prepare the script <code>eliminate_comb.py</code>. This script eliminates the combinations that have an inclusion relation to clarify most significant combination.</p>
-
-<p>Suppose that the combinations A and B are significant, and A has smaller P-value than that of B. When A comprises B or A is comprised by B, the significance of B would be due to A. By using <code>eliminate_comb.py</code>, we remove the combinations such as B from the results of LAMP. When the P-values are equal between A and B, the smaller combination is eliminated.</p>
+<p>LAMP generates all significant combinations. However, in some applications, the raw result may be too redundant to be used because two very similar but slightly different combinations are appeared in the results. To support the interpretation of the result, we prepared the script <code>eliminate_comb.py</code>. This script selects the combination which is the most significant in all subsets of the combination. That is, suppose that the combinations A and B are significant, and A has smaller P-value than that of B. When A comprises B or A is comprised by B, the significance of B would be due to A. By using <code>eliminate_comb.py</code>, we remove the combinations such as B from the results of LAMP. When the P-values are equal between A and B, the smaller combination is eliminated.</p>
 
 <p>In the LAMP directory, you can run this script using the following command:</p>
 
