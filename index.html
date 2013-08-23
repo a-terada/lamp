@@ -70,7 +70,8 @@
 
 <div class="row">
   <div class="span12">
-    <p>LAMP is a code for multiple testing correction. Given the relationships between transcription factors (TFs) and genes and gene expression levels, the code lists up statistically significant combinations of TFs. The LAMP algorithm calibrates the Family-Wise Error Rate (FWER) at the same level of Bonferroni correction. Applying our method to your data instead of using the Bonferroni correction gives you the below advantages:</p>
+    <img align='right' src='images/flower_example.png' alt='flower diagram' width='220' />
+<p>LAMP is a code for multiple testing correction. Given the relationships between transcription factors (TFs) and genes and gene expression levels, the code lists up statistically significant combinations of TFs. The LAMP algorithm calibrates the Family-Wise Error Rate (FWER) at the same level of Bonferroni correction. Applying our method to your data instead of using the Bonferroni correction gives you the below advantages:</p>
 
 <ul>
 <li>Listing up significant combinations without an arity limit</li>
@@ -93,7 +94,7 @@
 <p>The technical detail is available on <a href='http://www.pnas.org/content/110/32/12996.abstract'>our paper</a>.</p>
 
 <h3 id='table_of_contents'>Table of Contents</h3>
-<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li><li><a href='#flower_diagram'>Flower Diagram</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#targetfile'>Target-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
 
 <h2 id='installation'>Installation</h2>
 
@@ -103,7 +104,7 @@
 
 <pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
 
-<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats, you need to extract the archive with unzip or tar command. <!-- The `lamp/` directory contains `lcm53.zip` which is the code to run frequent pattern mining (LCM ver. 5.3). This zip file is redistributed and was downloaded from [here](http://research.nii.ac.jp/~uno/codes.htm).--></p>
+<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/zipball/master'>zip</a> or <a href='https://github.com/a-terada/lamp/tarball/master'>tar</a> formats, you need to extract the archive with unzip or tar command.</p>
 
 <h3 id='install'>Install</h3>
 
@@ -113,7 +114,7 @@
 
 <p>In lamp directory, you can use LAMP by using the following command:</p>
 
-<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file] 2&gt; [log-file]</code></pre>
+<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file]</code></pre>
 
 <p>The details of the arguments, options and input and output formats are described in <a href='#usage'>Usage</a>.</p>
 
@@ -141,26 +142,44 @@
 
 <p>The following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
 
-<pre><code>$ python lamp.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt 2&gt; sample_u_test_log.txt</code></pre>
+<pre><code>$ python lamp.py -p u_test sample/sample_target.csv sample/sample_expression_value.tab 0.05 &gt; sample_u_test_result.txt</code></pre>
 
 <p>When the LAMP finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
 
-<pre><code>--- results ---
-Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 3)
-# of significance: 1
-Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
-0.00602414187918	0.0301207093959	TF1,TF2,TF3	5	45.5
-Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code></pre>
+<pre><code># target-file: sample/sample_target.csv
+# value-file: sample/sample_expression_value.tab
+# significance-level: 0.05
+# P-value computing procedure: u_test
+# # of tested elements: 4, # of samples: 15
+# Adjusted significance level: 0.01, # Correction factor: 5 (# of target rows &gt;= 3)
+# # of significant combinations: 1
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	z-score
+1	0.0060241	0.030121	TF1,TF2,TF3	3	5	2.5107
+Time (sec.): Computing correction factor 0.023, P-value 0.000, Total 0.023</code></pre>
 
-<p>The result indicates the following:</p>
+<p>The lines which starts from &#8221;#&#8221; indicates the meta-data including the following information:</p>
 
 <ul>
-<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
+<li>The setting of the analysis. (lines 1 to 4)</li>
 
-<li>There is one significant combination. The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00602, and the adjusted p-value is 0.0301.</li>
+<li>The number of columns and rows in the target-file (<code>sample_target.csv</code>). (line 5)</li>
 
-<li>The running time is 0.0117 sec. in total.</li>
+<li>The adjusted significance level and the correction factor. When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant. (line 6) <a href='images/sample_utest_flower.png'><img align='right' src='images/sample_utest_flower.png' alt='flower diagram' width='220' /></a></li>
+
+<li>The number of significant combinations. There is one significant combination. (line 7)</li>
 </ul>
+
+<p>The other lines indicate the result such as the following:</p>
+
+<ul>
+<li>The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00602, and the adjusted p-value is 0.0301.</li>
+
+<li>The running time is 0.023 sec. in total.</li>
+</ul>
+
+<p>The right diagram shows the adjusted P-values related to the significant combination. This diagram can be drawn in the SVG format file <code>sample_u_test_result.txt-flower1.svg</code> by the following command.</p>
+
+<pre><code>$ python flower.py sample_u_test_result.txt</code></pre>
 
 <h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
 
@@ -182,26 +201,34 @@ Time (sec.): Correction factor 0.011229, P-value 0.000472, Total 0.011701</code>
 
 <p>The following command finds all significant combinations from the files with a significance level &lt;= 0.05:</p>
 
-<pre><code>$ python lamp.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt 2&gt; sample_fisher_log.txt</code></pre>
+<pre><code>$ python lamp.py -p fisher sample/sample_target.csv sample/sample_expression_over1.tab 0.05 &gt; sample_fisher_result.txt</code></pre>
 
 <p>When the LAMP finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
 
-<pre><code>--- results ---
-Threshold: 0.01, Correction factor: 5 (# of target genes &gt;= 5)
-# of significance: 1
-Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
-0.00699300699301	0.034965034965	TF1,TF2,TF3	5	5.0
-Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code></pre>
-
-<p>The result indicates the following:</p>
+<pre><code># target-file: sample/sample_target.csv
+# value-file: sample/sample_expression_over1.tab
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 4, # of samples: 15, # of positive samples: 7
+# Adjusted significance level: 0.01, # Correction factor: 5 (# of target rows &gt;= 5)
+# # of significant combinations: 1
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	0.006993	0.034965	TF1,TF2,TF3	3	5	5
+Time (sec.): Computing correction factor 0.016, P-value 0.000, Total 0.016</code></pre>
+<a href='images/sample_fisher_flower.png'><img align='right' src='images/sample_fisher_flower.png' alt='flower diagram' width='220' /></a>
+<p>The six lines which start from &#8221;#&#8221; are similar to the result file with Mann-Whitney U-test. The significant result indicates the following:</p>
 
 <ul>
 <li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
 
 <li>There is one significant combination. The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00699, and the adjusted p-value is 0.0350.</li>
 
-<li>The running time is 0.00561 sec. in total.</li>
+<li>The running time is 0.016 sec. in total.</li>
 </ul>
+
+<p>The right diagram shows the adjusted P-values related to the significant combination. This diagram can be drawn in the <code>sample_fisher_result.txt-flower1.svg</code> by the following command.</p>
+
+<pre><code>$ python flower.py sample_fisher_result.txt</code></pre>
 
 <h3 id='demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</h3>
 
@@ -209,18 +236,22 @@ Time (sec.): Correction factor 0.005433, P-value 0.000172, Total 0.005605</code>
 
 <p>The preparation generates target file &#8220;gse6462_target.csv&#8221; and expression file &#8220;gse6462_expression_over1.tab&#8221;. The following command finds all of the significant combinations from the files with Fisher&#8217;s exact test of significance level &lt;= 0.05:</p>
 
-<pre><code>$ python lamp.py -p fisher gse6462_target.csv gse6462_expression_over1.tab 0.05 &gt; gse6462_expression_over1_result.txt 2&gt; gse6462_expression_over1_log.txt</code></pre>
+<pre><code>$ python lamp.py -p fisher gse6462_target.csv gse6462_expression_over1.tab 0.05 &gt; gse6462_expression_over1_result.txt</code></pre>
 
 <p>When the LAMP finishes successfully, the result is printed in <code>gse6462_expression_over1_result.txt</code>:</p>
 
-<pre><code>--- results ---
-Threshold: 1.33321387737e-08, Correction factor: 3750336 (# of target genes &gt;= 8)
-# of significance: 3
-Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
-3.70833823477e-10	0.00139075143821	TATA	957	141
-2.94593585787e-09	0.0110482493015	TATA,NFAT,PAX,AR	10	9
-3.64221611304e-09	0.0136595342085	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8
-Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.474024057</code></pre>
+<pre><code># target-file: data/egfhrg_col12_min4_over10_target.csv
+# value-file: data/egfhrg_col12_min4_over10.tab
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 397, # of samples: 12773, # of positive samples: 1129
+# Adjusted significance level: 1.3332e-08, # Correction factor: 3750336 (# of target rows &gt;= 8)
+# # of significant combinations: 3
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	3.7083e-10	0.0013908	TATA	1	957	141
+2	2.9459e-09	0.011048	TATA,NFAT,PAX,AR	4	10	9
+3	3.6422e-09	0.01366	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8	8
+Time (sec.): Computing correction factor 331.041, P-value 66.927, Total 397.968</code></pre>
 
 <p>In some application, the combinations &#8220;TATA,NFAT,PAX,AR&#8221; may be regard as redundant combination because one of the members &#8220;TATA&#8221; has smaller P-value than the combination. In the case that you would like to reduce the combinations, we prepared a python script to eliminate the redundant combinations as the post-processing:</p>
 
@@ -228,16 +259,20 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <p>The result is printed in <code>gse6462_expression_over1_result_eliminated.txt</code>:</p>
 
-<pre><code># Eliminated combinations
---- results ---
-Threshold: 1.33321387737e-08, Correction factor: 3750336 (# of target genes &gt;= 8)
-# of significance: 3
-Raw p-value	Adjusted p-value	Combination	# of target genes	Statistic score
-3.70833823477e-10	0.00139075143821	TATA	957	141
-3.64221611304e-09	0.0136595342085	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8
-Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.474024057</code></pre>
+<pre><code># Non-redundant combinations
+# target-file: data/egfhrg_col12_min4_over10_target.csv
+# value-file: data/egfhrg_col12_min4_over10.tab
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 397, # of samples: 12773, # of positive samples: 1129
+# Adjusted significance level: 1.3332e-08, # Correction factor: 3750336 (# of target rows &gt;= 8)
+# # of significant combinations: 3 -&gt; 2
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	3.7083e-10	0.0013908	TATA	1	957	141
+2	3.6422e-09	0.01366	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8	8
+Time (sec.): Computing correction factor 331.041, P-value 66.927, Total 397.968</code></pre>
 
-<p>This script prints &#8220;# Eliminated combinations&#8221; in the first line. The other lines are same as the <code>gse6462_expression_over1_result.txt</code> excepting the elimination of &#8220;TATA,NFAT,PAX,AR&#8221;.</p>
+<p>This script prints &#8220;# Non-redundant combinations&#8221; in the first line. The other lines are same as the <code>gse6462_expression_over1_result.txt</code> excepting the elimination of &#8220;TATA,NFAT,PAX,AR&#8221;.</p>
 
 <p>Note that the running time of LAMP depends on the data (not only data size but also density of the data etc.). In the worst case, a few days and more than a hundred gigabytes of memory might be used. In general, the running time of Mann-Whitney U-test is longer than that of Fisher&#8217;s exact test.</p>
 
@@ -289,15 +324,21 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 
 <ul>
 <li>
+<dl>
 <dt><strong>--max_comb [integer]</strong></dt>
 
 <dd>Set the maximum arity of the tested combinations. The default setting is no limit.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>-e [log_file]</strong></dt>
+
+<dd>Change the filename to save the running progress. The default setting is lamp_log_[date]_[time].txt.</dd>
+</dl>
 </li>
 </ul>
-
-<p>The above command prints running progress in your console. To save the running progress to &#8216;log-file&#8217;, try using the following command:</p>
-
-<pre><code>$ python lamp.py -p [p-value-procedure] [target-file] [expression-file] [significance-level] &gt; [output-file] 2&gt; [log-file]</code></pre>
 
 <h3 id='postprocessing'>Post-processing</h3>
 
@@ -326,6 +367,16 @@ Time (sec.): Correction factor 299.818201065, P-value 175.655822992, Total 475.4
 </dl>
 </li>
 </ul>
+
+<h3 id='flower_diagram'>Flower Diagram</h3>
+
+<p>LAMP includes the code for visualizing the detected combinations as shown in <a href='#examples'>Examples</a>. In the <code>lamp</code> directory, you can run the code using the following command:</p>
+
+<pre><code>$ python flower.py [lamp-output-file]</code></pre>
+
+<p>[lamp-output-file] is the result file of LAMP.</p>
+
+<p>The diagrams are saved to SVG format files named [lamp-output-file]-flower[rank].svg. [rank] corresponds to the &#8220;Rank&#8221; column in [lamp-output-file].</p>
 
 <h2 id='input_file_format'>Input File Format</h2>
 
@@ -458,7 +509,7 @@ Threshold: [float], Correction factor: [integer] (# target genes &gt;= [integer]
 <li>
 <dt><strong>Statistic score:</strong></dt>
 
-<dd>The value used to compute the p-value. In case of calculation by Fisher&#8217;s exact test, the value means the number of genes that are both targeted and up-regulated. In the case of calculation by Mann-Whitney U-test, the value is the U-score.</dd>
+<dd>The value used to compute the p-value. In case of calculation by Fisher&#8217;s exact test, the value means the number of genes that are both targeted and up-regulated. In the case of calculation by Mann-Whitney U-test, the value is the z-score.</dd>
 </li>
 </ul>
 
