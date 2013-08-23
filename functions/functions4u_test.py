@@ -211,7 +211,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		
 		# calculate p-value from z_value
 		# this value approximation of standard normal distribution
-		return self.stdNorDistribution(z_value), u_value
+		return self.stdNorDistribution(z_value), z_value
 		
 	##
 	# divide transaction_list to two groups.

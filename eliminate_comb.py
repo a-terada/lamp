@@ -54,15 +54,15 @@ def readResult( filename ):
 				continue
 			if not flag_comb:
 				meta_line_list.append( line )
-				if ( line.startswith("Raw") ):
+				if ( line.startswith("Rank") ):
 					flag_comb = True
 				continue
-			# [0]: Raw p-value, [1]: Adjusted P-value,
-			# [2]: detections, [3]: support, [4]: statistic_score.
+			# [0]: Rank, [1]: Raw p-value, [2]: Adjusted P-value,
+			# [3]: detections, [4]: arity, [5]: support, [6]: statistic_score.
 			detections = line.split('\t')
-			detections[0] = float(detections[0])
 			detections[1] = float(detections[1])
-			detections.append( -1*len(detections[2].split(',')) ) # [5]: # of targeted genes
+			detections[2] = float(detections[2])
+			detections[4] = int(detections[4])
 			detections_list.append( tuple( detections ) )
 		# if the file does not have results, output error.
 		if (flag_broken):
@@ -89,7 +89,7 @@ def isSubset(set_i, set_j):
 def mergeResult( detections_list ):
 	upper_list = []; merged_list = []
 	for detection in detections_list:
-		detect_set = set(detection[2].split(','))
+		detect_set = set(detection[3].split(','))
 #		print detect_set
 		flag = True
 		for i in upper_list:
@@ -104,7 +104,7 @@ def mergeResult( detections_list ):
 # Sort detections_list by P-value.
 # If comb1 and comb2 have equal P-values, the larger combination gives high rank.
 def sortComb( detections_list ):
-	detections_list = sorted( detections_list, key = itemgetter( 0, 5 ) )
+	detections_list = sorted( detections_list, key = itemgetter( 1, 4 ) )
 	return detections_list
 
 # output result
@@ -115,12 +115,17 @@ def output( out_filename, detections_list, meta_line_list, time_line ):
 		except IOError, e:
 			sys.stderr.write("Error: Cannot output to %s'\n" % out_filename)
 			sys.exit()
-	sys.stdout.write("# Eliminated combinations\n")
+	sys.stdout.write("# Non-redundant combinations\n")
 	for i in meta_line_list:
-		sys.stdout.write("%s\n" % i)
+		sys.stdout.write("%s" % i)
+		if i.startswith("# # of significant combinations: "):
+			sys.stdout.write(" -> %d" % len(detections_list))
+		sys.stdout.write("\n")
+	rank = 0
 	for detect in detections_list:
-		sys.stdout.write("%s" % detect[0])
-		for i in detect[1:-1]:
+		rank = rank + 1
+		sys.stdout.write("%d" % rank)
+		for i in detect[1:]:
 			sys.stdout.write("\t%s" % i)
 		sys.stdout.write("\n")
 	sys.stdout.write("%s\n" % time_line)

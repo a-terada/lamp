@@ -77,7 +77,7 @@ class FunctionOfX(fs.FunctionsSuper):
 			e_out = "The support size larger than half of all transaction size.\n"
 			e_out = e_out + "                 This version does not treat this case."
 			sys.exit()
-
+			
 	def getN1(self):
 		return self.__f_size
 	

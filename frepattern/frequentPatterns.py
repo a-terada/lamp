@@ -187,22 +187,39 @@ class LCM():
 			if ( arity_limit < 0 and self.constructed_index > -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) + ".closed"
 				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
-									   input_file, str(low_sup), out_file], stdout=subprocess.PIPE)
+									   input_file, str(low_sup), out_file], \
+									  stdout=sys.stderr, stderr = sys.stderr)
+#				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
+#									   input_file, str(low_sup), out_file], stdout=subprocess.PIPE)
 			elif ( arity_limit < 0 and self.constructed_index == -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".closed"
 				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
+									  stdout=sys.stderr, stderr = sys.stderr)
+				"""
+				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
 									  stdout=subprocess.PIPE)
+				"""
 			# If there is limit to arity size, run LCM to get all frequent pattern.
 			elif ( arity_limit >= 0 and self.constructed_index > -1):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) \
 						   + ".aritylim" + str( arity_limit )
 				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
 									   str( arity_limit ), input_file, str(low_sup), out_file], \
+									  stdout=sys.stderr, stderr = sys.stderr)
+				"""
+				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
+									   str( arity_limit ), input_file, str(low_sup), out_file], \
 									  stdout=subprocess.PIPE)
+				"""
 			else:
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) +".aritylim" + str( arity_limit )
 				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
+									   input_file, str(low_sup), out_file], \
+									  stdout=sys.stderr, stderr = sys.stderr)
+				"""
+				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
 									   input_file, str(low_sup), out_file], stdout=subprocess.PIPE)
+				"""
 		except subprocess.CalledProcessError, (p):
 			sys.stderr.write('subprocess.CalledProcessError: cmd:%s returncode:%s\n' % (p.cmd, p.returncode) )
 			sys.exit()

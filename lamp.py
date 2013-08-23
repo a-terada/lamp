@@ -37,9 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # significance-level: The statistical significance threshold.
 # @author Terada 26, June, 2011
 
-import sys, os.path, time
+import sys, os.path, time, datetime
 import transaction
-import readFile as readFile
+import readFile
 import frepattern.frequentPatterns as frequentPatterns
 from optparse import OptionParser
 
@@ -76,7 +76,7 @@ def calBound( func_f, min_sup, fre_pattern ):
 # lcm2transaction_id: Mapping between LCM ID to transaction id.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 ##
-def executeMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, max_comb):
+def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, max_comb):
 	max_lambda = maxLambda(transaction_list)
 	lam_star = 1; func_f = None;
 	try:
@@ -85,7 +85,6 @@ def executeMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass
 		elif set_method == "u_test":
 			func_f = functions4u_test.FunctionOfX(transaction_list)
 		elif set_method == "chi":
-			print set_method
 			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
 		else:
 			sys.stderr.write("Error: choose \"fisher\", \"chi\" or \"u_test\".\n")
@@ -172,6 +171,46 @@ def executeMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass
 #	correction_term_time = time.clock()
 	return (fre_pattern, lam_star, max_lambda, correction_term_time, func_f)
 
+def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, columnid2name, lam_star, k, \
+				  enrich_lst, transaction_list, func_f ):
+	flag_size = -1
+	if not set_method == "u_test":
+		flag_size = func_f.getN1()
+	# output setting
+	sys.stdout.write("# target-file: %s\n" % (transaction_file))
+	sys.stdout.write("# value-file: %s\n" % (flag_file))
+	sys.stdout.write("# significance-level: %s\n" % threshold)
+	sys.stdout.write("# P-value computing procedure: %s\n" % set_method)
+	sys.stdout.write("# # of tested elements: %d, # of samples: %d" % ( len(columnid2name), len(transaction_list) ))
+	if flag_size > 0:
+		sys.stdout.write(", # of positive samples: %d" % flag_size)
+	sys.stdout.write("\n")
+	sys.stdout.write("# Adjusted significance level: %.5g, " % (threshold/k) )
+	sys.stdout.write("# Correction factor: " + str(k) + " (# of target rows >= " + str(lam_star) + ")\n" )
+	sys.stdout.write("# # of significant combinations: " + str(len(enrich_lst)) + "\n")
+	# output header
+	if len(enrich_lst) > 0:
+		sys.stdout.write("Rank\tRaw p-value\tAdjusted p-value\tCombination\tArity\t# of target rows\t")
+		if set_method == "u_test":
+			sys.stdout.write("z-score\n")
+		else:
+			sys.stdout.write("# of positives in the targets\n")
+		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
+		rank = 0
+		for l in enrich_lst:
+			rank = rank + 1
+			sys.stdout.write("%d\t%.5g\t%.5g\t" % (rank, l[1], k*l[1]))
+#			sys.stdout.write(str(rank) + "\t" + str(l[1]) + "\t" + str(k*l[1]) + "\t")
+			out_column = ""
+			for i in l[0]:
+				out_column = out_column + columnid2name[i-1] + ","
+			sys.stdout.write("%s\t%d\t%d\t" % (out_column[:-1], len(l[0]), l[2]) )
+			if set_method == "u_test":
+				sys.stdout.write("%.5g\n" % l[3])
+			else:
+				sys.stdout.write("%d\n" % l[3])
+#			sys.stdout.write(out_column[:-1] + "\t" + str(l[2]) + "\t" + str(l[3]) + "\n")
+
 # list up the combinations p_i <= alpha/k
 def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, lcm2transaction_id, func_f, columnid2name):
 	k = fre_pattern.getTotal( lam_star )
@@ -203,25 +242,8 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 #			print item_set
 
 	finish_test_time = time.time()
-#	finish_test_time = time.clock()
-	
-	sys.stdout.write("--- results ---\n")
-	if (fre_pattern.getTotal( lam_star ) < 1):
-		sys.stdout.write("Warning: there is no test which satisfying # target genes >= " + str(lam_star) + ".\n")
-	sys.stdout.write("Threshold: " + str(threshold/k) + ", ")
-	sys.stdout.write("Correction factor: " + str(k) + " (# of target genes >= " + str(lam_star) + ")\n" )
-	sys.stdout.write("# of significance: " + str(len(enrich_lst)) + "\n")
-	if len(enrich_lst) > 0:
-		sys.stdout.write("Raw p-value\tAdjusted p-value\tCombination\t# of target genes\tStatistic score\n")
-		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
-	for l in enrich_lst:
-		sys.stdout.write(str(l[1]) + "\t" + str(k*l[1]) + "\t")
-		out_column = ""
-		for i in l[0]:
-			out_column = out_column + columnid2name[i-1] + ","
-		sys.stdout.write(out_column[:-1] + "\t" + str(l[2]) + "\t" + str(l[3]) + "\n")
-		
-	return (len(enrich_lst), finish_test_time) # return the number of enrich set for permutation
+	return ( enrich_lst, finish_test_time ) # return the number of enrich set for permutation
+	#return (len(enrich_lst), finish_test_time) # return the number of enrich set for permutation
 		
 ##
 # Return max lambda. That is, max size itemset.
@@ -276,16 +298,22 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
 	transaction4lcm53 = transaction_file + ".4lcm53"
 	# run
 	starttime = time.time()
-#	starttime = time.clock()
 	fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
-				 = executeMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
+				 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
 								   lcm_pass, max_comb)
-	enrich_size, finish_test_time \
+	enrich_lst, finish_test_time \
 				 = fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
 								threshold, lcm2transaction_id, func_f, columnid2name)
+	
+	# output result
+	k = fre_pattern.getTotal( lam_star )
+	outputResult( transaction_file, flag_file, threshold, set_method, max_comb, \
+				  columnid2name, lam_star, k, enrich_lst, transaction_list, func_f )
 	# output time cost
-	sys.stdout.write("Time (sec.): Correction factor %s, P-value %s, Total %s\n" \
-					 % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time-starttime))
+	sys.stdout.write("Time (sec.): Computing correction factor %.3f, P-value %.3f, Total %.3f\n" \
+					 % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time - starttime))
+
+	return enrich_lst, k, columnid2name
 
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
@@ -296,8 +324,10 @@ if __name__ == "__main__":
 
 	p.add_option('--max_comb', dest = "max_comb", help = "Set the maximum size of combination to be tested.")
 	
+	p.add_option('-e', dest = "log_file", default = "", help = "The file name to output log.\n")
+	
 	opts, args = p.parse_args()
-
+	
 	# check argsuments
 	if len(args) != 3:
 		sys.stderr.write("Error: input [target-file], [expression-file] and [significance-level].\n")
@@ -310,12 +340,11 @@ if __name__ == "__main__":
 			sys.stderr.write("Error: max_comb must be an integer value.\n")
 			sys.exit()
 	opts.lcm_pass = None
-
+	
 	# check p-vlaue procedure
 	if not opts.pvalue_procedure in set_opts:
 		sys.stderr.write("Error: Choose \"fisher\" or \"u_test\" by using -p option\n")
 		sys.exit()
-
 	
 	# check the file exist.
 	if not os.path.isfile(args[0]):
@@ -333,6 +362,15 @@ if __name__ == "__main__":
 	if (sig_pro < 0) or (sig_pro > 1):
 		sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
 		sys.exit()
-	
-	run(args[0], args[1], float(args[2]), opts.pvalue_procedure, opts.lcm_pass, max_comb)
 
+	# change log file
+	d = datetime.datetime.today()
+	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
+	if len(opts.log_file) > 0:
+		log_file = opts.log_file
+	sys.stderr = open( log_file, 'w' )
+
+	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
+	enrich_lst, k, columnid2name \
+				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
+					  opts.lcm_pass, max_comb)
