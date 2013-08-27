@@ -50,10 +50,12 @@ class LCMError(Exception):
 
 
 class LCM():
-	def __init__(self, lcm_pass, max_support):
+	def __init__(self, lcm_pass, max_support, outlog):
 		self.frequent_list = [] # index: max-support - support, In the list: Instance of Node class
 		self.max_support = max_support # maximum value of the minimum support.
 		self.constructed_index = -1 # frequent_list is constructed that its index is less than the value.
+		self.outlog = outlog
+	
 		# Initialize the frequent_list.
 		for i in xrange(0, self.max_support):
 			self.frequent_list.append( nodeClass.Node() )
@@ -71,7 +73,7 @@ class LCM():
 		if not (os.path.isfile(self.__LCMPASS)):
 			sys.stderr.write("Error: %s does not exist.\n" % self.__LCMPASS)
 			sys.exit()
-		
+			
 	def getIndex(self, support):
 		return self.max_support - support
 	
@@ -80,7 +82,7 @@ class LCM():
 	##
 	def getTotal(self, min_sup):
 		return self.frequent_list[ self.getIndex(min_sup) ].total
-
+	
 	##
 	# Return the bound
 	##
@@ -109,7 +111,7 @@ class LCM():
 			if len(t.itemset) > 0:
 				fw.write('\n')
 		fw.close()
-
+	
 	
 	##
 	# Read LCM result file and return itemset list.
@@ -188,38 +190,34 @@ class LCM():
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) + ".closed"
 				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
 									   input_file, str(low_sup), out_file], \
-									  stdout=sys.stderr, stderr = sys.stderr)
+									  stdout=self.outlog, stderr = self.outlog)
 #				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
-#									   input_file, str(low_sup), out_file], stdout=subprocess.PIPE)
+#									   input_file, str(low_sup), out_file], \
+#									  stdout=sys.stderr, stderr = sys.stderr)
 			elif ( arity_limit < 0 and self.constructed_index == -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".closed"
 				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
-									  stdout=sys.stderr, stderr = sys.stderr)
-				"""
-				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
-									  stdout=subprocess.PIPE)
-				"""
+									  stdout=self.outlog, stderr = self.outlog)
+#				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
+#									  stdout=sys.stderr, stderr = sys.stderr)
 			# If there is limit to arity size, run LCM to get all frequent pattern.
 			elif ( arity_limit >= 0 and self.constructed_index > -1):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) \
 						   + ".aritylim" + str( arity_limit )
 				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
 									   str( arity_limit ), input_file, str(low_sup), out_file], \
-									  stdout=sys.stderr, stderr = sys.stderr)
-				"""
-				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
-									   str( arity_limit ), input_file, str(low_sup), out_file], \
-									  stdout=subprocess.PIPE)
-				"""
+									  stdout=self.outlog, stderr = self.outlog)
+#				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
+#									   str( arity_limit ), input_file, str(low_sup), out_file], \
+#									  stdout=sys.stderr, stderr = sys.stderr)
 			else:
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) +".aritylim" + str( arity_limit )
 				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
 									   input_file, str(low_sup), out_file], \
-									  stdout=sys.stderr, stderr = sys.stderr)
-				"""
-				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
-									   input_file, str(low_sup), out_file], stdout=subprocess.PIPE)
-				"""
+									  stdout=self.outlog, stderr = self.outlog)
+#				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
+#									   input_file, str(low_sup), out_file], \
+#									  stdout=sys.stderr, stderr = sys.stderr)
 		except subprocess.CalledProcessError, (p):
 			sys.stderr.write('subprocess.CalledProcessError: cmd:%s returncode:%s\n' % (p.cmd, p.returncode) )
 			sys.exit()
@@ -236,4 +234,3 @@ class LCM():
 			node.total = total
 			
 		self.constructed_index = self.getIndex( low_sup )
-

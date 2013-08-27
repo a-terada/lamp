@@ -76,7 +76,7 @@ def calBound( func_f, min_sup, fre_pattern ):
 # lcm2transaction_id: Mapping between LCM ID to transaction id.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 ##
-def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, max_comb):
+def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, max_comb, outlog):
 	max_lambda = maxLambda(transaction_list)
 	lam_star = 1; func_f = None;
 	try:
@@ -92,6 +92,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 				
 	except fs.TestMethodError, e:
 		sys.exit()
+		
 	try:
 		lam = max_lambda
 		
@@ -101,13 +102,13 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 			if (n1 < max_lambda):
 				max_lambda = int( n1 )
 				lam = int( n1 )
-				
-		fre_pattern = frequentPatterns.LCM(lcm_pass, max_lambda)
+		
+		fre_pattern = frequentPatterns.LCM(lcm_pass, max_lambda, outlog)
 		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
 		# If file for Lcm exist, comfiem that overwrite the file.
 		# solve K and lambda
 		while lam > 1:
-			sys.stderr.write("--- lambda: " + str(lam) + " ---\n")
+			outlog.write("--- lambda: " + str(lam) + " ---\n")
 			# if lambda == 1, all tests which support >= 1 are tested.
 			if lam == 1:
 				lam_star = lam
@@ -117,33 +118,32 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 
 			fre_pattern.frequentPatterns( trans4lcm, lam, max_comb ) # line 3 of Algorithm
 			m_lambda = fre_pattern.getTotal( lam ) # line 4 of Algorithm
-			sys.stderr.write("  m_lambda: " + str(m_lambda) + "\n")
+			outlog.write("  m_lambda: " + str(m_lambda) + "\n")
 			
 			f_lam_1 = calBound( func_f, lam-1, fre_pattern ) # f(lam-1)
-			sys.stderr.write("  f(" + str(lam-1) + ") = " + str(f_lam_1) + "\n")
-#			sys.stderr.write(str(threshold) + "//" + str(f_lam_1) + "\n")
+			outlog.write("  f(" + str(lam-1) + ") = " + str(f_lam_1) + "\n")
 			if (f_lam_1 == 0):
 				bottom = sys.maxint
 			else:
 				bottom = (threshold//f_lam_1) + 1 # bottom of line 5 of Algorithm
 			f_lam = calBound( func_f, lam, fre_pattern ) # f(lam)
-			sys.stderr.write("  f(" + str(lam) + ") = " + str(f_lam) + "\n")
+			outlog.write("  f(" + str(lam) + ") = " + str(f_lam) + "\n")
 			# If f(lambda) > f(lambda-1), raise error.
 			# Because MASL f(x) is smaller if x is larger.
 			if f_lam > f_lam_1:
 				e_out = "f(" + str(lam) + ") is larger than f(" + str(lam-1) + ")"
-				sys.stderr.write("MASLError: " + e_out + "\n")
+				outlog.write("MASLError: " + e_out + "\n")
 				sys.exit()
 			if (f_lam == 0):
 				top = sys.maxint
 			else:
 				top = threshold//f_lam # top of line 5 of Algorithm
-			sys.stderr.write("  " + str(bottom) + " <= m_lam:" + str(m_lambda) + " <= " + str(top) + "?\n")
+			outlog.write("  " + str(bottom) + " <= m_lam:" + str(m_lambda) + " <= " + str(top) + "?\n")
 			if bottom <= m_lambda and m_lambda <= top: # branch on condition of line 5
 				k = m_lambda
 				lam_star = lam
 				break
-			sys.stderr.write("  " + str(m_lambda) + " > " + str(top) + "?\n")
+			outlog.write("  " + str(m_lambda) + " > " + str(top) + "?\n")
 			if m_lambda > top: # branch on condition of line 8
 				lam_star = lam
 				break
@@ -160,10 +160,10 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 		sys.exit()
 
 	# multiple test by using k and lambda_star
-	sys.stderr.write("finish calculation of K: %s\n" % k)
+	outlog.write("finish calculation of K: %s\n" % k)
 	# If lam_star > max_lambda, m_lambda set to max_lambda.
 	# This case cause when optimal solution is found at first step.
-	sys.stderr.write("%s\n" % lam_star)
+	outlog.write("%s\n" % lam_star)
 	if (lam_star > max_lambda):
 		lam_star = max_lambda
 
@@ -212,7 +212,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 #			sys.stdout.write(out_column[:-1] + "\t" + str(l[2]) + "\t" + str(l[3]) + "\n")
 
 # list up the combinations p_i <= alpha/k
-def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, lcm2transaction_id, func_f, columnid2name):
+def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, lcm2transaction_id, func_f, columnid2name, outlog):
 	k = fre_pattern.getTotal( lam_star )
 	enrich_lst = []
 	i = 0
@@ -222,8 +222,8 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 		for item_set_and_size in item_trans_list:
 			i = i + 1
 			item_set = item_set_and_size[0]
-			sys.stderr.write("--- testing " + str(i) + " : ")
-			sys.stderr.write("%s" % item_set)
+			outlog.write("--- testing " + str(i) + " : ")
+			outlog.write("%s" % item_set)
 #			print item_set,
 			flag_transaction_list = [] # transaction list which has all items in itemset.
 			for t in item_set_and_size[1]:
@@ -232,7 +232,7 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 				flag_transaction_list.append(lcm2transaction_id[t])
 #			print " ---"
 			p, stat_score = func_f.calPValue(transaction_list, flag_transaction_list)
-			sys.stderr.write("p: " + str(p) + "\n")
+			outlog.write("p: " + str(p) + "\n")
 			if p < (threshold/k):
 				enrich_lst.append([item_set, p, len( item_set_and_size[1] ), stat_score])
 				item_set_size = len(item_set)
@@ -280,7 +280,7 @@ def maxLambda(transaction_list):
 #     When the value is over than 0, the minP is run.
 # fdr_flag: A flag to determine FWER or FDR control.
 ##
-def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
+def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, log_file):
 	# read 2 files and get transaction list
 	transaction_list = set()
 	try:
@@ -297,13 +297,19 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
 	# run multiple test
 	transaction4lcm53 = transaction_file + ".4lcm53"
 	# run
-	starttime = time.time()
-	fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
-				 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
-								   lcm_pass, max_comb)
-	enrich_lst, finish_test_time \
-				 = fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
-								threshold, lcm2transaction_id, func_f, columnid2name)
+	try:
+		outlog = open( log_file, 'w' )
+
+		starttime = time.time()
+		fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
+					 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
+								   lcm_pass, max_comb, outlog)
+		enrich_lst, finish_test_time \
+					= fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
+								   threshold, lcm2transaction_id, func_f, columnid2name, outlog)
+		
+	except IOError, e:
+		outlog.close()
 	
 	# output result
 	k = fre_pattern.getTotal( lam_star )
@@ -368,9 +374,9 @@ if __name__ == "__main__":
 	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 	if len(opts.log_file) > 0:
 		log_file = opts.log_file
-	sys.stderr = open( log_file, 'w' )
+#	sys.stderr = open( log_file, 'w' )
 
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_pass, max_comb)
+					  opts.lcm_pass, max_comb, log_file)

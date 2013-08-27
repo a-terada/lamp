@@ -4,7 +4,7 @@
 
 __author__ = "Aika Terada"
 
-import unittest, sys
+import unittest, sys, datetime
 import lamp
 
 class TestLamp(unittest.TestCase):
@@ -15,10 +15,11 @@ class TestLamp(unittest.TestCase):
 		self.sig_level = 0.05
 
 	def testFisher(self):
+		d = datetime.datetime.today()
+		log_file = "lamp_testfisher_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 		true_k = 5; true_p = 0.00699300699301; true_comb = set(["TF1", "TF2", "TF3"])
 		enrich_lst, k, columnid2name \
-					= lamp.run( self.csv_file, self.flag_file, self.sig_level, "fisher", None, -1 )
-		
+					= lamp.run( self.csv_file, self.flag_file, self.sig_level, "fisher", None, -1, log_file	)
 		sys.stderr.write("check correction factor...")
 		self.assertAlmostEqual(k, true_k)
 		sys.stderr.write("\n")
@@ -36,10 +37,12 @@ class TestLamp(unittest.TestCase):
 			self.assertAlmostEqual( comb[1], true_p )
 
 	def testUTest(self):
+		d = datetime.datetime.today()
+		log_file = "lamp_testutest_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 		true_k = 5; true_p = 0.00602414187918; true_zscore = 2.510727
 		true_comb = set(["TF1", "TF2", "TF3"])
 		enrich_lst, k, columnid2name \
-					= lamp.run( self.csv_file, self.value_file, self.sig_level, "u_test", None, -1 )
+					= lamp.run( self.csv_file, self.value_file, self.sig_level, "u_test", None, -1, log_file )
 		
 		sys.stderr.write("check correction factor...")
 		self.assertAlmostEqual(k, true_k)
