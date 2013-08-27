@@ -64,7 +64,7 @@ class LCM():
 		if lcm_pass == None:
 			current_dir = os.getcwd() # curent directory
 			self.__LCMPASS = current_dir + "/lcm53/lcm"
-			self.__LCMNAME = "lcm53"
+			self.__LCMNAME = "lcm"
 		else:
 			self.__LCMPASS = lcm_pass
 			lcm_pass_s = lcm_pass.split("/")

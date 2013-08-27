@@ -326,13 +326,15 @@ if __name__ == "__main__":
 	p = OptionParser(usage = usage)
 	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
-#	p.add_option('--lcm', dest = "lcm_pass", help = "Set LCM program pass if you do not have it the directory in multiple_test/lcm25/fim_closed")
+	p.add_option('--lcm', dest = "lcm_pass", default = "./lcm53/lcm", \
+				 help = "Set LCM program pass if you do not use ./lcm53/lcm")
 
 	p.add_option('--max_comb', dest = "max_comb", help = "Set the maximum size of combination to be tested.")
 	
 	p.add_option('-e', dest = "log_file", default = "", help = "The file name to output log.\n")
-	
+
 	opts, args = p.parse_args()
+	print opts.lcm_pass
 	
 	# check argsuments
 	if len(args) != 3:
@@ -345,7 +347,6 @@ if __name__ == "__main__":
 		else:
 			sys.stderr.write("Error: max_comb must be an integer value.\n")
 			sys.exit()
-	opts.lcm_pass = None
 	
 	# check p-vlaue procedure
 	if not opts.pvalue_procedure in set_opts:
