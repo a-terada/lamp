@@ -34,7 +34,7 @@ from optparse import OptionParser
 
 __author__ = "Aika TERADA"
 
-SEPARATOR_EXP = "\t"
+SEPARATOR_EXP = ","
 SEPARATOR_CSV = ","
 
 def readFile( input_file, separator ):

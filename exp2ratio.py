@@ -43,7 +43,7 @@ MIN_THRESHOLD = 4 # If the gene expresses less than this value in all condition,
 #DEFAULT_CONTROL = "1" # default number of control expression
 
 NAME_COLUMN = 0 # gene name column number
-SEPARATOR = '\t' # file separator
+SEPARATOR = ',' # file separator
 
 def log2( value ):
 	if value == 1:
