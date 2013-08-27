@@ -279,19 +279,18 @@ def maxLambda(transaction_list):
 # min_p_times: the integer whether permutation test (minP) is executed.
 #     When the value is over than 0, the minP is run.
 # fdr_flag: A flag to determine FWER or FDR control.
+# delm: delimiter of transaction_file and flag_file
 ##
-def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, log_file):
+def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, log_file, delm):
 	# read 2 files and get transaction list
 	transaction_list = set()
 	try:
-		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file)
+		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file, delm)
 		if (max_comb == None):
 			max_comb = -1
 	except ValueError, e:
 		return
 	except KeyError, e:
-		return
-	except readFile.ReadFileError, e:
 		return
 	
 	# run multiple test
@@ -379,4 +378,4 @@ if __name__ == "__main__":
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_path, max_comb, log_file)
+					  opts.lcm_path, max_comb, log_file, ',')
