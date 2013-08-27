@@ -36,7 +36,7 @@ class TestLamp(unittest.TestCase):
 			self.assertAlmostEqual( comb[1], true_p )
 
 	def testUTest(self):
-		true_k = 5; true_p = 0.00602414187918; true_uvalue = 45.5
+		true_k = 5; true_p = 0.00602414187918; true_zscore = 2.510727
 		true_comb = set(["TF1", "TF2", "TF3"])
 		enrich_lst, k, columnid2name \
 					= lamp.run( self.csv_file, self.value_file, self.sig_level, "u_test", None, -1 )
@@ -55,7 +55,7 @@ class TestLamp(unittest.TestCase):
 			self.assertTrue( flag )
 			sys.stderr.write("\n")
 			sys.stderr.write("   check U-value..")
-			self.assertAlmostEqual( comb[3], true_uvalue )
+			self.assertAlmostEqual( comb[3], true_zscore )
 			sys.stderr.write("\n")
 			sys.stderr.write("   check P-value..")
 			self.assertAlmostEqual( comb[1], true_p )
