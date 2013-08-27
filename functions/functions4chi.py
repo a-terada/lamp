@@ -187,8 +187,8 @@ def maxLambda(transaction_list):
 	return max_value
 
 
-def run(xls_file, value_file, itemset_str_lst):
-	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file)
+def run(xls_file, value_file, itemset_str_lst, delimiter):
+	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file, delimiter)
 	max_lambda = maxLambda(transaction_list)
 	func = FunctionOfX(transaction_list, max_lambda)
 	colname2id_dict = readFile.colname2id(columnid2name)
@@ -211,14 +211,14 @@ def run(xls_file, value_file, itemset_str_lst):
 	return p_value, len(flag_transactions_id)
 
 if __name__ == "__main__":
-	"""
 	if (len(sys.argv) < 4):
-		sys.stderr.write("Error: functions4fisher.py [xls_file] [value_file] [itemset]\n")
+		sys.stderr.write("Error: functions4chi.py [item-file] [value_file] [itemset]\n")
 		sys.exit()
-	"""
+	
 	xls_file = sys.argv[1]
 	value_file = sys.argv[2]
 	itemset_str_lst = sys.argv[3].split(',')
-	p_value, down_size = run(xls_file, value_file, itemset_str_lst)
+	delimiter = ','
+	p_value, down_size = run(xls_file, value_file, itemset_str_lst, delimiter)
 	
 

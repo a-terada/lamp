@@ -165,7 +165,7 @@ def readResult(resfname, csvfname, tabfname):
         mnamelist = motifName[i].split(',')
         message = '  ... retrieving values of ' + str(mnamelist)
         # print(message)
-        p_value, down_size = pval_func(csvfname, tabfname, mnamelist)
+        p_value, down_size = pval_func(csvfname, tabfname, mnamelist, ',')
 #        p_value, down_size = functions4fisher.run(csvfname, tabfname, mnamelist)
         motifRpvalue[i] = p_value
         motifApvalue[i] = p_value * factor

@@ -311,8 +311,8 @@ def comma2List(item_list_str, columnid2name):
 		item_list.append(columnid)
 	return item_list
 
-def run(xls_file, value_file, itemset_str_lst):
-	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file)
+def run(xls_file, value_file, itemset_str_lst, delimiter):
+	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file, delimiter)
 #	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file)
 	func = FunctionOfX(transaction_list)
 	colname2id_dict = readFile.colname2id(columnid2name)
@@ -339,8 +339,8 @@ def run(xls_file, value_file, itemset_str_lst):
 
 if __name__ == "__main__":
 	# chech the arguments
-	if (len(sys.argv) < 3):
-		print "usage: functions4u_test.py transaction_file value_file itemset"
+	if (len(sys.argv) < 4):
+		sys.stderr.write("usage: functions4u_test.py [item-file] [value-file] [itemset]\n")
 		sys.exit()
 
 	transaction_file = sys.argv[1]
@@ -354,5 +354,6 @@ if __name__ == "__main__":
 	if (not os.path.isfile(value_file)):
 		print "IOError: No such file: \'" + value_file + "\'"
 		sys.exit()
-
-	p_value, down_size = run(transaction_file, value_file, itemset_str_lst)
+	
+	delimiter = ','
+	p_value, down_size = run(transaction_file, value_file, itemset_str_lst, delimiter)
