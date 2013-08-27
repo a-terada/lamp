@@ -326,15 +326,14 @@ if __name__ == "__main__":
 	p = OptionParser(usage = usage)
 	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
-	p.add_option('--lcm', dest = "lcm_pass", default = "./lcm53/lcm", \
-				 help = "Set LCM program pass if you do not use ./lcm53/lcm")
+	p.add_option('--lcm', dest = "lcm_path", default = "./lcm53/lcm", \
+				 help = "Set LCM program path if you do not use ./lcm53/lcm")
 
 	p.add_option('--max_comb', dest = "max_comb", help = "Set the maximum size of combination to be tested.")
 	
-	p.add_option('-e', dest = "log_file", default = "", help = "The file name to output log.\n")
+	p.add_option('-e', dest = "log_filename", default = "", help = "The file name to output log.\n")
 
 	opts, args = p.parse_args()
-	print opts.lcm_pass
 	
 	# check argsuments
 	if len(args) != 3:
@@ -373,11 +372,11 @@ if __name__ == "__main__":
 	# change log file
 	d = datetime.datetime.today()
 	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
-	if len(opts.log_file) > 0:
-		log_file = opts.log_file
+	if len(opts.log_filename) > 0:
+		log_file = opts.log_filename
 #	sys.stderr = open( log_file, 'w' )
 
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_pass, max_comb, log_file)
+					  opts.lcm_path, max_comb, log_file)

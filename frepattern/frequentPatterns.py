@@ -71,7 +71,7 @@ class LCM():
 			self.__LCMNAME = lcm_pass_s[len(lcm_pass_s) - 1]
 		# check the LCM code exists
 		if not (os.path.isfile(self.__LCMPASS)):
-			sys.stderr.write("Error: %s does not exist.\n" % self.__LCMPASS)
+			sys.stderr.write("Please set lcm binary path with --lcm option\n")
 			sys.exit()
 			
 	def getIndex(self, support):
