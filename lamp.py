@@ -50,6 +50,8 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
+__version__ = "beta version"
+
 class MASLError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("MASLError: " + e + "\n")
@@ -177,6 +179,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 	if not set_method == "u_test":
 		flag_size = func_f.getN1()
 	# output setting
+	sys.stdout.write("# LAMP %s\n" % __version__)
 	sys.stdout.write("# target-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s\n" % threshold)
@@ -323,7 +326,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, 
 
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
-	p = OptionParser(usage = usage)
+	p = OptionParser(usage = usage, version = "%s" % __version__)
 	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
 	p.add_option('--lcm', dest = "lcm_path", default = "./lcm53/lcm", \
