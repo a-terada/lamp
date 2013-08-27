@@ -318,7 +318,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb):
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
 	p = OptionParser(usage = usage)
-	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Chose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
+	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
 #	p.add_option('--lcm', dest = "lcm_pass", help = "Set LCM program pass if you do not have it the directory in multiple_test/lcm25/fim_closed")
 
