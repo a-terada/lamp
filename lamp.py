@@ -50,6 +50,8 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
+__version__ = "beta version"
+
 class MASLError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("MASLError: " + e + "\n")
@@ -168,7 +170,6 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 		lam_star = max_lambda
 
 	correction_term_time = time.time()
-#	correction_term_time = time.clock()
 	return (fre_pattern, lam_star, max_lambda, correction_term_time, func_f)
 
 def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, columnid2name, lam_star, k, \
@@ -177,6 +178,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 	if not set_method == "u_test":
 		flag_size = func_f.getN1()
 	# output setting
+	sys.stdout.write("# LAMP %s\n" % __version__)
 	sys.stdout.write("# target-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s\n" % threshold)
@@ -322,7 +324,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, 
 
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
-	p = OptionParser(usage = usage)
+	p = OptionParser(usage = usage, version = "%s" % __version__)
 	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
 	p.add_option('--lcm', dest = "lcm_path", default = "./lcm53/lcm", \
@@ -373,7 +375,6 @@ if __name__ == "__main__":
 	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 	if len(opts.log_filename) > 0:
 		log_file = opts.log_filename
-#	sys.stderr = open( log_file, 'w' )
 
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
