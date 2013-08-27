@@ -65,12 +65,12 @@ def readResult(resfname, csvfname, tabfname):
         if line.find("Correction") >= 0:
             parts = line.split(" ")
             thresh = float(parts[4].split(",")[0])
-            factor = float(parts[8])
+            factor = float(parts[7])
             threshFactor = thresh * factor
             continue
 
         # read the csv filename
-        if line.find("target-file") >= 0 and csvfname.find("csv") < 0:
+        if line.find("item-file") >= 0 and csvfname.find("csv") < 0:
             parts = line.split(" ")
             csvfname = parts[2]
             continue
