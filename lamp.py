@@ -78,7 +78,7 @@ def calBound( func_f, min_sup, fre_pattern ):
 # lcm2transaction_id: Mapping between LCM ID to transaction id.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 ##
-def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, max_comb, outlog):
+def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, max_comb, outlog):
 	max_lambda = maxLambda(transaction_list)
 	lam_star = 1; func_f = None;
 	try:
@@ -105,7 +105,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_pass, ma
 				max_lambda = int( n1 )
 				lam = int( n1 )
 		
-		fre_pattern = frequentPatterns.LCM(lcm_pass, max_lambda, outlog)
+		fre_pattern = frequentPatterns.LCM(lcm_path, max_lambda, outlog)
 		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
 		# If file for Lcm exist, comfiem that overwrite the file.
 		# solve K and lambda
@@ -283,7 +283,7 @@ def maxLambda(transaction_list):
 # fdr_flag: A flag to determine FWER or FDR control.
 # delm: delimiter of transaction_file and flag_file
 ##
-def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, log_file, delm):
+def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, delm):
 	# read 2 files and get transaction list
 	transaction_list = set()
 	try:
@@ -304,7 +304,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_pass, max_comb, 
 		starttime = time.time()
 		fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
 					 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
-								   lcm_pass, max_comb, outlog)
+								   lcm_path, max_comb, outlog)
 		enrich_lst, finish_test_time \
 					= fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
 								   threshold, lcm2transaction_id, func_f, columnid2name, outlog)

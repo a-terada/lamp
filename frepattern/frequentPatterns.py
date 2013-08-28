@@ -50,7 +50,7 @@ class LCMError(Exception):
 
 
 class LCM():
-	def __init__(self, lcm_pass, max_support, outlog):
+	def __init__(self, lcm_path, max_support, outlog):
 		self.frequent_list = [] # index: max-support - support, In the list: Instance of Node class
 		self.max_support = max_support # maximum value of the minimum support.
 		self.constructed_index = -1 # frequent_list is constructed that its index is less than the value.
@@ -60,17 +60,17 @@ class LCM():
 		for i in xrange(0, self.max_support):
 			self.frequent_list.append( nodeClass.Node() )
 		
-		# set LCM code pass
-		if lcm_pass == None:
+		# set LCM code path
+		if lcm_path == None:
 			current_dir = os.getcwd() # curent directory
-			self.__LCMPASS = current_dir + "/lcm53/lcm"
+			self.__LCMPATH = current_dir + "/lcm53/lcm"
 			self.__LCMNAME = "lcm"
 		else:
-			self.__LCMPASS = lcm_pass
-			lcm_pass_s = lcm_pass.split("/")
-			self.__LCMNAME = lcm_pass_s[len(lcm_pass_s) - 1]
+			self.__LCMPATH = lcm_path
+			lcm_path_s = lcm_path.split("/")
+			self.__LCMNAME = lcm_path_s[len(lcm_path_s) - 1]
 		# check the LCM code exists
-		if not (os.path.isfile(self.__LCMPASS)):
+		if not (os.path.isfile(self.__LCMPATH)):
 			sys.stderr.write("Please set lcm binary path with --lcm option\n")
 			sys.exit()
 			
@@ -188,36 +188,24 @@ class LCM():
 			# If there is no limit to arity size, run LCM to get closed frequent pattern.
 			if ( arity_limit < 0 and self.constructed_index > -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) + ".closed"
-				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
+				subprocess.check_call([self.__LCMPATH, "CIf", "-U", str(upper_sup), \
 									   input_file, str(low_sup), out_file], \
 									  stdout=self.outlog, stderr = self.outlog)
-#				subprocess.check_call([self.__LCMPASS, "CIf", "-U", str(upper_sup), \
-#									   input_file, str(low_sup), out_file], \
-#									  stdout=sys.stderr, stderr = sys.stderr)
 			elif ( arity_limit < 0 and self.constructed_index == -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".closed"
-				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
+				subprocess.check_call([self.__LCMPATH, "CIf", input_file, str(low_sup), out_file], \
 									  stdout=self.outlog, stderr = self.outlog)
-#				subprocess.check_call([self.__LCMPASS, "CIf", input_file, str(low_sup), out_file], \
-#									  stdout=sys.stderr, stderr = sys.stderr)
-			# If there is limit to arity size, run LCM to get all frequent pattern.
 			elif ( arity_limit >= 0 and self.constructed_index > -1):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) \
 						   + ".aritylim" + str( arity_limit )
-				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
+				subprocess.check_call([self.__LCMPATH, "FIf", "-U", str(upper_sup), "-u", \
 									   str( arity_limit ), input_file, str(low_sup), out_file], \
 									  stdout=self.outlog, stderr = self.outlog)
-#				subprocess.check_call([self.__LCMPASS, "FIf", "-U", str(upper_sup), "-u", \
-#									   str( arity_limit ), input_file, str(low_sup), out_file], \
-#									  stdout=sys.stderr, stderr = sys.stderr)
 			else:
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) +".aritylim" + str( arity_limit )
-				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
+				subprocess.check_call([self.__LCMPATH, "FIf", "-u", str( arity_limit ), \
 									   input_file, str(low_sup), out_file], \
 									  stdout=self.outlog, stderr = self.outlog)
-#				subprocess.check_call([self.__LCMPASS, "FIf", "-u", str( arity_limit ), \
-#									   input_file, str(low_sup), out_file], \
-#									  stdout=sys.stderr, stderr = sys.stderr)
 		except subprocess.CalledProcessError, (p):
 			sys.stderr.write('subprocess.CalledProcessError: cmd:%s returncode:%s\n' % (p.cmd, p.returncode) )
 			sys.exit()
