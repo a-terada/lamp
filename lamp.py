@@ -96,7 +96,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		sys.exit()
 		
 	try:
-		lam = max_lambda
+		lam = max_lambda		
 		
 		# check a MASL of max_lambda
 		if (set_method == 'fisher') or (set_method == 'chi'):
@@ -133,8 +133,9 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 			# If f(lambda) > f(lambda-1), raise error.
 			# Because MASL f(x) is smaller if x is larger.
 			if f_lam > f_lam_1:
-				e_out = "f(" + str(lam) + ") is larger than f(" + str(lam-1) + ")"
-				outlog.write("MASLError: " + e_out + "\n")
+#				e_out = "f(" + str(lam) + ") = %.3g is larger than f(" + str(lam-1) + ")"
+				sys.stderr.write("MASLError: f(%s) = %.3g is larger than f(%s) = %.3g\n" \
+								 % (lam, f_lam, lam-1, f_lam_1))
 				sys.exit()
 			if (f_lam == 0):
 				top = sys.maxint
@@ -265,7 +266,11 @@ def maxLambda(transaction_list):
 	for i in item_sizes.itervalues():
 		if i > max_value:
 			max_value = i
-			
+
+	# check the max lambda to the nuber of transactions
+	if max_value > ( len(transaction_list)/2 ):
+		max_value = len(transaction_list)/2
+	
 	return max_value
 
 ##
