@@ -34,19 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # @editor aika 10, Nov. 2011
 #    Change readTransactionFile. If file has space the front and the end, remove them.
 
-import sys, transaction
+import sys, transaction, csv
 
-class ReadFileError(Exception):
-	def __init__(self, e):
-		print "ReadFileError: " + e
-		
 ##
 # Read transaction and flag file and return transaction matrix.
 # transaction_file: 
 ##
-def readFiles(transaction_file, value_file):
-	transaction_list, gene2id, columnid2name = readTransactionFile(transaction_file)
-	transaction_list = readValueFile(value_file, transaction_list, gene2id)
+def readFiles(transaction_file, value_file, delm):
+	transaction_list, gene2id, columnid2name = readTransactionFile(transaction_file, delm)
+	transaction_list = readValueFile(value_file, transaction_list, gene2id, delm)
 	transaction_list.sort() # sort transaction_list according to transaction_value
 	# check transaction names two
 	checkTransName(transaction_list, transaction_file) # check transaction names two
@@ -57,35 +53,50 @@ def readFiles(transaction_file, value_file):
 # Read transaction file and return list of transactions.
 # item ID is integer value and begin from 0.
 ##
-def readTransactionFile(transaction_file):
+def readTransactionFile(transaction_file, delm):
 	transaction_list = []
 	gene2id = {} # dictionary that gene name -> transaction ID
 	columnid2name = [] # list about mapping column id to column name
 	gene_set = set([])
-	for line in open(transaction_file, 'r'):
-		# If line is header line, read column name
-		if line.startswith("#"):
-			s = line[:-1].split(',')
-			for i in range(1, len(s)):
-				colname = s[i]				
-				colname = colname.strip() # If column name starts or finishes spaces, remove them.
-				columnid2name.append(colname)
-			continue
-		s = line[:-1].split(',')
-		t_name = s[0].strip()
-		if t_name in gene_set:
-			sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
-							 % (t_name, transaction_file))
-			sys.exit()
-		gene_set.add(t_name)
-		t = transaction.Transaction(t_name)
-		gene2id[t_name] = len(transaction_list)
-		for i in range(1, len(s)):
-			flag = s[i]
-			flag = flag.strip() # If flag includes spaces, remove them.
-			if flag == "1":
-				t.addItem(i)
-		transaction_list.append(t)
+	line_num = 0; col_size = -1
+	try:
+		f = open( transaction_file, 'r' )
+		for row_list in csv.reader( f, delimiter = delm ):
+			line_num = line_num + 1
+			# If line is header line, read column name
+			if line_num == 1:
+				col_size = len( row_list )
+				for i in range(1, col_size):
+					colname = row_list[i]
+#					colname = colname.strip() # If column name starts or finishes spaces, remove them.
+					columnid2name.append(colname)
+				continue
+			
+#			t_name = s[0].strip()
+			t_name = row_list[0]
+			if t_name in gene_set:
+				sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
+								 % (t_name, transaction_file))
+				sys.exit()
+			# check the number of columns
+			if len( row_list ) != col_size:
+				sys.stderr.write("Error in %s\n" % transaction_file)
+				sys.stderr.write("    The header line contains %s columns, while line %s contains %s columns.\n" \
+								 % (col_size, line_num, len( row_list )))
+				sys.exit()
+				
+			gene_set.add(t_name)
+			t = transaction.Transaction(t_name)
+			gene2id[t_name] = len(transaction_list)
+			for i in range(1, len(row_list)):
+				flag = row_list[i]
+#				flag = flag.strip() # If flag includes spaces, remove them.
+				if flag == "1":
+					t.addItem(i)
+			transaction_list.append(t)
+	except IOError, e:
+		sys.stderr.write("Error: %s\n" % e)
+		sys.exit()
 	return transaction_list, gene2id, columnid2name
 
 
@@ -96,38 +107,48 @@ def readTransactionFile(transaction_file):
 # transaction_list: List of transactions. This is made of readTransactionFile method.
 # gene2id: Dictionary that key indicates gene name and value is transaction ID(location of list)
 ##
-def readValueFile(value_file, transaction_list, gene2id):
+def readValueFile(value_file, transaction_list, gene2id, delm):
 	line_num = 0; gene_set = set([])
-	for line in open(value_file, 'r'):
-		line_num = line_num + 1
-		if (line.startswith("#")):
-			continue
-		s = line[:-1].split('\t')
-		try:
-			genename = s[0].strip()
-			value = float(s[1].strip())
+	try:
+		f = open( value_file, 'r' )
+		for row_list in csv.reader( f, delimiter = delm ):
+			line_num = line_num + 1
+			if (row_list[0].startswith("#")):
+				continue
+
+			# This error raises if value file contains more than two columns.
+			if not len(row_list) == 2:
+				sys.stderr.write("Error: line %s in %s.\n" % (line_num, value_file) )
+				sys.stderr.write("       value-file should contain two columns.\n")
+				sys.exit()
+
+			genename = row_list[0].strip()
+			exp_value = row_list[1].strip()
+
+			# This error raises if value cannot be converted to float.
+			if not isFloat( exp_value ):
+				sys.stderr.write("Error: line %s in %s.\n" % (line_num, value_file))
+				sys.stderr.write("       \'%s\' could not be converted string to float.\n" % exp_value)
+				sys.exit()
+			# This error raises if the identical keys are contained more than two times.
 			if genename in gene_set:
 				sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
 								 % (genename, value_file))
 				sys.exit()
+			# This error raise if gene does not include in itemset file.
+			if not genename in gene2id:
+				sys.stderr.write("Error:line %s in %s.\n" % (line_num, value_file))
+				sys.stderr.write("      \'%s\' is not contained in itemset file.\n" % genename)
+				sys.exit()
+				
 			gene_set.add(genename)
+			exp_value = float( exp_value )
 			geneid = gene2id[genename]
 			t = transaction_list[geneid]
-			t.value = value
-#			print "---"
-#			print t.name
-#			print t.itemset
-#			print t.value
-			
-		# This error raise if gene does not include in itemset file.
-		except KeyError, e:
-			sys.stderr.write("Error: line %s in %s, \"%s\"\n" % (line_num, value_file, line[:-1]))
-			sys.stderr.write("       %s is not contained in itemset file.\n" % e)
-			sys.exit()
-		except ValueError, e:
-			sys.stderr.write("Error: line %s in %s, \"%s\"\n" % (line_num, value_file, line[:-1]))
-			sys.stderr.write("       %s\n" % e)
-			sys.exit()
+			t.value = exp_value
+	except IOError, e:
+		sys.stderr.write("Error: %s cannot be found.\n" % value_file)
+		sys.exit()
 	return transaction_list
 
 ##
@@ -161,3 +182,10 @@ def colname2id(columnid2name):
 		colname2id_dict[i] = index
 		index = index + 1
 	return colname2id_dict
+
+def isFloat( value_str ):
+	try:
+		float( value_str )
+		return True
+	except ValueError:
+		return False

@@ -38,7 +38,7 @@ from optparse import OptionParser
 
 NAME_COLUMN = 0 # gene name column number
 EXPRESSION_COLUMN = 1 # gene expression profile number
-SEPARATOR = '\t' # file separator
+SEPARATOR = ',' # file separator
 
 
 ##

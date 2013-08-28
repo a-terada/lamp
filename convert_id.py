@@ -44,7 +44,8 @@ MAP_SEPARATOR = '","' # Separator for the line
 MAP_SEPARATOR_COLUMN = "///" # Separator for a column.
 # Definitions for converted-file
 CONV_ORIG_COLUMN_ID = 0 # Prob ID column number
-CONV_SEPARATOR = "\t" # Fils separator
+CONV_SEPARATOR = "\t" # Separator for the input file
+OUT_CONV_SEPARATOR = "," # Separator for the output file
 
 def readMapFile(filename):
 	old2new = {} # the mapping of prob ID for EntrezGene ID
@@ -86,7 +87,7 @@ def convertID( old2new, converted_file, output_file ):
 					new_id = old2new[old_id]
 					fw.write("%s" % new_id)
 					for i in s[1:]:
-						fw.write("%s%s" % (CONV_SEPARATOR, i))
+						fw.write("%s%s" % (OUT_CONV_SEPARATOR, i))
 					fw.write("\n")
 		fr.close()
 		fw.close()

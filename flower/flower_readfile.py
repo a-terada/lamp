@@ -65,12 +65,12 @@ def readResult(resfname, csvfname, tabfname):
         if line.find("Correction") >= 0:
             parts = line.split(" ")
             thresh = float(parts[4].split(",")[0])
-            factor = float(parts[8])
+            factor = float(parts[7])
             threshFactor = thresh * factor
             continue
 
         # read the csv filename
-        if line.find("target-file") >= 0 and csvfname.find("csv") < 0:
+        if line.find("item-file") >= 0 and csvfname.find("csv") < 0:
             parts = line.split(" ")
             csvfname = parts[2]
             continue
@@ -165,7 +165,7 @@ def readResult(resfname, csvfname, tabfname):
         mnamelist = motifName[i].split(',')
         message = '  ... retrieving values of ' + str(mnamelist)
         # print(message)
-        p_value, down_size = pval_func(csvfname, tabfname, mnamelist)
+        p_value, down_size = pval_func(csvfname, tabfname, mnamelist, ',')
 #        p_value, down_size = functions4fisher.run(csvfname, tabfname, mnamelist)
         motifRpvalue[i] = p_value
         motifApvalue[i] = p_value * factor
