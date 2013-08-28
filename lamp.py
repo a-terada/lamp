@@ -50,7 +50,7 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "beta version"
+__version__ = "1.0"
 
 class MASLError(Exception):
 	def __init__(self, e):
@@ -179,7 +179,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 		flag_size = func_f.getN1()
 	# output setting
 	sys.stdout.write("# LAMP %s\n" % __version__)
-	sys.stdout.write("# target-file: %s\n" % (transaction_file))
+	sys.stdout.write("# item-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s\n" % threshold)
 	sys.stdout.write("# P-value computing procedure: %s\n" % set_method)
@@ -188,7 +188,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 		sys.stdout.write(", # of positive samples: %d" % flag_size)
 	sys.stdout.write("\n")
 	sys.stdout.write("# Adjusted significance level: %.5g, " % (threshold/k) )
-	sys.stdout.write("# Correction factor: " + str(k) + " (# of target rows >= " + str(lam_star) + ")\n" )
+	sys.stdout.write("Correction factor: " + str(k) + " (# of target rows >= " + str(lam_star) + ")\n" )
 	sys.stdout.write("# # of significant combinations: " + str(len(enrich_lst)) + "\n")
 	# output header
 	if len(enrich_lst) > 0:
@@ -334,6 +334,8 @@ if __name__ == "__main__":
 	
 	p.add_option('-e', dest = "log_filename", default = "", help = "The file name to output log.\n")
 
+#	p.add_option('-d', dest = "delimiter", default = ",", help = "The delimiter for two input files.\n")
+
 	opts, args = p.parse_args()
 	
 	# check argsuments
@@ -370,13 +372,16 @@ if __name__ == "__main__":
 		sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
 		sys.exit()
 
+	
 	# change log file
 	d = datetime.datetime.today()
 	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 	if len(opts.log_filename) > 0:
 		log_file = opts.log_filename
 
+	opts.delimiter = ','
+	
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_path, max_comb, log_file, ',')
+					  opts.lcm_path, max_comb, log_file, opts.delimiter)
