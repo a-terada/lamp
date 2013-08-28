@@ -178,7 +178,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 	if not set_method == "u_test":
 		flag_size = func_f.getN1()
 	# output setting
-	sys.stdout.write("# LAMP %s\n" % __version__)
+	sys.stdout.write("# LAMP ver. %s\n" % __version__)
 	sys.stdout.write("# item-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s\n" % threshold)
