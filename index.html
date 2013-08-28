@@ -134,7 +134,7 @@
 </li>
 
 <li>
-<dt>sample_expression_value.tab</dt>
+<dt>sample_expression_value.csv</dt>
 
 <dd>A sample file of expression-file to use Mann-Whitney U-test. The gene orders should be exactly identical to item-file (<code>sample_item.csv</code>).</dd>
 </li>
@@ -186,7 +186,7 @@ Time (sec.): Computing correction factor 0.023, P-value 0.000, Total 0.023</code
 
 <h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
 
-<p>By changing the file &#8220;sample/sample_expression_value.tab&#8221; and the option &#8220;-p u_test&#8221; with &#8220;sample/sample_expression_over1.tab&#8221; and &#8220;-p fisher&#8221; in Demonstration 1, you can perform LAMP with Fisher&#8217;s exact test. We here use the following two samples in <code>sample/</code> directory.</p>
+<p>By changing the file &#8220;sample/sample_expression_value.csv&#8221; and the option &#8220;-p u_test&#8221; with &#8220;sample/sample_expression_over1.csv&#8221; and &#8220;-p fisher&#8221; in Demonstration 1, you can perform LAMP with Fisher&#8217;s exact test. We here use the following two samples in <code>sample/</code> directory.</p>
 
 <ul>
 <li>
@@ -196,7 +196,7 @@ Time (sec.): Computing correction factor 0.023, P-value 0.000, Total 0.023</code
 </li>
 
 <li>
-<dt>sample_expression_over1.tab</dt>
+<dt>sample_expression_over1.csv</dt>
 
 <dd>A sample file of expression-file to use Fisher&#8217;s exact test. Expression levels should be &#8220;0&#8221; or &#8220;1&#8221;.</dd>
 </li>
@@ -415,7 +415,7 @@ D,0,0,0,0
 
 <h3 id='expressionfile'>Expression-file</h3>
 
-<p>The expression-file provides the gene expressions levels. The file is the tab-delimited format with two columns: the gene name and the expression level.</p>
+<p>The expression-file provides the gene expressions levels. The file is the CSV format with two columns: the gene name and the expression level.</p>
 
 <p>When LAMP derives the p-value using the Mann-Whitney U-test, the expressions levels are any real values. However, when LAMP calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated, then the second column is 1. Otherwise, it is 0.</p>
 
