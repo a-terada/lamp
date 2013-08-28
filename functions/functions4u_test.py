@@ -243,13 +243,6 @@ class FunctionOfX(fs.FunctionsSuper):
 	# The z-value that minimum p-value is mean/var
 	##
 	def funcF(self, x):
-		# check the support size.
-		if x > (self.__t_size-1)/2:
-			e_out = "The support size " + str(x) + " is too larger.\n"
-			e_out = e_out + "                 Our method can not consider this value.\n"
-			e_out = e_out + "                 Try to replace 1 and 0 in the transaction file."
-			raise fs.TestMethodError, e_out
-#		print "x: " + str(x)
 		# calculate p-value if the group_x is consisted from max x transactions.
 		min_t_list = self.__transaction_list[0:x]
 		max_t_list = self.__transaction_list[x:]
