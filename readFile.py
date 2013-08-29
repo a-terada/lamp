@@ -60,7 +60,7 @@ def readTransactionFile(transaction_file, delm):
 	gene_set = set([])
 	line_num = 0; col_size = -1
 	try:
-		f = open( transaction_file, 'r' )
+		f = open( transaction_file, 'rU' )
 		for row_list in csv.reader( f, delimiter = delm ):
 			line_num = line_num + 1
 			# If line is header line, read column name
@@ -93,6 +93,12 @@ def readTransactionFile(transaction_file, delm):
 #				flag = flag.strip() # If flag includes spaces, remove them.
 				if flag == "1":
 					t.addItem(i)
+				elif flag == "0":
+					continue
+				else:
+					sys.stderr.write("line %s in \'%s\' contains the value neither 0 or 1.\n" \
+									 % (line_num, transaction_file) )
+					sys.exit()
 			transaction_list.append(t)
 	except IOError, e:
 		sys.stderr.write("Error: %s\n" % e)
@@ -110,7 +116,7 @@ def readTransactionFile(transaction_file, delm):
 def readValueFile(value_file, transaction_list, gene2id, delm):
 	line_num = 0; gene_set = set([])
 	try:
-		f = open( value_file, 'r' )
+		f = open( value_file, 'rU' )
 		for row_list in csv.reader( f, delimiter = delm ):
 			line_num = line_num + 1
 			if (row_list[0].startswith("#")):
