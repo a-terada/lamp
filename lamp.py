@@ -273,6 +273,9 @@ def maxLambda(transaction_list):
 	
 	return max_value
 
+def version():
+	return __version__
+
 ##
 # Run multiple test.
 # itemset_file: The file includes associations between TFs and genes.
