@@ -296,8 +296,12 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 	transaction_list = set()
 	try:
 		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file, delm)
-		if (max_comb == None):
+		if max_comb == "all":
 			max_comb = -1
+		elif max_comb >= len(columnid2name):
+			max_comb = -1
+		else:
+			pass
 	except ValueError, e:
 		return
 	except KeyError, e:
@@ -338,7 +342,8 @@ if __name__ == "__main__":
 	p.add_option('--lcm', dest = "lcm_path", default = "./lcm53/lcm", \
 				 help = "Set LCM program path if you do not use ./lcm53/lcm")
 
-	p.add_option('--max_comb', dest = "max_comb", help = "Set the maximum size of combination to be tested.")
+	p.add_option('--max_comb', dest = "max_comb", default = "all", \
+				 help = "Set the maximum size of combination to be tested.")
 	
 	p.add_option('-e', dest = "log_filename", default = "", help = "The file name to output log.\n")
 
@@ -350,12 +355,13 @@ if __name__ == "__main__":
 	if len(args) != 3:
 		sys.stderr.write("Error: input [target-file], [expression-file] and [significance-level].\n")
 		sys.exit()
-	max_comb = None
-	if (not (opts.max_comb == None)):
+
+	opts.max_comb = opts.max_comb.lower()
+	if not opts.max_comb == "all":
 		if (opts.max_comb.isdigit()):
-			max_comb = int(opts.max_comb)
+			opts.max_comb = int(opts.max_comb)
 		else:
-			sys.stderr.write("Error: max_comb must be an integer value.\n")
+			sys.stderr.write("Error: max_comb must be an integer value or all.\n")
 			sys.exit()
 	
 	# check p-vlaue procedure
@@ -392,4 +398,4 @@ if __name__ == "__main__":
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_path, max_comb, log_file, opts.delimiter)
+					  opts.lcm_path, opts.max_comb, log_file, opts.delimiter)
