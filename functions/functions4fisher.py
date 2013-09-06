@@ -73,10 +73,12 @@ class FunctionOfX(fs.FunctionsSuper):
 		# check the support size.
 		# If support size larger than half of all data size, raise error.
 		# Because this version does not treat x > (n1+n0)/2.
+		"""
 		if self.__f_size > (self.__t_size/2):
 			sys.stderr.write("Reduce the number of rows whose second column is 1 to be less than the half of the total rows.\n")
 			sys.stderr.write("This code cannot analyze this case.\n")
 			sys.exit()
+		"""
 
 			
 	def getN1(self):
