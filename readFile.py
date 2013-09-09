@@ -89,11 +89,11 @@ def readTransactionFile(transaction_file, delm):
 			t = transaction.Transaction(t_name)
 			gene2id[t_name] = len(transaction_list)
 			for i in range(1, len(row_list)):
-				flag = row_list[i]
+				flag = int(row_list[i])
 #				flag = flag.strip() # If flag includes spaces, remove them.
-				if flag == "1":
+				if flag == 1:
 					t.addItem(i)
-				elif flag == "0":
+				elif flag == 0:
 					continue
 				else:
 					sys.stderr.write("line %s in \'%s\' contains the value neither 0 or 1.\n" \
