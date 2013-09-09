@@ -50,7 +50,7 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 class MASLError(Exception):
 	def __init__(self, e):
