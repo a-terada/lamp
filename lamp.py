@@ -50,7 +50,7 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 class MASLError(Exception):
 	def __init__(self, e):
@@ -96,7 +96,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		sys.exit()
 		
 	try:
-		lam = max_lambda		
+		lam = max_lambda
 		
 		# check a MASL of max_lambda
 		if (set_method == 'fisher') or (set_method == 'chi'):
