@@ -206,6 +206,8 @@ class FunctionOfX(fs.FunctionsSuper):
 		u_value = self.__uValue(tgroup_x, tgroup_y) # u-value of two groups.
 		# z value of u-value
 		mean_u, var_u = self.__calStatValue(tgroup_x, tgroup_y)
+		if var_u == 0:
+			return 1.0, 0
 		z_value = (u_value - mean_u)/math.sqrt(var_u)
 #		sys.stderr.write("u: %s, mean: %s, var: %s, z_value: %s, " % (u_value, mean_u, var_u, z_value))
 		
