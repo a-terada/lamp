@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #    Developing the readValueFile for handling the value.
 # @editor aika 10, Nov. 2011
 #    Change readTransactionFile. If file has space the front and the end, remove them.
+# @editor aika, 11, Mar. 2014
+#    Change readFiles for keeping transaction ID.
 
 import sys, transaction, csv
 
@@ -44,6 +46,10 @@ def readFiles(transaction_file, value_file, delm):
 	transaction_list, gene2id, columnid2name = readTransactionFile(transaction_file, delm)
 	transaction_list = readValueFile(value_file, transaction_list, gene2id, delm)
 	transaction_list.sort() # sort transaction_list according to transaction_value
+	# Generate IDs to transactions
+	for i in xrange( 0, len(transaction_list) ):
+		t = transaction_list[i]
+		t.id = i
 	# check transaction names two
 	checkTransName(transaction_list, transaction_file) # check transaction names two
 	lcm2transaction_id = makeLCM2TransactionList(transaction_list) # make transaction id list to convert LCM result to transaction_list
@@ -109,7 +115,7 @@ def readTransactionFile(transaction_file, delm):
 ##
 # Read flag file and add information about flags to transaction list.
 # value_file: Read flag file.
-#     The column1 is gene name and the column2 is vlue (for example, gene expression).
+#     The column1 is gene name and the column2 is value (for example, gene expression).
 # transaction_list: List of transactions. This is made of readTransactionFile method.
 # gene2id: Dictionary that key indicates gene name and value is transaction ID(location of list)
 ##

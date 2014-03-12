@@ -50,12 +50,26 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "1.0.5"
+__version__ = "1.1 beta"
 
 class MASLError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("MASLError: " + e + "\n")
 	
+
+##
+# Convert a string for the limit to a combination size to an integer.
+# Without the arity limit, return -1.
+# max_comb: a string represents the arity limit.
+# item_size: the number of items in the dataset. 
+##
+def convertMaxComb( max_comb, item_size ):
+	if max_comb == "all":
+		return -1
+	elif max_comb >= item_size: 
+		return -1
+	else:
+		return int( max_comb )
 
 ##
 # Return the bound of given minimum support.
@@ -107,7 +121,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		
 		fre_pattern = frequentPatterns.LCM(lcm_path, max_lambda, outlog)
 		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
-		# If file for Lcm exist, comfiem that overwrite the file.
+		
 		# solve K and lambda
 		while lam > 1:
 			outlog.write("--- lambda: " + str(lam) + " ---\n")
@@ -285,10 +299,7 @@ def version():
 #     If gene has the feature, the column2 is 1. The other case 0.
 # threshold: The statistical significance threshold.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
-# max_comb: the maxmal size which the largest combination size in tests set.
-# min_p_times: the integer whether permutation test (minP) is executed.
-#     When the value is over than 0, the minP is run.
-# fdr_flag: A flag to determine FWER or FDR control.
+# max_comb: the maximal size which the largest combination size in tests set.
 # delm: delimiter of transaction_file and flag_file
 ##
 def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, delm):
@@ -296,12 +307,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 	transaction_list = set()
 	try:
 		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file, delm)
-		if max_comb == "all":
-			max_comb = -1
-		elif max_comb >= len(columnid2name):
-			max_comb = -1
-		else:
-			pass
+		max_comb = convertMaxComb( max_comb, len(columnid2name) )
 	except ValueError, e:
 		return
 	except KeyError, e:
@@ -320,7 +326,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		enrich_lst, finish_test_time \
 					= fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
 								   threshold, lcm2transaction_id, func_f, columnid2name, outlog)
-		
+		outlog.close()
 	except IOError, e:
 		outlog.close()
 	
@@ -329,7 +335,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 	outputResult( transaction_file, flag_file, threshold, set_method, max_comb, \
 				  columnid2name, lam_star, k, enrich_lst, transaction_list, func_f )
 	# output time cost
-	sys.stdout.write("Time (sec.): Computing correction factor %.3f, P-value %.3f, Total %.3f\n" \
+	sys.stdout.write("Time (sec.): Computing correction factor %.3f, Enumerating significant combinations %.3f, Total %.3f\n" \
 					 % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time - starttime))
 
 	return enrich_lst, k, columnid2name
@@ -351,7 +357,7 @@ if __name__ == "__main__":
 
 	opts, args = p.parse_args()
 	
-	# check argsuments
+	# check arguments
 	if len(args) != 3:
 		sys.stderr.write("Error: input [target-file], [expression-file] and [significance-level].\n")
 		sys.exit()
@@ -378,14 +384,11 @@ if __name__ == "__main__":
 		sys.exit()
 	try:
 		sig_pro = float(args[2])
+		if (sig_pro < 0) or (sig_pro > 1):
+			raise ValueError
 	except ValueError:
-		sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
+		sys.stderr.write("Error: significance probability must be a float value from 0.0 to 1.0.\n")
 		sys.exit()
-
-	if (sig_pro < 0) or (sig_pro > 1):
-		sys.stderr.write("ArgumentsError: significance probabiliy must be an float value from 0.0 to 1.0.\n")
-		sys.exit()
-
 	
 	# change log file
 	d = datetime.datetime.today()

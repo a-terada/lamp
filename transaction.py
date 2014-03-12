@@ -30,6 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Define Class that indicate a transaction.
 # The transaction has name and item set
 # @author aika 26, June, 2011
+# @editor aika 11, March, 2014
+#    Add the id.
+#    Add the functions copy and output for FastWY.
+
+import sys
 
 ##
 # Define Class
@@ -41,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##
 class Transaction:
 	def __init__(self, name):
+		self.id = None # ID for the code. The integer value from 0.
 		self.name = name # gene name
 		self.itemset = set() # item set
 		self.value = None
@@ -59,3 +65,18 @@ class Transaction:
 	##
 	def addItem(self, item):
 		self.itemset.add(item)
+
+	##
+	# Return a copy of this transaction
+	##
+	def copy(self):
+		t = Transaction( self.name )
+		t.id = self.id
+		t.itemset = self.itemset
+		t.value = self.value
+		return t
+
+	def output(self):
+		sys.stderr.write("%s %s " % (self.id, self.name))
+		sys.stderr.write("%s" % self.itemset)
+		sys.stderr.write(" %s\n" % self.value)
