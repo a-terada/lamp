@@ -70,21 +70,15 @@ def getValuesList( transaction_list ):
 def permuteData( transaction_list, org_values_list ):
 	random_index_list = range( 0, len(org_values_list) )
 	random.shuffle( random_index_list )
-	permute_transaction_list = []
-	for i in xrange( 0, len(transaction_list) ):
-		t = transaction_list[i]
+	permute_transaction_list = []; org2shuffled_list = [-1]*len( transaction_list )
+	for i in xrange( 0, len( random_index_list ) ):
+		random_index = random_index_list[ i ]
+		t = transaction_list[ random_index ]
 		new_t = t.copy()
-		random_index_list[ i ]
-		new_t.value = org_values_list[ random_index_list[ i ] ]
+		new_t.setValue( org_values_list[ i ] )
 		permute_transaction_list.append( new_t )
-	permute_transaction_list.sort() # sort transaction_list according to transaction_value
-	# Construct mapping from the original to shuffled transaction list
-	org2shuffled_list = [-1]*len(transaction_list)
-	for i in range( 0, len(permute_transaction_list) ):
-		t = permute_transaction_list[i]
-		org2shuffled_list[t.id] = i
+		org2shuffled_list[ t.getID() ] = i
 	return permute_transaction_list, org2shuffled_list
-
 
 ##
 # Calculate the minimum p-value in the permute_transaction_list
