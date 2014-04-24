@@ -57,12 +57,13 @@ def readResult(resfname, csvfname, tabfname):
 
     # open result file
     resfile = open(resfname, 'r')
-
+    assert resfile, "Couldn't open %s" % (resfname)
+    
     # read the data line-by-line
     for line in resfile:
         line = line[:-1]
         # read the threshold and correction factor
-        if line.find("Correction") >= 0:
+        if line.find("Correction factor:") >= 0:
             parts = line.split(" ")
             thresh = float(parts[4].split(",")[0])
             factor = float(parts[7])
@@ -70,31 +71,31 @@ def readResult(resfname, csvfname, tabfname):
             continue
 
         # read the csv filename
-        if line.find("item-file") >= 0 and csvfname.find("csv") < 0:
+        if line.find("# item-file") == 0 and csvfname.find("csv") < 0:
             parts = line.split(" ")
             csvfname = parts[2]
             continue
 
         # read the tab filename
-        if line.find("value-file") >= 0 and tabfname.find("tab") < 0:
+        if line.find("# value-file") == 0 and tabfname.find("tab") < 0:
             parts = line.split(" ")
             tabfname = parts[2]
             continue
 
         # read the significance level
-        if line.find("significance-level:") >= 0:
+        if line.find("# significance-level:") == 0:
             parts = line.split(" ")
             significance = float(parts[2])
             continue
         
         # read the procedure to compute P-value
-        if line.find("P-value computing procedure") >= 0:
+        if line.find("# P-value computing procedure") == 0:
             parts = line.split(" ")
             pval_procedure = parts[4]
             continue
         
         # stop inputting the values
-        if line.find("Time") >= 0:
+        if line.find("Time") == 0:
             isResult = False
 
         # add one set of values
