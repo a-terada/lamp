@@ -42,17 +42,28 @@ def readResult( filename ):
 		detections_list = [] # Store the combinations 
 		meta_line_list = [] # Store the meta lines
 		time_line = "" # Store the line containing running time
+		minp_line_list = [] # Store the minimum P-value lines
 		f = open(filename, 'r')
 		flag_broken = True # a flag to decide whether the file is broken or not.
 		flag_comb = False
+		flag_minp_dist = False # a flag for checking that the line is minimum P-value distribution.
 		detection_size = 0 # number of detection sets.
 		for line in f:
 			line = line[:-1]
 			if ( line.startswith("Time (sec.): ") ):
 				time_line = line
 				flag_broken = False
+				flag_comb = False
 				continue
-			if not flag_comb:
+			if line == "--- minimum P-values ---":
+				minp_line_list.append( line )
+				flag_minp_dist = True
+				continue
+			if flag_minp_dist:
+				minp_line_list.append( line )
+				continue
+
+			if not (flag_comb or flag_minp_dist):
 				meta_line_list.append( line )
 				if ( line.startswith("Rank") ):
 					flag_comb = True
@@ -61,14 +72,14 @@ def readResult( filename ):
 			# [3]: detections, [4]: arity, [5]: support, [6]: statistic_score.
 			detections = line.split('\t')
 			detections[1] = float(detections[1])
-			detections[2] = float(detections[2])
+#			detections[2] = float(detections[2])
 			detections[4] = int(detections[4])
 			detections_list.append( tuple( detections ) )
 		# if the file does not have results, output error.
 		if (flag_broken):
 			sys.stderr.write("%s is broken.\n" % filename)
 		f.close()
-		return detections_list, meta_line_list, time_line
+		return detections_list, meta_line_list, time_line, minp_line_list
 	except IOError, e:
 		sys.stderr.write("'%s' cannot be opened.\n" % filename)
 		sys.exit()
@@ -108,7 +119,7 @@ def sortComb( detections_list ):
 	return detections_list
 
 # output result
-def output( out_filename, detections_list, meta_line_list, time_line ):
+def output( out_filename, detections_list, meta_line_list, time_line, minp_line_list ):
 	if len( out_filename ) > 0:
 		try:
 			sys.stdout = open(out_filename, 'w')
@@ -129,6 +140,8 @@ def output( out_filename, detections_list, meta_line_list, time_line ):
 			sys.stdout.write("\t%s" % i)
 		sys.stdout.write("\n")
 	sys.stdout.write("%s\n" % time_line)
+	for i in minp_line_list:
+		sys.stdout.write("%s\n" % i)
 	sys.stdout.close()
 	
 
@@ -136,10 +149,10 @@ def output( out_filename, detections_list, meta_line_list, time_line ):
 # out_filename: the filename to output the eliminated result.
 #               When out_filename is "", the result is printed as standard output.
 def run( in_filename, out_filename ):
-	detections_list, meta_line_list, time_line = readResult( in_filename )
+	detections_list, meta_line_list, time_line, minp_line_list = readResult( in_filename )
 	detections_list = sortComb( detections_list )
 	merged_list = mergeResult( detections_list )
-	output( out_filename, merged_list, meta_line_list, time_line )
+	output( out_filename, merged_list, meta_line_list, time_line, minp_line_list )
 	
 
 if __name__ == "__main__":
