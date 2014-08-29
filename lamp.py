@@ -68,7 +68,8 @@ def calBound( func_f, min_sup, fre_pattern ):
 		bound = func_f.funcF( min_sup ) # minimum support value
 		fre_pattern.setBound( min_sup, bound ) # save
 	return fre_pattern.getBound( min_sup ) 
-	
+
+
 ##
 # Run multiple test.
 # transaction_list: List of itemset and expression value.
@@ -89,13 +90,10 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		elif set_method == "chi":
 			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
 		else:
-			sys.stderr.write("Error: choose \"fisher\", \"chi\" or \"u_test\".\n")
-			sys.exit
-				
-	except fs.TestMethodError, e:
-		sys.exit()
+			sys.stderr.write("Error: choose \"fisher\", \"chi\", or \"u_test\" by using -p option.\n")
+			outlog.close()
+			sys.exit()
 		
-	try:
 		lam = max_lambda
 		
 		# check a MASL of max_lambda
@@ -107,50 +105,15 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		
 		fre_pattern = frequentPatterns.LCM(lcm_path, max_lambda, outlog)
 		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
-		# If file for Lcm exist, comfiem that overwrite the file.
-		# solve K and lambda
-		while lam > 1:
-			outlog.write("--- lambda: " + str(lam) + " ---\n")
-			# if lambda == 1, all tests which support >= 1 are tested.
-			if lam == 1:
-				lam_star = lam
-				fre_pattern.frequentPatterns( trans4lcm, lam, max_comb ) # line 3 of Algorithm
-				k = fre_pattern.getTotal( lam )
-				break
 
-			fre_pattern.frequentPatterns( trans4lcm, lam, max_comb ) # line 3 of Algorithm
-			m_lambda = fre_pattern.getTotal( lam ) # line 4 of Algorithm
-			outlog.write("  m_lambda: " + str(m_lambda) + "\n")
-			
-			f_lam_1 = calBound( func_f, lam-1, fre_pattern ) # f(lam-1)
-			outlog.write("  f(" + str(lam-1) + ") = " + str(f_lam_1) + "\n")
-			if (f_lam_1 == 0):
-				bottom = sys.maxint
-			else:
-				bottom = (threshold//f_lam_1) + 1 # bottom of line 5 of Algorithm
-			f_lam = calBound( func_f, lam, fre_pattern ) # f(lam)
-			outlog.write("  f(" + str(lam) + ") = " + str(f_lam) + "\n")
-			# If f(lambda) > f(lambda-1), raise error.
-			# Because MASL f(x) is smaller if x is larger.
-			if f_lam > f_lam_1:
-#				e_out = "f(" + str(lam) + ") = %.3g is larger than f(" + str(lam-1) + ")"
-				sys.stderr.write("MASLError: f(%s) = %.3g is larger than f(%s) = %.3g\n" \
-								 % (lam, f_lam, lam-1, f_lam_1))
-				sys.exit()
-			if (f_lam == 0):
-				top = sys.maxint
-			else:
-				top = threshold//f_lam # top of line 5 of Algorithm
-			outlog.write("  " + str(bottom) + " <= m_lam:" + str(m_lambda) + " <= " + str(top) + "?\n")
-			if bottom <= m_lambda and m_lambda <= top: # branch on condition of line 5
-				k = m_lambda
-				lam_star = lam
-				break
-			outlog.write("  " + str(m_lambda) + " > " + str(top) + "?\n")
-			if m_lambda > top: # branch on condition of line 8
-				lam_star = lam
-				break
-			lam = lam -1
+		# If Fisher's exact test is used for computing P-value,
+		# LCM-LAMP is run to find optimal lambda.
+		if set_method == "fisher":
+			fre_pattern, lam_star = depthFisrt( trans4lcm, fre_pattern, max_comb, n1, threshold )
+		# If Mann-Whitney U test of Chi-square test is used,
+		# LAMP ver 1. is run for computing the optimal lambda. 
+		else:
+			fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog )
 	except fs.TestMethodError, e:
 		sys.exit()
 	except frequentPatterns.LCMError, e:
@@ -161,7 +124,8 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		k = fre_pattern.getTotal( lam_star )
 	except frequentPatterns.LCMError, e:
 		sys.exit()
-
+	
+	
 	# multiple test by using k and lambda_star
 	outlog.write("finish calculation of K: %s\n" % k)
 	# If lam_star > max_lambda, m_lambda set to max_lambda.
@@ -172,6 +136,76 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 
 	correction_term_time = time.time()
 	return (fre_pattern, lam_star, max_lambda, correction_term_time, func_f)
+
+##
+# Find the optimal lambda by breadth first algorithm.
+# This function is called when Mann-Whitney U- test of Chi-square test is selected as the statistical test. 
+# trans4lcm: File name to run LCM. 
+# fre_pattern: Instance to run LCM.
+# func_f: Instance to perform the statistical test. 
+# max_comb: The maximum arity limit.
+# threshold: Significance level.
+# lam: The initializing value of lambda. 
+##
+def breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog ):
+	# solve K and lambda
+	while lam > 1:
+		outlog.write("--- lambda: " + str(lam) + " ---\n")
+		# if lambda == 1, all tests which support >= 1 are tested.
+		if lam == 1:
+			lam_star = lam
+			fre_pattern.frequentPatterns( trans4lcm, lam, max_comb ) # line 3 of Algorithm
+			k = fre_pattern.getTotal( lam )
+			break
+	
+		fre_pattern.frequentPatterns( trans4lcm, lam, max_comb ) # line 3 of Algorithm
+		m_lambda = fre_pattern.getTotal( lam ) # line 4 of Algorithm
+		outlog.write("  m_lambda: " + str(m_lambda) + "\n")
+		
+		f_lam_1 = calBound( func_f, lam-1, fre_pattern ) # f(lam-1)
+		outlog.write("  f(" + str(lam-1) + ") = " + str(f_lam_1) + "\n")
+		if (f_lam_1 == 0):
+			bottom = sys.maxint
+		else:
+			bottom = (threshold//f_lam_1) + 1 # bottom of line 5 of Algorithm
+		f_lam = calBound( func_f, lam, fre_pattern ) # f(lam)
+		outlog.write("  f(" + str(lam) + ") = " + str(f_lam) + "\n")
+		# If f(lambda) > f(lambda-1), raise error.
+		# Because MASL f(x) is smaller if x is larger.
+		if f_lam > f_lam_1:
+			sys.stderr.write("MASLError: f(%s) = %.3g is larger than f(%s) = %.3g\n" \
+							 % (lam, f_lam, lam-1, f_lam_1))
+			sys.exit()
+		if (f_lam == 0):
+			top = sys.maxint
+		else:
+			top = threshold//f_lam # top of line 5 of Algorithm
+		outlog.write("  " + str(bottom) + " <= m_lam:" + str(m_lambda) + " <= " + str(top) + "?\n")
+		if bottom <= m_lambda and m_lambda <= top: # branch on condition of line 5
+			k = m_lambda
+			lam_star = lam
+			break
+		outlog.write("  " + str(m_lambda) + " > " + str(top) + "?\n")
+		if m_lambda > top: # branch on condition of line 8
+			lam_star = lam
+			break
+		lam = lam -1
+	return fre_pattern, lam
+
+##
+# Find the optimal lambda by depth first algorithm.
+# This function is called when Fisher's exact test is selected as the statistical test. 
+# trans4lcm: File name to run LCM. 
+# fre_pattern: Instance to run LCM. 
+# max_comb: The maximum arity limit. 
+# n1: The number of positive samples.
+# threshold: Significance level. 
+##
+def depthFisrt( trans4lcm, fre_pattern, max_comb, n1, threshold ):
+	lam = fre_pattern.runLCMLAMP( trans4lcm, max_comb, n1, threshold )
+	fre_pattern.frequentPatterns( trans4lcm, lam, max_comb )
+	return fre_pattern, lam
+
 
 def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, columnid2name, lam_star, k, \
 				  enrich_lst, transaction_list, func_f ):
@@ -203,7 +237,6 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 		for l in enrich_lst:
 			rank = rank + 1
 			sys.stdout.write("%d\t%.5g\t%.5g\t" % (rank, l[1], k*l[1]))
-#			sys.stdout.write(str(rank) + "\t" + str(l[1]) + "\t" + str(k*l[1]) + "\t")
 			out_column = ""
 			for i in l[0]:
 				out_column = out_column + columnid2name[i-1] + ","
@@ -212,10 +245,10 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 				sys.stdout.write("%.5g\n" % l[3])
 			else:
 				sys.stdout.write("%d\n" % l[3])
-#			sys.stdout.write(out_column[:-1] + "\t" + str(l[2]) + "\t" + str(l[3]) + "\n")
+
 
 # list up the combinations p_i <= alpha/k
-def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, lcm2transaction_id, func_f, columnid2name, outlog):
+def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, func_f, columnid2name, outlog):
 	k = fre_pattern.getTotal( lam_star )
 	enrich_lst = []
 	i = 0
@@ -227,13 +260,9 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 			item_set = item_set_and_size[0]
 			outlog.write("--- testing " + str(i) + " : ")
 			outlog.write("%s" % item_set)
-#			print item_set,
 			flag_transaction_list = [] # transaction list which has all items in itemset.
 			for t in item_set_and_size[1]:
-#				print t,
-#				print " " + str(lcm2transaction_id[t]) + ", ",
-				flag_transaction_list.append(lcm2transaction_id[t])
-#			print " ---"
+				flag_transaction_list.append( t )
 			p, stat_score = func_f.calPValue(transaction_list, flag_transaction_list)
 			outlog.write("p: " + str(p) + "\n")
 			if p < (threshold/k):
@@ -241,13 +270,11 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 				item_set_size = len(item_set)
 				if ( item_set_size > max_itemset_size ):
 					max_itemset_size = item_set_size
-#			print "p: " + str(p)+ "  ",
-#			print item_set
-
+	
 	finish_test_time = time.time()
 	return ( enrich_lst, finish_test_time ) # return the number of enrich set for permutation
-	#return (len(enrich_lst), finish_test_time) # return the number of enrich set for permutation
-		
+
+
 ##
 # Return max lambda. That is, max size itemset.
 ##
@@ -293,9 +320,10 @@ def version():
 ##
 def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, delm):
 	# read 2 files and get transaction list
+	sys.stderr.write( "Read input files ...\n" )
 	transaction_list = set()
 	try:
-		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file, delm)
+		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, delm)
 		if max_comb == "all":
 			max_comb = -1
 		elif max_comb >= len(columnid2name):
@@ -314,25 +342,29 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		outlog = open( log_file, 'w' )
 
 		starttime = time.time()
+		sys.stderr.write( "Compute the optimal correction factor ..." )
 		fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
 					 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
 								   lcm_path, max_comb, outlog)
+		k = fre_pattern.getTotal( lam_star )
+		sys.stderr.write( " %s\n" % k )
+		sys.stderr.write( "Compute P-values of testable combinations ...\n" )
 		enrich_lst, finish_test_time \
 					= fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
-								   threshold, lcm2transaction_id, func_f, columnid2name, outlog)
+								   threshold, func_f, columnid2name, outlog)
 		
 	except IOError, e:
 		outlog.close()
-	
+
+	sys.stderr.write( "Output results ...\n" )
 	# output result
-	k = fre_pattern.getTotal( lam_star )
 	outputResult( transaction_file, flag_file, threshold, set_method, max_comb, \
 				  columnid2name, lam_star, k, enrich_lst, transaction_list, func_f )
 	# output time cost
 	sys.stdout.write("Time (sec.): Computing correction factor %.3f, P-value %.3f, Total %.3f\n" \
 					 % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time - starttime))
 
-	return enrich_lst, k, columnid2name
+	return enrich_lst, k, lam_star, columnid2name
 
 if __name__ == "__main__":
 	usage = "usage: %prog [options] transaction_file value_file significance_probability"
@@ -363,12 +395,7 @@ if __name__ == "__main__":
 		else:
 			sys.stderr.write("Error: max_comb must be an integer value or all.\n")
 			sys.exit()
-	
-	# check p-vlaue procedure
-	if not opts.pvalue_procedure in set_opts:
-		sys.stderr.write("Error: Choose \"fisher\" or \"u_test\" by using -p option\n")
-		sys.exit()
-	
+		
 	# check the file exist.
 	if not os.path.isfile(args[0]):
 		sys.stderr.write("IOError: No such file: \'" + args[0] + "\'\n")
@@ -396,6 +423,6 @@ if __name__ == "__main__":
 	opts.delimiter = ','
 	
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
-	enrich_lst, k, columnid2name \
+	enrich_lst, k, lam_star, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
 					  opts.lcm_path, opts.max_comb, log_file, opts.delimiter)

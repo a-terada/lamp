@@ -46,8 +46,7 @@ def readFiles(transaction_file, value_file, delm):
 	transaction_list.sort() # sort transaction_list according to transaction_value
 	# check transaction names two
 	checkTransName(transaction_list, transaction_file) # check transaction names two
-	lcm2transaction_id = makeLCM2TransactionList(transaction_list) # make transaction id list to convert LCM result to transaction_list
-	return transaction_list, columnid2name, lcm2transaction_id
+	return transaction_list, columnid2name
 
 ##
 # Read transaction file and return list of transactions.
@@ -68,11 +67,9 @@ def readTransactionFile(transaction_file, delm):
 				col_size = len( row_list )
 				for i in range(1, col_size):
 					colname = row_list[i]
-#					colname = colname.strip() # If column name starts or finishes spaces, remove them.
 					columnid2name.append(colname)
 				continue
 			
-#			t_name = s[0].strip()
 			t_name = row_list[0]
 			if t_name in gene_set:
 				sys.stderr.write("Error: %s is contained two or more times in %s.\n" \
@@ -90,7 +87,6 @@ def readTransactionFile(transaction_file, delm):
 			gene2id[t_name] = len(transaction_list)
 			for i in range(1, len(row_list)):
 				flag = int(row_list[i])
-#				flag = flag.strip() # If flag includes spaces, remove them.
 				if flag == 1:
 					t.addItem(i)
 				elif flag == 0:
@@ -167,16 +163,6 @@ def checkTransName(transaction_list, transaction_file):
 			sys.stderr.write("\"%s\" only appears in %s\n" % (t.name, transaction_file))
 			sys.exit()
 
-##
-# Make list to convert LCM result to transaction_list index
-##
-def makeLCM2TransactionList(transaction_list):
-	lcm2transaction_id = []
-	for i in range(0, len(transaction_list)):
-		t = transaction_list[i]
-		if ( len(t.itemset) > 0 ):
-			lcm2transaction_id.append(i)
-	return lcm2transaction_id
 
 ##
 #

@@ -97,19 +97,16 @@ class LCM():
 		return self.frequent_list[ self.getIndex(support) ].itemset_list
 	
 	##
-	# Make file for executing lcm25 code.
-	# lcm25 can be download from http://research.nii.ac.jp/~uno/codes-j.html
+	# Make file for running LCM. 
+	# LCM was downloaded from http://research.nii.ac.jp/~uno/codes-j.html
 	# transaction_list: list of transactions
 	##
 	def makeFile4Lem(self, transaction_list, output_file):
 		fw = open(output_file, 'w')
-		for i in range(0, len(transaction_list)):
-			t = transaction_list[i]
+		for t in transaction_list:
 			for item in t.itemset:
 				fw.write(str(item) + " ")
-				#fw.write(str(item) + " ")
-			if len(t.itemset) > 0:
-				fw.write('\n')
+			fw.write('\n')
 		fw.close()
 	
 	
@@ -165,7 +162,7 @@ class LCM():
 	
 		
 	##
-	# Construct frequent patterns list.	This method use lcm535 program.
+	# Construct frequent patterns list.	This method use lcm53 program.
 	# input_file:
 	# low_sup: The number of minimum support. get item set that appeare abobe min_sup.
 	# arity_limit: The limit to appriori depth.
@@ -180,12 +177,12 @@ class LCM():
 			os.mkdir(out_dir)
 		out_file_s = input_file.split("/")
 		out_file_name = out_file_s[len(out_file_s)-1]
-		out_file_pre = out_dir + "/" + out_file_name # + ".lowsup" + str(low_sup)
+		out_file_pre = out_dir + "/" + out_file_name
 
 		upper_sup = self.max_support - self.constructed_index - 1
 		# Run LCM
 		try:
-			# If there is no limit to arity size, run LCM to get closed frequent pattern.
+			# If the arity size is not limited, run LCM to get closed frequent pattern.
 			if ( arity_limit < 0 and self.constructed_index > -1 ):
 				out_file = out_file_pre + ".lowsup" + str( low_sup ) + ".upsup" + str( upper_sup ) + ".closed"
 				subprocess.check_call([self.__LCMPATH, "CIf", "-U", str(upper_sup), \
@@ -214,11 +211,50 @@ class LCM():
 
 		# Update the total number of transactions
 		total = 0
-		if low_sup < self.max_support:
+		if (low_sup < self.max_support) and (self.constructed_index > -1):
 			total = self.frequent_list[ self.getIndex( low_sup ) - 1 ].total
-		for i in xrange( low_sup, upper_sup + 1 ):
+		for i in xrange( upper_sup, low_sup - 1, -1 ):
 			node = self.frequent_list[ self.getIndex( i ) ]
 			total = total + len( node.itemset_list )
 			node.total = total
-			
+		
 		self.constructed_index = self.getIndex( low_sup )
+	
+		
+	##
+	# Run LCM-LAMP and return the optimal minimum support. 
+	# input_file: filename for LCM.
+	# arity_limit: limit for appriori depth.
+	##
+	def runLCMLAMP( self, input_file, arity_limit, n1, sig_level ):
+		out_dir = input_file + ".results." + self.__LCMNAME
+		if not os.path.exists(out_dir):
+			os.mkdir(out_dir)
+		out_file_s = input_file.split("/")
+		out_file_name = out_file_s[len(out_file_s)-1]
+		out_file_pre = out_dir + "/" + out_file_name
+		out_file = ""
+		
+		if ( arity_limit < 0 ):
+			out_file = out_file_pre + ".lcmlamp.closed"
+			outlog_lcmlamp = open( out_file, 'w' )
+			subprocess.check_call( [self.__LCMPATH, "C", "-LAMP", str(n1), input_file, str(sig_level)], \
+								   stdout=outlog_lcmlamp, stderr=outlog_lcmlamp )
+			outlog_lcmlamp.close()
+		else:
+			out_file = out_file_pre + ".lcmlamp.aritylim" + str( arity_limit )
+			outlog_lcmlamp = open( out_file, 'w' )
+			subprocess.check_call( [self.__LCMPATH, "F", "-LAMP", str(n1), "-u", str(arity_limit), \
+									input_file, str(sig_level)], \
+								   stdout=outlog_lcmlamp, stderr=outlog_lcmlamp )
+			outlog_lcmlamp.close()
+		
+		fr = open( out_file, 'r' ); line = ""; lam = -1
+		for line in fr:
+			if line.startswith( "frq= " ):
+				s = line.split( ' ' )
+				lam = int( s[1] )
+		fr.close()
+		lam = lam - 1
+		return lam
+			
