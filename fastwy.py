@@ -86,12 +86,11 @@ def permuteData( transaction_list, org_values_list ):
 # trans4lcm: the filename to run LCM
 # fre_pattern: the instance to obtain the frequent pattern from the min_sup
 # func_f: the instance to calculate MASL and the p-value
-# lcm2transaction_id: the map between LCM ID to transaction id
 # max_comb: the limit to maximum combination size
 # org2shuffled_list: the mapping from transaction ID from the row dataset to shuffled dataset
 ##
 def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, func_f, \
-							lcm2transaction_id, max_comb, org2shuffled_list ):
+							max_comb, org2shuffled_list ):
 	min_p = 1.0; min_p_pattern = None # the minimum p-value of the permuted set
 	flag = True; low_sup = fre_pattern.max_support; i = 0
 	freq_time = 0
@@ -105,23 +104,24 @@ def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, fu
 		cal_list = fre_pattern.getFrequentList( low_sup ) # Itemset calculated its P-value
 		endtime = time.time()
 		freq_time += endtime - starttime # time to construct apriori
-		for item_set, transaction_list in cal_list:
+		for cal_item_set, cal_transaction_list in cal_list:
 			i = i + 1
-#			sys.stderr.write("--- testing %s [ " % i)
-#			for j in item_set:
-#				sys.stderr.write("%s " % j)
-#			sys.stderr.write("]: ")
+			sys.stderr.write("--- testing %s [ " % i)
+			for j in cal_item_set:
+				sys.stderr.write("%s " % j)
+			sys.stderr.write("]: ")
 			flag_transaction_list = [] # transaction list which has all items in itemset.
-			for t in transaction_list:
-				raw_id = lcm2transaction_id[t]
-				shuffled_id = org2shuffled_list[ raw_id ]
+			for t in cal_transaction_list:
+				shuffled_id = org2shuffled_list[ t ]
+#				raw_id = lcm2transaction_id[t]
+#				shuffled_id = org2shuffled_list[ raw_id ]
 #				sys.stderr.write("raw %s -> shuffled %s\n" % (raw_id, shuffled_id))
 				flag_transaction_list.append( shuffled_id )
-#			sys.stderr.write("%s" % flag_transaction_list)
+			sys.stderr.write("%s" % flag_transaction_list)
 			p, stat_score = func_f.calPValue( permute_transaction_list, flag_transaction_list )
-#			sys.stderr.write("p " + str(p) + ", stat_score %s\n" % stat_score)
+			sys.stderr.write("p " + str(p) + ", stat_score %s\n" % stat_score)
 			if p < min_p:
-				min_p = p; min_p_pattern = item_set
+				min_p = p; min_p_pattern = cal_item_set
 		
 #		sys.stderr.write( "min_p: %s, low_bound: %s, min_sup: %s\n" % (min_p, bound, low_sup) )
 		# If the minimum p-value is less than the lower bound of P-value, finish the calculation.
@@ -139,17 +139,16 @@ def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, fu
 # threshold: The statistical significance threshold.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 # lcm_path: LCM path
-# lcm2transaction_id: the map between LCM ID to transaction id
 # max_comb: the limit to maximum combination size
 # permute_num: the number of permuted dataset used in FastWY
 # outlog: file object to output logs
 ##
 def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_path, \
-					 lcm2transaction_id, max_comb, permute_num, outlog):
-#	sys.stderr.write("--- original dataset ---\n")
-#	for j in transaction_list:
-#		j.output()
-#	sys.stderr.write("------\n")
+					 max_comb, permute_num, outlog):
+	sys.stderr.write("--- original dataset ---\n")
+	for j in transaction_list:
+		j.output()
+	sys.stderr.write("------\n")
 
 	starttime = time.time()
 
@@ -164,6 +163,7 @@ def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_pat
 		func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
 	else:
 		sys.stderr.write("Error: Choose \"fisher\", \"chi\", or \"u_test\" by using -p option\n")
+		outlog.close()
 		sys.exit()
 
 	# calculate the set of minimum p-values using permuted data
@@ -183,13 +183,13 @@ def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_pat
 	for i in xrange( 0, permute_num ):
 		per_start = time.time()
 		permute_transaction_list, org2shuffled_list = permuteData( transaction_list, org_values_list ) # generate the permuted dataset.
-#		for j in permute_transaction_list:
-#			sys.stderr.write("%s %s " % (j.id, j.name))
-#			sys.stderr.write("%s" % j.itemset)
-#			sys.stderr.write(" %s\n" % j.value)
+		for j in permute_transaction_list:
+			sys.stderr.write("%s %s " % (j.id, j.name))
+			sys.stderr.write("%s" % j.itemset)
+			sys.stderr.write(" %s\n" % j.value)
 		func_f.calTime = 0
 		min_p, low_sup, freq_time = calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern,
-															func_f, lcm2transaction_id, max_comb, org2shuffled_list )
+															func_f, max_comb, org2shuffled_list )
 		per_time = time.time() - per_start
 		min_p_list.append( tuple( [ min_p, low_sup, fre_pattern.getTotal( low_sup ), freq_time, per_time, func_f.calTime ] ) )
 		outlog.write( "[permute %s] minP %s, minSupport %s, totalTest %s, freqTime %s, totalTime %s, #ofPvalue %s\n" \
@@ -206,14 +206,16 @@ def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_pat
 ##
 def adjustedThreshold( min_p_list, threshold, permute_num ):
 	# calculate the adjusted significance level
-	min_p_index = int( math.floor(permute_num * threshold) ) - 1
+	min_p_index = max( int( math.floor(permute_num * threshold) ) - 1, 0 )
 	sorted_min_p_list =  sorted( min_p_list, cmp = lambda x,y:cmp(x[0], y[0]))
 	adjusted_threshold = sorted_min_p_list[ min_p_index ][0] # the adjusted significance level.
+	
+	if min_p_index + 1 >= len(min_p_list):
+		return adjusted_threshold, sorted_min_p_list
 	while adjusted_threshold == sorted_min_p_list[ min_p_index + 1][0]:
 		min_p_index = min_p_index - 1
 		adjusted_threshold = sorted_min_p_list[ min_p_index ][0] # the adjusted significance level.
 		if min_p_index < 0:
-#			sys.stderr.write("Warning: The permute time is not enough.\n")
 			min_p_index = 0
 			break
 	
@@ -225,12 +227,11 @@ def adjustedThreshold( min_p_list, threshold, permute_num ):
 # trans4lcm: the filename to run LCM
 # fre_pattern: the instance to obtain the frequent pattern from the min_sup
 # func_f: the instance to calculate MASL and the p-value
-# lcm2transaction_id: the map between LCM ID to transaction id
 # max_comb: the limit to maximum combination size
 # adjusted_threshold: adjusted threshold for P-value
 # outlog: file object to output logs
 ##
-def enumerateSigComb(transaction_list, trans4lcm, fre_pattern, func_f, lcm2transaction_id, \
+def enumerateSigComb(transaction_list, trans4lcm, fre_pattern, func_f, \
 					 max_comb, adjusted_threshold, outlog):
 	# test the raw (non-permuted) dataset
 	i = 0; enrich_lst = []; flag = True; low_sup = fre_pattern.max_support; freq_time = 0
@@ -254,7 +255,8 @@ def enumerateSigComb(transaction_list, trans4lcm, fre_pattern, func_f, lcm2trans
 #			sys.stderr.write("]: ")
 			flag_transaction_list = [] # transaction list which has all items in itemset.
 			for t in item_transid_list:
-				flag_transaction_list.append( lcm2transaction_id[t] )
+				flag_transaction_list.append( t )
+#				flag_transaction_list.append( lcm2transaction_id[t] )
 #			sys.stderr.write("%s" % flag_transaction_list)
 			p, stat_score = func_f.calPValue( transaction_list, flag_transaction_list )
 			outlog.write( "p " + str(p) + ", stat_score %s\n" % stat_score )
@@ -384,7 +386,7 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 	# read 2 files and get transaction list
 	transaction_list = set()
 	try:
-		transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(transaction_file, flag_file, delm)
+		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, delm)
 		max_comb = lamp.convertMaxComb( max_comb, len(columnid2name) )
 	except ValueError, e:
 		return
@@ -404,7 +406,7 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 	outlog.write("Calculate the minimum p-value of the permuted datasets ...\n")
 	min_p_list, fre_pattern, func_f = \
 				generateMinPDist(transaction_list, trans4lcm, threshold, set_method, \
-								 lcm_path, lcm2transaction_id, max_comb, k, outlog)
+								 lcm_path, max_comb, k, outlog)
 	# adjusted significance level
 	outlog.write("Adjust significance level ...\n")
 	adjusted_threshold, sorted_min_p_list = adjustedThreshold( min_p_list, threshold, k )
@@ -414,7 +416,7 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 	outlog.write("Calculate the p-values in the given data set ...\n")
 	enrich_lst, time_enumerate_freq, time_enumerate_total = \
 				enumerateSigComb( transaction_list, trans4lcm, fre_pattern, func_f, \
-								  lcm2transaction_id, max_comb, adjusted_threshold, outlog )
+								  max_comb, adjusted_threshold, outlog )
 	
 	finish_test_time = time.time()
 
@@ -483,8 +485,9 @@ if __name__ == "__main__":
 	except ValueError:
 		sys.stderr.write("Error: significance probability must be an float value from 0.0 to 1.0.\n")
 		sys.exit()
-
+		
 	# check the number of permuted datasets used in FastWY
+	k = -1
 	try:
 		k = int(args[3])
 		if ( k < 1 ):
@@ -498,7 +501,7 @@ if __name__ == "__main__":
 	log_file = "fastwy_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 	if len(opts.log_filename) > 0:
 		log_file = opts.log_filename
-
+	
 	opts.delimiter = ','
 	
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
