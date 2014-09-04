@@ -106,20 +106,17 @@ def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, fu
 		freq_time += endtime - starttime # time to construct apriori
 		for cal_item_set, cal_transaction_list in cal_list:
 			i = i + 1
-			sys.stderr.write("--- testing %s [ " % i)
-			for j in cal_item_set:
-				sys.stderr.write("%s " % j)
-			sys.stderr.write("]: ")
+#			sys.stderr.write("--- testing %s [ " % i)
+#			for j in cal_item_set:
+#				sys.stderr.write("%s " % j)
+#			sys.stderr.write("]: ")
 			flag_transaction_list = [] # transaction list which has all items in itemset.
 			for t in cal_transaction_list:
 				shuffled_id = org2shuffled_list[ t ]
-#				raw_id = lcm2transaction_id[t]
-#				shuffled_id = org2shuffled_list[ raw_id ]
-#				sys.stderr.write("raw %s -> shuffled %s\n" % (raw_id, shuffled_id))
 				flag_transaction_list.append( shuffled_id )
-			sys.stderr.write("%s" % flag_transaction_list)
+#			sys.stderr.write("%s" % flag_transaction_list)
 			p, stat_score = func_f.calPValue( permute_transaction_list, flag_transaction_list )
-			sys.stderr.write("p " + str(p) + ", stat_score %s\n" % stat_score)
+#			sys.stderr.write("p " + str(p) + ", stat_score %s\n" % stat_score)
 			if p < min_p:
 				min_p = p; min_p_pattern = cal_item_set
 		
@@ -145,53 +142,38 @@ def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, fu
 ##
 def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_path, \
 					 max_comb, permute_num, outlog):
-	sys.stderr.write("--- original dataset ---\n")
-	for j in transaction_list:
-		j.output()
-	sys.stderr.write("------\n")
+#	sys.stderr.write("--- original dataset ---\n")
+#	for j in transaction_list:
+#		j.output()
+#	sys.stderr.write("------\n")
 
 	starttime = time.time()
 
-	max_lambda = lamp.maxLambda( transaction_list ) # The minimum support to construct the frequent pattern.
-	# Set the way to calculate p-value.
-	func_f = None
-	if set_method == "fisher":
-		func_f = functions4fisher.FunctionOfX(transaction_list, max_lambda)
-	elif set_method == "u_test":
-		func_f = functions4u_test.FunctionOfX(transaction_list)
-	elif set_method == "chi":
-		func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
-	else:
-		sys.stderr.write("Error: Choose \"fisher\", \"chi\", or \"u_test\" by using -p option\n")
-		outlog.close()
-		sys.exit()
-
+	# Initialize the apriori and functinos using LAMP. 
+	fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
+				 = lamp.runMultTest( transaction_list, trans4lcm, threshold, set_method, \
+									 lcm_path, max_comb, outlog )
+	
 	# calculate the set of minimum p-values using permuted data
 	min_p_list = [] # the list stores the minimum p-values
 	org_values_list = getValuesList( transaction_list ) # Raw (non-permuted) dataset
-	
-	# check a MASL of max_lambda
-	if (set_method == 'fisher'):
-		n1 = func_f.sumValue(transaction_list)
-		if (n1 < max_lambda):
-			max_lambda = int( n1 )
-	
-	fre_pattern = frequentPatterns.LCM( lcm_path, max_lambda, outlog )
-	fre_pattern.makeFile4Lem( transaction_list, trans4lcm ) # make itemset file for lcm
 	
 	# estimate the probability distribution of the minimum p-value using permuted datasets.
 	for i in xrange( 0, permute_num ):
 		per_start = time.time()
 		permute_transaction_list, org2shuffled_list = permuteData( transaction_list, org_values_list ) # generate the permuted dataset.
-		for j in permute_transaction_list:
-			sys.stderr.write("%s %s " % (j.id, j.name))
-			sys.stderr.write("%s" % j.itemset)
-			sys.stderr.write(" %s\n" % j.value)
+#		for j in permute_transaction_list:
+#			sys.stderr.write("%s %s " % (j.id, j.name))
+#			sys.stderr.write("%s" % j.itemset)
+#			sys.stderr.write(" %s\n" % j.value)
 		func_f.calTime = 0
 		min_p, low_sup, freq_time = calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern,
 															func_f, max_comb, org2shuffled_list )
 		per_time = time.time() - per_start
+		if ( i == 0 ):
+			per_time = time.time() - starttime
 		min_p_list.append( tuple( [ min_p, low_sup, fre_pattern.getTotal( low_sup ), freq_time, per_time, func_f.calTime ] ) )
+		
 		outlog.write( "[permute %s] minP %s, minSupport %s, totalTest %s, freqTime %s, totalTime %s, #ofPvalue %s\n" \
 						  % (i, min_p_list[i][0], min_p_list[i][1], min_p_list[i][2], \
 							 min_p_list[i][3], min_p_list[i][4], min_p_list[i][5]))
@@ -249,15 +231,9 @@ def enumerateSigComb(transaction_list, trans4lcm, fre_pattern, func_f, \
 		for item_set, item_transid_list in cal_list:
 			i = i + 1
 			outlog.write("--- testing %s: " % i)
-#			sys.stderr.write("--- testing %s [ " % i)
-#			for j in item_set:
-#				sys.stderr.write("%s " % j)
-#			sys.stderr.write("]: ")
 			flag_transaction_list = [] # transaction list which has all items in itemset.
 			for t in item_transid_list:
 				flag_transaction_list.append( t )
-#				flag_transaction_list.append( lcm2transaction_id[t] )
-#			sys.stderr.write("%s" % flag_transaction_list)
 			p, stat_score = func_f.calPValue( transaction_list, flag_transaction_list )
 			outlog.write( "p " + str(p) + ", stat_score %s\n" % stat_score )
 			if ( p <= adjusted_threshold ):
@@ -280,11 +256,8 @@ def enumerateSigComb(transaction_list, trans4lcm, fre_pattern, func_f, \
 # start_index: pvalue is compared with values from the start_index-th and the subsequent P-values of the sorted_min_p_list. 
 ##
 def adjustPval( pvalue, sorted_min_p_list, start_index ):
-#	print ""
 	for i in xrange( start_index, len(sorted_min_p_list) ):
 		min_p = sorted_min_p_list[i][0]
-#		print "minp",
-#		print min_p
 		if min_p > pvalue:
 			break
 	if pvalue < sorted_min_p_list[0][0]:
@@ -384,6 +357,7 @@ def outputMinP( min_p_list ):
 ##
 def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_comb, log_file, delm):
 	# read 2 files and get transaction list
+	sys.stderr.write( "Read input files ...\n" )
 	transaction_list = set()
 	try:
 		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, delm)
@@ -403,7 +377,8 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 
 	start_time = time.time()
 	# generate null distribution
-	outlog.write("Calculate the minimum p-value of the permuted datasets ...\n")
+	sys.stderr.write( "Calculate the minimum p-value distribution using the permutation test ...\n" )
+	outlog.write("Calculate the minimum p-value distribution using the permutation test ...\n")
 	min_p_list, fre_pattern, func_f = \
 				generateMinPDist(transaction_list, trans4lcm, threshold, set_method, \
 								 lcm_path, max_comb, k, outlog)
