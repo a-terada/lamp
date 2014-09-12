@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>LAMP - Multiple testing procedure for finding higher order effects</title>
+    
+    <meta name="author" content="LAMP development team">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+<!--    <link href="http://a-terada.github.com/lamp/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://a-terada.github.com/lamp/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">-->
+    <link href="./assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="http://a-terada.github.com/lamp"><img src="images/lamp_logo_str.png" alt="LAMP: Limitless-Arity Multiple-testing Procedure"></a>
+          <ul class="nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="#installation">Installation</a></li>
+      	<li><a href="#examples">Examples</a></li>
+      	<li><a href="#usage">Usage</a></li>
+      	<li><a href="#reference">Reference</a></li>
+      	<li><a href="http://lamp.seselab.org/">Web ver.</a></li>
+      
+    
+  
+    
+      
+    
+  
+
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+<div class="page-header">
+  <h1><img src="images/lamp_logo_all.png" alt="LAMP: Limitless-Arity Multiple-testing Procedure" aligh="left"></h1>
+</div>
+
+<div class="row">
+  <div class="span12">
+    <p>LAMP is a code for multiple testing correction. Given the relationships between transcription factors (TFs) and genes and gene expression levels, the code lists up statistically significant combinations of TFs. The LAMP algorithm calibrates the Family-Wise Error Rate (FWER) at the same level of Bonferroni correction. Applying our method to your data instead of using the Bonferroni correction gives you the below advantages:</p>
+
+<ul>
+<li>Listing up significant combinations without an arity limit</li>
+
+<li>Higher sensitivity than Bonferroni correction</li>
+
+<li>Fast calculation speed</li>
+</ul>
+
+<p>This manuscript is written for finding TF combinations. The LAMP is, however, capable of discovering other combinatorial effects, including, but not limited to, the following examples:</p>
+
+<ul>
+<li>Combinations of miRNA interactions that regulate gene expression</li>
+
+<li>Combinations of histone acetylations and methylations that influence gene transcription</li>
+
+<li>Combinations of single-nucleotide polymorphisms (SNPs) associates with the phenotype</li>
+</ul>
+
+<p>The technical detail is available on <a href='http://www.pnas.org/content/110/32/12996.abstract'>our paper</a>.</p>
+
+<h3 id='table_of_contents'>Table of Contents</h3>
+<div class='maruku_toc'><ul style='list-style: none;'><li><a href='#installation'>Installation</a><ul style='list-style: none;'><li><a href='#download'>Download</a></li><li><a href='#install'>Install</a></li></ul></li><li><a href='#examples'>Examples</a><ul style='list-style: none;'><li><a href='#demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</a></li><li><a href='#demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</a></li><li><a href='#demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</a></li></ul></li><li><a href='#usage'>Usage</a><ul style='list-style: none;'><li><a href='#lamp'>LAMP</a></li><li><a href='#postprocessing'>Post-processing</a></li><li><a href='#flower_diagram'>Flower Diagram</a></li></ul></li><li><a href='#input_file_format'>Input File Format</a><ul style='list-style: none;'><li><a href='#itemfile'>Item-file</a></li><li><a href='#expressionfile'>Expression-file</a></li><li><a href='#note_for_input_files'>Note for Input Files</a></li></ul></li><li><a href='#output_format'>Output Format</a></li><li><a href='#note'>Note</a></li><li><a href='#acknowledgment'>Acknowledgment</a></li><li><a href='#license'>License</a></li><li><a href='#contact'>Contact</a></li><li><a href='#reference'>Reference</a></li></ul></div>
+
+<h2 id='installation'>Installation</h2>
+
+<h3 id='download'>Download</h3>
+<b>Current Version</b>
+<p>If you have Git, you can download the latest version by running:</p>
+
+<pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
+
+<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/archive/1.0.5.zip'>zip</a> or <a href='https://github.com/a-terada/lamp/archive/1.0.5.tar.gz'>tar</a> formats, you need to extract the archive with unzip or tar command.</p>
+
+<b>Development Version</b>
+<p>If you downloaded LAMP using Git, the development version is available by running:</p>
+
+<pre><code>$ git checkout -b fastwy origin/fastwy</code></pre>
+
+<p>You can also download this version in either <a href='https://github.com/a-terada/lamp/archive/fastwy.zip'>zip</a> or <a href='https://github.com/a-terada/lamp/archive/fastwy.tar.gz'>tar</a> formats. The development version of LAMP includes a code to perform a multiple testing procedure, named fast Westfall-Young permutation procedure (FastWY).</p>
+
+<h3 id='install'>Install</h3>
+
+<p>The programs are written in python (&gt;=2.6) except frequent pattern mining. You set up the LAMP by the following command in <code>lamp/</code> directory.</p>
+
+<pre><code>$ make</code></pre>
+
+<p>In lamp directory, you can use LAMP by using the following command:</p>
+
+<pre><code>$ python lamp.py -p [p-value-procedure] [item-file] [expression-file] [significance-level] &gt; [output-file]</code></pre>
+
+<p>When the development version of LAMP is used, you can perform fastWY by using the following command:</p>
+
+<pre><code>$ python fastwy.py -p [p-value-procedure] [item-file] [value-file] [significance-level] [k] &gt; [output-file]</code></pre>
+
+<p>The details of the arguments, options and input and output formats are described in <a href='#usage'>Usage</a>.</p>
+
+<h2 id='examples'>Examples</h2>
+
+<p>Here, we present three examples of running LAMP. First two examples are toy examples, and the last one generates the exactly identical result shown in our paper.</p>
+
+<h3 id='demonstration_1_mannwhitney_utest'>Demonstration 1: Mann-Whitney U-test</h3>
+
+<p>We here use two small files in <code>sample/</code> directory.</p>
+
+<ul>
+<li>
+<dt>sample_item.csv</dt>
+
+<dd>An example file of item-file. This file contains the associations between 15 genes and four motifs.</dd>
+</li>
+
+<li>
+<dt>sample_expression_value.csv</dt>
+
+<dd>A sample file of expression-file to use Mann-Whitney U-test. The gene orders should be exactly identical to item-file (<code>sample_item.csv</code>).</dd>
+</li>
+</ul>
+
+<p>The following command finds all of the significant combinations from the files with a significance level &lt;= 0.05:</p>
+
+<pre><code>$ python lamp.py -p u_test sample/sample_item.csv sample/sample_expression_value.csv 0.05 &gt; sample_u_test_result.txt</code></pre>
+
+<p>When the LAMP finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
+
+<pre><code># LAMP ver. 1.0
+# item-file: sample/sample_item.csv
+# value-file: sample/sample_expression_value.csv
+# significance-level: 0.05
+# P-value computing procedure: u_test
+# # of tested elements: 4, # of samples: 15
+# Adjusted significance level: 0.01, Correction factor: 5 (# of target rows &gt;= 3)
+# # of significant combinations: 1
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	z-score
+1	0.0060241	0.030121	TF1,TF2,TF3	3	5	2.5107
+Time (sec.): Computing correction factor 0.023, P-value 0.000, Total 0.023</code></pre>
+
+<p>The lines which starts from &#8221;#&#8221; indicates the meta-data including the following information:</p>
+
+<ul>
+<li>The version of LAMP (line 1)</li>
+
+<li>The setting of the analysis. (lines 2 to 5)</li>
+
+<li>The number of columns and rows in the item-file (<code>sample_item.csv</code>). (line 6)</li>
+
+<li>The adjusted significance level and the correction factor. When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant. (line 7)</li>
+
+<li>The number of significant combinations. There is one significant combination. (line 8) <a href='images/sample_utest_flower.png'><img src='images/sample_utest_flower.png' alt='flower diagram' width='220' align='right' /></a></li>
+</ul>
+
+<p>The other lines indicate the result such as the following:</p>
+
+<ul>
+<li>The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00602, and the adjusted p-value is 0.0301.</li>
+
+<li>The running time is 0.023 sec. in total.</li>
+</ul>
+
+<p>The right diagram shows the adjusted P-values related to the significant combination. This diagram can be drawn in the SVG format file <code>sample_u_test_result.txt-flower1.svg</code> by the following command.</p>
+
+<pre><code>$ python flower.py sample_u_test_result.txt</code></pre>
+
+<h3 id='demonstration_2_fishers_exact_test'>Demonstration 2: Fisher&#8217;s Exact Test</h3>
+
+<p>By changing the file &#8220;sample/sample_expression_value.csv&#8221; and the option &#8220;-p u_test&#8221; with &#8220;sample/sample_expression_over1.csv&#8221; and &#8220;-p fisher&#8221; in Demonstration 1, you can perform LAMP with Fisher&#8217;s exact test. We here use the following two samples in <code>sample/</code> directory.</p>
+
+<ul>
+<li>
+<dt>sample_item.csv</dt>
+
+<dd>The example file of item-file. This file is same as the file used in Demonstration 1.</dd>
+</li>
+
+<li>
+<dt>sample_expression_over1.csv</dt>
+
+<dd>A sample file of expression-file to use Fisher&#8217;s exact test. Expression levels should be &#8220;0&#8221; or &#8220;1&#8221;.</dd>
+</li>
+</ul>
+
+<p>The following command finds all significant combinations from the files with a significance level &lt;= 0.05:</p>
+
+<pre><code>$ python lamp.py -p fisher sample/sample_item.csv sample/sample_expression_over1.csv 0.05 &gt; sample_fisher_result.txt</code></pre>
+
+<p>When the LAMP finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
+
+<pre><code># LAMP ver. 1.0
+# item-file: sample/sample_item.csv
+# value-file: sample/sample_expression_over1.csv
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 4, # of samples: 15, # of positive samples: 7
+# Adjusted significance level: 0.01, Correction factor: 5 (# of target rows &gt;= 5)
+# # of significant combinations: 1
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	0.006993	0.034965	TF1,TF2,TF3	3	5	5
+Time (sec.): Computing correction factor 0.016, P-value 0.000, Total 0.016</code></pre>
+<a href='images/sample_fisher_flower.png'><img src='images/sample_fisher_flower.png' alt='flower diagram' width='220' align='right' /></a>
+<p>The six lines which start from &#8221;#&#8221; are similar to the result file with Mann-Whitney U-test. The significant result indicates the following:</p>
+
+<ul>
+<li>When the raw p-value &lt;= 0.01 (calculated by 0.05/5), the combination is called significant.</li>
+
+<li>There is one significant combination. The ternary combination of TFs TF1, TF2 and TF3 is significant. The raw p-value is 0.00699, and the adjusted p-value is 0.0350.</li>
+
+<li>The running time is 0.016 sec. in total.</li>
+</ul>
+
+<p>The right diagram shows the adjusted P-values related to the significant combination. This diagram can be drawn in the <code>sample_fisher_result.txt-flower1.svg</code> by the following command.</p>
+
+<pre><code>$ python flower.py sample_fisher_result.txt</code></pre>
+
+<h3 id='demonstration_3_analysis_example_of_human_breast_cancer_dataset'>Demonstration 3: Analysis example of Human breast cancer dataset</h3>
+
+<p>We here show the example of public microarray data analysis. Before performing LAMP, we need to convert the public breast cancer data into file format used in LAMP. The procedure is in <a href='data_preparation.html'>Data preparation</a>.</p>
+
+<p>The preparation generates item file &#8220;gse6462_item.csv&#8221; and expression file &#8220;gse6462_expression_over1.csv&#8221;. The following command finds all of the significant combinations from the files with Fisher&#8217;s exact test of significance level &lt;= 0.05:</p>
+
+<pre><code>$ python lamp.py -p fisher gse6462_item.csv gse6462_expression_over1.csv 0.05 &gt; gse6462_expression_over1_result.txt</code></pre>
+
+<p>When the LAMP finishes successfully, the result is printed in <code>gse6462_expression_over1_result.txt</code>:</p>
+
+<pre><code># LAMP ver. 1.0
+# item-file: gse6462_item.csv
+# value-file: gse6462_expression_over1.csv
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 397, # of samples: 12773, # of positive samples: 1129
+# Adjusted significance level: 1.3332e-08, Correction factor: 3750336 (# of target rows &gt;= 8)
+# # of significant combinations: 3
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	3.7083e-10	0.0013908	TATA	1	957	141
+2	2.9459e-09	0.011048	TATA,NFAT,PAX,AR	4	10	9
+3	3.6422e-09	0.01366	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8	8
+Time (sec.): Computing correction factor 331.041, P-value 66.927, Total 397.968</code></pre>
+
+<p>In some application, the combinations &#8220;TATA,NFAT,PAX,AR&#8221; may be regard as redundant combination because one of the members &#8220;TATA&#8221; has smaller P-value than the combination. In the case that you would like to reduce the combinations, we prepared a python script to eliminate the redundant combinations as the post-processing:</p>
+
+<pre><code>$ python eliminate_comb.py gse6462_expression_over1_result.txt &gt; gse6462_expression_over1_result_eliminated.txt </code></pre>
+
+<p>The result is printed in <code>gse6462_expression_over1_result_eliminated.txt</code>:</p>
+
+<pre><code># Non-redundant combinations
+# LAMP ver. 1.0
+# item-file: gse6462_item.csv
+# value-file: gse6462_expression_over1.csv
+# significance-level: 0.05
+# P-value computing procedure: fisher
+# # of tested elements: 397, # of samples: 12773, # of positive samples: 1129
+# Adjusted significance level: 1.3332e-08, Correction factor: 3750336 (# of target rows &gt;= 8)
+# # of significant combinations: 3 -&gt; 2
+Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
+1	3.7083e-10	0.0013908	TATA	1	957	141
+2	3.6422e-09	0.01366	GR,EVI1,CTTTAAR_UNKNOWN,LEF1,OCT1,NFAT,FOXO4,CEBP	8	8	8
+Time (sec.): Computing correction factor 331.041, P-value 66.927, Total 397.968</code></pre>
+
+<p>This script prints &#8220;# Non-redundant combinations&#8221; in the first line. The other lines are same as the <code>gse6462_expression_over1_result.txt</code> excepting the elimination of &#8220;TATA,NFAT,PAX,AR&#8221;.</p>
+
+<p>Note that the running time of LAMP depends on the data (not only data size but also density of the data etc.). In the worst case, a few days and more than a hundred gigabytes of memory might be used. In general, the running time of Mann-Whitney U-test is longer than that of Fisher&#8217;s exact test.</p>
+
+<h2 id='usage'>Usage</h2>
+
+<h3 id='lamp'>LAMP</h3>
+
+<p>In the <code>lamp</code> directory, you can run LAMP using the following command:</p>
+
+<pre><code>$ python lamp.py -p [p-value-procedure] [item-file] [expression-file] [significance-level] &gt; [output-file]</code></pre>
+
+<p>The result is saved to the &#8216;output-file&#8217;. LAMP requires one option and three arguments:</p>
+
+<ul>
+<li>
+<dl>
+<dt><strong>option -p</strong></dt>
+
+<dd>This option selects the p-value calculation procedure. &#8220;fisher&#8221; selects the Fisher&#8217;s exact test, and &#8220;u_test&#8221; selects the Mann-Whitney U-test.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>item-file</strong></dt>
+
+<dd>The file that includes associations between TFs and genes.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>expression-file</strong></dt>
+
+<dd>The gene expression file.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>significance-level</strong></dt>
+
+<dd>The statistical significance threshold.</dd>
+</dl>
+</li>
+</ul>
+
+<p>You can change the setting by using the following option:</p>
+
+<ul>
+<li>
+<dl>
+<dt><strong>--max_comb [integer]</strong></dt>
+
+<dd>Set the maximum arity of the tested combinations. The default setting is no limit.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>-e [log_file]</strong></dt>
+
+<dd>Change the filename to save the running progress. The default setting is lamp_log_[date]_[time].txt.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>--lcm [lcm_path]</strong></dt>
+
+<dd>Set LCM program path if you do not use ./lcm53/lcm.</dd>
+</dl>
+</li>
+</ul>
+
+<h3 id='postprocessing'>Post-processing</h3>
+
+<p>LAMP generates all significant combinations. However, in some applications, the raw result may be too redundant to be used because two very similar but slightly different combinations are appeared in the results. To support the interpretation of the result, we prepared the script <code>eliminate_comb.py</code>. This script selects the combination which is the most significant in all subsets of the combination. That is, suppose that the combinations A and B are significant, and A has smaller P-value than that of B. When A comprises B or A is comprised by B, the significance of B would be due to A. By using <code>eliminate_comb.py</code>, we remove the combinations such as B from the results of LAMP. When the P-values are equal between A and B, the smaller combination is eliminated.</p>
+
+<p>In the LAMP directory, you can run this script using the following command:</p>
+
+<pre><code>$ python eliminate_comb.py [lamp-output-file] &gt; [eliminated-output-file]</code></pre>
+
+<p><code>eliminate_comb.py</code> requires two filenames.</p>
+
+<ul>
+<li>
+<dl>
+<dt><strong>lamp-output-file</strong></dt>
+
+<dd>The result file of LAMP.</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>eliminated-output-file</strong></dt>
+
+<dd>The filename to output the result of this script.</dd>
+</dl>
+</li>
+</ul>
+
+<h3 id='flower_diagram'>Flower Diagram</h3>
+
+<p>LAMP includes the code for visualizing the detected combinations as shown in <a href='#examples'>Examples</a>. In the <code>lamp</code> directory, you can run the code using the following command:</p>
+
+<pre><code>$ python flower.py [lamp-output-file]</code></pre>
+
+<p>[lamp-output-file] is the result file of LAMP.</p>
+
+<p>The diagrams are saved to SVG format files named [lamp-output-file]-flower[rank].svg. [rank] corresponds to the &#8220;Rank&#8221; column in [lamp-output-file].</p>
+
+<h2 id='input_file_format'>Input File Format</h2>
+
+<p>LAMP receives two input files: item-file and expression-file. Their examples are in the <code>sample/</code> directory.</p>
+
+<h3 id='itemfile'>Item-file</h3>
+
+<p>The item-file provides the associations between TFs and their target genes. This file should be formatted according in the CSV format. <code>sample/sample_item.csv</code> is an example.</p>
+
+<pre><code>#gene,TF1,TF2,TF3,TF4
+A,1,1,1,0
+B,1,1,1,0
+C,1,0,0,1
+D,0,0,0,0
+...</code></pre>
+
+<p>The first line provides the names of TFs.</p>
+
+<p>The following lines include the associations between a gene and TFs. The first column indicates the gene name. The other columns indicate whether the TF targets the gene. If the gene is targeted by the TF, the column value is &#8216;1&#8217;. If not, the value is &#8216;0&#8217;. For instance, gene A is target gene of TF1, TF2 and TF3 in the example.</p>
+
+<p><code>sample/sampe_item.csv</code> contains 15 genes and 4 TFs. Thus, the file consists of 16 lines and 5 columns.</p>
+
+<h3 id='expressionfile'>Expression-file</h3>
+
+<p>The expression-file provides the gene expressions levels. The file is the CSV format with two columns: the gene name and the expression level.</p>
+
+<p>When LAMP derives the p-value using the Mann-Whitney U-test, the expressions levels are any real values. However, when LAMP calculates the p-value using Fisher&#8217;s exact test, the expression levels are 1 or 0. If the gene is up-regulated, then the second column is 1. Otherwise, it is 0.</p>
+
+<p>The comment lines start with &#8217;#&#8217; and are ignored by the analysis.</p>
+
+<p>As examples, we show the content of the sample files.</p>
+
+<ul>
+<li><code>samples/sample_expression_value.csv</code></li>
+</ul>
+
+<p>This file is prepared for the Mann-Whitney U-test. The second column takes real values.</p>
+
+<pre><code>#gene,expression
+A,1.5
+B,1.2
+C,0.9
+D,0.8
+...</code></pre>
+
+<ul>
+<li><code>samples/sample_expression_over1.csv</code></li>
+</ul>
+
+<p>This file is prepared for Fisher&#8217;s exact test. The values in the second column are 1 or 0.</p>
+
+<pre><code>#gene,expression
+A,1
+B,1
+C,0
+D,0
+...</code></pre>
+
+<p>This file was generated from <code>samples/sample_expression_value.csv</code>. If the gene expression is higher than 1.0 then expression level is 1. Otherwise, it is 0.</p>
+
+<p>Both <code>sample/sampe_expression_value.csv</code> and <code>sample/sampe_expression_over1.csv</code> describe the expressions of 15 genes.</p>
+
+<h3 id='note_for_input_files'>Note for Input Files</h3>
+
+<p>The gene orders in the item-file and the expression-file should be identical. For example, both <code>sample/sample_item.csv</code> and <code>sample/sample_expression_value.csv</code> consist of 15 genes from gene A to O. If the given gene sets are different or are in a different order, LAMP does not run properly.</p>
+
+<h2 id='output_format'>Output Format</h2>
+
+<p>The result is printed out after the analysis settings and the adjusted significance level. The first nine lines are formatted as the following:</p>
+
+<pre><code># LAMP [version]
+# item-file: [item-file]
+# value-file: [value-file]
+# significance-level: [float]
+# P-value computing procedure: [p-value-procedure]
+# # of tested elements: [integer], # of samples: [integer]
+# Adjusted significance level: [float], Correction factor: [integer] (# of target rows &gt;= [integer])
+# # of significant combinations: [integer]</code></pre>
+<!-- \[integer\] and \[float\] are replaced with a real number in the actual result.
+Each value means the following: -->
+<p>The first line shows the version of LMAP. The inputted files and analyses setting are written from the second to fifth lines. The other lines indicate as the following:</p>
+
+<ul>
+<li>
+<dt><strong># of tested elements and # of samples</strong></dt>
+
+<dd>The number of columns and rows in item-file.</dd>
+</li>
+
+<li>
+<dt><strong>Adjusted significance level</strong></dt>
+
+<dd>The threshold for non-adjusted p-value. The combination is significant when the raw p-value is less than this value.</dd>
+</li>
+
+<li>
+<dt><strong>Correction factor</strong></dt>
+
+<dd>The number of testable combinations. The adjusted p-value is computed by multiplying the raw p-value by this value.</dd>
+</li>
+
+<li>
+<dt><strong># of target rows</strong></dt>
+
+<dd>The minimum number of target genes targeted by a testable TF combination.</dd>
+</li>
+
+<li>
+<dt><strong># of significant combinations</strong></dt>
+
+<dd>The number of significant combinations.</dd>
+</li>
+</ul>
+
+<p>The detected combinations are shown after the ninth line. Each line contains 5 columns:</p>
+
+<ul>
+<li>
+<dt><strong>Rank</strong></dt>
+
+<dd>The rank ordered by the p-value.</dd>
+</li>
+
+<li>
+<dt><strong>Raw p-value</strong></dt>
+
+<dd>The p-value calculated using p-value-procedure.</dd>
+</li>
+
+<li>
+<dt><strong>Adjusted p-value</strong></dt>
+
+<dd>The adjusted p-value. The value of each combination printed by LAMP is smaller than the significance level. If the value is smaller than the inputted significance level, the combination is significant.</dd>
+</li>
+
+<li>
+<dt><strong>Combination</strong></dt>
+
+<dd>The significant combination. The TFs are delimited by &#8217;,&#8217; (comma).</dd>
+</li>
+
+<li>
+<dt>Arity</dt>
+
+<dd>The number of elements in the combination.</dd>
+</li>
+
+<li>
+<dt><strong># of target rows</strong></dt>
+
+<dd>The number of target genes of the combination.</dd>
+</li>
+
+<li>
+<dt><strong># of positives in the targets / z-score</strong></dt>
+
+<dd>The value used to compute the p-value. In case of calculation by Fisher&#8217;s exact test, the value means the number of genes that are both targeted and up-regulated. In the case of calculation by Mann-Whitney U-test, the value is the z-score.</dd>
+</li>
+</ul>
+
+<p>The last line includes the calculation time (in seconds):</p>
+
+<pre><code>Time (sec.): Correction factor [float], P-value [float], Total [float]</code></pre>
+
+<ul>
+<li>
+<dt><strong>Correction factor</strong></dt>
+
+<dd>The time to compute the correction term.</dd>
+</li>
+
+<li>
+<dt><strong>P-value</strong></dt>
+
+<dd>The time required to calculate the p-values of the testable combinations.</dd>
+</li>
+
+<li>
+<dt><strong>Total</strong></dt>
+
+<dd>Total time.</dd>
+</li>
+</ul>
+
+<h2 id='note'>Note</h2>
+
+<p>LAMP produces an LCM argument file and the LCM result files. One is saved as <code>item-file.4lcm53</code>, and the others are saved in <code>item-file.4lcm53.results/</code> directory. <!--When these files exist, LAMP reads LCM result files instead of running LCM.--></p>
+<!--Thus, if the LAMP fail to finish the calculation, please command: -->
+<p>If you want to remove these files, please use the following command:</p>
+
+<pre><code>$ rm -rf item-file.4lcm53.*</code></pre>
+<!--LCM related files can be removed by the command. If you omit the commands, the calculation might fail again.-->
+<h2 id='acknowledgment'>Acknowledgment</h2>
+
+<p>LCM to find frequent patterns used in LAMP is kindly provided from <a href='http://research.nii.ac.jp/~uno/codes.htm'>Program Codes of Takeaki Uno and Hiroki Arimura</a>.</p>
+
+<h2 id='license'>License</h2>
+
+<p>LAMP is open source code issued under the BSD License.</p>
+
+<h2 id='contact'>Contact</h2>
+
+<p>Please contact the below address in case you find a bug, need detailed information or need application for different situation and so on.</p>
+
+<ul>
+<li>lamp_staff(AT)googlegroups.com</li>
+</ul>
+
+<h2 id='reference'>Reference</h2>
+
+<ul>
+<li>Aika Terada, Mariko Okada-Hatakeyama, Koji Tsuda and Jun Sese. <a href='http://www.pnas.org/content/110/32/12996.abstract'>Statistical significance of combinatorial regulations</a>. Proc. Natl. Acad. Sci., vol. 110, no. 32, 12996-13001, August 6, 2013.</li>
+</ul>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; LAMP development team 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37265974-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+  </body>
+</html>
+
