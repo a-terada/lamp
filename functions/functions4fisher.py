@@ -171,7 +171,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		return p
 
 def run(xls_file, value_file, itemset_str_lst, delimiter):
-	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file, delimiter)
+	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file, delimiter)
 	max_lambda = maxLambda(transaction_list)
 	func = FunctionOfX(transaction_list, max_lambda)
 	colname2id_dict = readFile.colname2id(columnid2name)

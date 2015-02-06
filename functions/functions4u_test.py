@@ -307,7 +307,7 @@ def comma2List(item_list_str, columnid2name):
 	return item_list
 
 def run(xls_file, value_file, itemset_str_lst, delimiter):
-	transaction_list, columnid2name, lcm2transaction_id = readFile.readFiles(xls_file, value_file, delimiter)
+	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file, delimiter)
 #	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file)
 	func = FunctionOfX(transaction_list)
 	colname2id_dict = readFile.colname2id(columnid2name)
