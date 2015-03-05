@@ -69,11 +69,13 @@ class TestLamp(unittest.TestCase):
 				if detect_set.issubset( true_comb ) and true_comb.issubset( detect_set ):
 					flag = True
 					break
+			print comb
 			self.assertTrue( flag )
 			self.assertAlmostEqual( comb[1], true_p )
 			self.assertEqual( comb[2], true_support )
 			self.assertAlmostEqual( comb[3], true_score )
 		self.assertEqual( len(enrich_lst), len(true_comb_list) )
+		
 
 	def testFisher(self):
 		sys.stderr.write( "\n\n#######################################\n")
@@ -110,6 +112,26 @@ class TestLamp(unittest.TestCase):
 						   tuple( [set(["TF2", "TF3"]), 0.00602414187918, 5, 2.510727 ]) ]
 		self.checkResults( self.csv_file, self.value_file, "u_test", 2, LOG_FILE, \
 						   true_k, true_lam, true_comb_list )
+
+	def testChiSquareTest(self):
+		sys.stderr.write( "\n\n#######################################\n")
+		sys.stderr.write( "  Test LAMP using the Chi-square test\n" )
+		sys.stderr.write( "#######################################\n")
+		self.sig_level = 0.2
+		sys.stderr.write( "--- without arity limit ---\n" )
+		true_k = 5; true_lam = 5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0173711500544, 5, 5 ]) ]
+		self.checkResults( self.csv_file, self.flag_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list )
+		
+		sys.stderr.write( "\n--- arity limit = 2 ---\n" )
+		true_k = 7; true_lam = 5
+		true_comb_list = [ tuple( [set(["TF1", "TF2"]), 0.0173711500544, 5, 5 ]),
+						   tuple( [set(["TF1", "TF3"]), 0.0173711500544, 5, 5 ]),
+						   tuple( [set(["TF2", "TF3"]), 0.0173711500544, 5, 5 ]) ]
+		self.checkResults( self.csv_file, self.flag_file, "chi", 2, LOG_FILE, \
+						   true_k, true_lam, true_comb_list )
+		
 
 if __name__ == '__main__':
 	unittest.main()
