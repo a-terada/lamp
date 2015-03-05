@@ -225,8 +225,12 @@ class LCM():
 	# Run LCM-LAMP and return the optimal minimum support. 
 	# input_file: filename for LCM.
 	# arity_limit: limit for appriori depth.
+	# n1: the number of positive samples.
+	# sig_level: the significance level.
+	# p_mode: the integer that indicates the kind of statistical test.
+	#         1 -> Fisher's exact test,  2 -> chi-square test
 	##
-	def runLCMLAMP( self, input_file, arity_limit, n1, sig_level ):
+	def runLCMLAMP( self, input_file, arity_limit, n1, sig_level, p_mode ):
 		out_dir = input_file + ".results." + self.__LCMNAME
 		if not os.path.exists(out_dir):
 			os.mkdir(out_dir)
@@ -238,7 +242,8 @@ class LCM():
 		if ( arity_limit < 0 ):
 			out_file = out_file_pre + ".lcmlamp.closed"
 			outlog_lcmlamp = open( out_file, 'w' )
-			subprocess.check_call( [self.__LCMPATH, "C", "-LAMP", str(n1), input_file, str(sig_level)], \
+			subprocess.check_call( [self.__LCMPATH, "C", "-LAMP", str(n1), "-LAMP_P", str(p_mode), \
+									input_file, str(sig_level)], \
 								   stdout=outlog_lcmlamp, stderr=outlog_lcmlamp )
 			outlog_lcmlamp.close()
 		else:
