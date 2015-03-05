@@ -48,9 +48,9 @@ import functions.functions4fisher as functions4fisher
 import functions.functions4u_test as functions4u_test
 import functions.functions4chi as functions4chi
 
-set_opts = ("fisher", "u_test", "chi") # methods which used each test
+#set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 class MASLError(Exception):
 	def __init__(self, e):
@@ -104,7 +104,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		elif set_method == "chi":
 			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
 		else:
-			sys.stderr.write("Error: choose \"fisher\", \"chi\", or \"u_test\" by using -p option.\n")
+			sys.stderr.write("Error: choose \"fisher\", \"chi\" or \"u_test\" by using -p option.\n")
 			outlog.close()
 			sys.exit()
 		
@@ -120,10 +120,12 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		fre_pattern = frequentPatterns.LCM(lcm_path, max_lambda, outlog)
 		fre_pattern.makeFile4Lem(transaction_list, trans4lcm) # make itemset file for lcm
 		
-		# If Fisher's exact test is used for computing P-value,
+		# If Fisher's exact test or chi-square test is used for computing P-value, 
 		# LCM-LAMP is run to find optimal lambda.
 		if set_method == "fisher":
-			fre_pattern, lam_star = depthFisrt( trans4lcm, fre_pattern, max_comb, n1, threshold )
+			fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 1 )
+#		elif set_method == "chi":
+#			fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 2 )
 		# If Mann-Whitney U test of Chi-square test is used,
 		# LAMP ver 1. is run for computing the optimal lambda. 
 		else:
@@ -208,15 +210,16 @@ def breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outl
 
 ##
 # Find the optimal lambda by depth first algorithm.
-# This function is called when Fisher's exact test is selected as the statistical test. 
+# This function is called when Fisher's exact test or Chi-square is selected. 
 # trans4lcm: File name to run LCM. 
 # fre_pattern: Instance to run LCM. 
 # max_comb: The maximum arity limit. 
 # n1: The number of positive samples.
-# threshold: Significance level. 
+# threshold: Significance level.
+# p_mode: the integer. 1 -> Fisher's exact test, 2 -> chi-square test
 ##
-def depthFisrt( trans4lcm, fre_pattern, max_comb, n1, threshold ):
-	lam = fre_pattern.runLCMLAMP( trans4lcm, max_comb, n1, threshold )
+def depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, p_mode ):
+	lam = fre_pattern.runLCMLAMP( trans4lcm, max_comb, n1, threshold, p_mode )
 	fre_pattern.frequentPatterns( trans4lcm, lam, max_comb )
 	return fre_pattern, lam
 
