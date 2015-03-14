@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # significance-level: The statistical significance threshold.
 # @author Terada 26, June, 2011
 
-import sys, os.path, time, datetime
+import sys, os.path, time, datetime, math
 import transaction
 import readFile
 import frepattern.frequentPatterns as frequentPatterns
@@ -52,10 +52,14 @@ import functions.functions4chi as functions4chi
 
 __version__ = "2.0.1"
 
+BINARY_METHODS = tuple( [ "fisher", "chi" ] )
+
 class MASLError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("MASLError: " + e + "\n")
-	
+
+def version():
+	return __version__
 
 ##
 # Convert a string for the limit to a combination size to an integer.
@@ -70,6 +74,19 @@ def convertMaxComb( max_comb, item_size ):
 		return -1
 	else:
 		return int( max_comb )
+
+##
+# Reverse the observed values for alternative = 'less'.
+# transaction_list: list of itemset and expression value.
+# set_method: statistical test name. 
+##
+def reverseValue( transaction_list, set_method ):
+	if set_method in BINARY_METHODS:
+		map( lambda t: t.setValue( 1 - t.value ), transaction_list )
+	else:
+		map( lambda t: t.setValue( math.fabs( t.value ) ), transaction_list )
+	transaction_list.reverse()
+	return transaction_list
 
 ##
 # Return the bound of given minimum support.
@@ -92,17 +109,18 @@ def calBound( func_f, min_sup, fre_pattern ):
 # columnid2name: Mapping between TS id to TF name.
 # lcm2transaction_id: Mapping between LCM ID to transaction id.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
+# alternative: hypothesis, 1 -> greater, 0 -> two sided, -1 -> less
 ##
-def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, max_comb, outlog):
+def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, max_comb, outlog, alternative):
 	max_lambda = maxLambda(transaction_list)
 	lam_star = 1; func_f = None;
 	try:
 		if set_method == "fisher":
-			func_f = functions4fisher.FunctionOfX(transaction_list, max_lambda)
+			func_f = functions4fisher.FunctionOfX(transaction_list, max_lambda, abs(alternative))
 		elif set_method == "u_test":
 			func_f = functions4u_test.FunctionOfX(transaction_list)
 		elif set_method == "chi":
-			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda)
+			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda, abs( alternative))
 		else:
 			sys.stderr.write("Error: choose \"fisher\", \"chi\" or \"u_test\" by using -p option.\n")
 			outlog.close()
@@ -111,7 +129,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		lam = max_lambda
 		
 		# check a MASL of max_lambda
-		if (set_method == 'fisher') or (set_method == 'chi'):
+		if set_method in BINARY_METHODS: 
 			n1 = func_f.sumValue(transaction_list)
 			if (n1 < max_lambda):
 				max_lambda = int( n1 )
@@ -122,10 +140,21 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		
 		# If Fisher's exact test or chi-square test is used for computing P-value, 
 		# LCM-LAMP is run to find optimal lambda.
+		neg_size = func_f.getAllSize() - func_f.getN1()
+		n1 = min( n1, neg_size )
 		if set_method == "fisher":
-			fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 1 )
-#		elif set_method == "chi":
-#			fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 2 )
+			# # of positives == # of negatives, and two.sided hypothesis test.
+			if ( func_f.getN1() == neg_size ) and (alternative == 0):
+				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, 0.5*threshold, 1 )
+			else:
+				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 1 )
+		elif set_method == "chi":
+			# two-sided hypothesis test
+			if alternative == 0:
+				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, 0.5*threshold, 2 )
+			# one-sided
+			else:
+				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 2 )
 		# If Mann-Whitney U test of Chi-square test is used,
 		# LAMP ver 1. is run for computing the optimal lambda. 
 		else:
@@ -225,16 +254,22 @@ def depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, p_mode ):
 
 
 def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, columnid2name, lam_star, k, \
-				  enrich_lst, transaction_list, func_f ):
+				  enrich_lst, transaction_list, func_f, alternative ):
 	flag_size = -1
-	if not set_method == "u_test":
+	if set_method in BINARY_METHODS: 
 		flag_size = func_f.getN1()
 	# output setting
 	sys.stdout.write("# LAMP ver. %s\n" % __version__)
 	sys.stdout.write("# item-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s\n" % threshold)
-	sys.stdout.write("# P-value computing procedure: %s\n" % set_method)
+	sys.stdout.write("# P-value computing procedure: %s" % set_method)
+	if alternative > 0:
+		sys.stdout.write(" (greater)\n")
+	elif alternative < 0:
+		sys.stdout.write(" (less)\n")
+	else:
+		sys.stdout.write(" (two.sided)\n")
 	sys.stdout.write("# # of tested elements: %d, # of samples: %d" % ( len(columnid2name), len(transaction_list) ))
 	if flag_size > 0:
 		sys.stdout.write(", # of positive samples: %d" % flag_size)
@@ -287,7 +322,6 @@ def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold,
 				item_set_size = len(item_set)
 				if ( item_set_size > max_itemset_size ):
 					max_itemset_size = item_set_size
-	
 	finish_test_time = time.time()
 	return ( enrich_lst, finish_test_time ) # return the number of enrich set for permutation
 
@@ -317,9 +351,6 @@ def maxLambda(transaction_list):
 	
 	return max_value
 
-def version():
-	return __version__
-
 ##
 # Run multiple test.
 # itemset_file: The file includes associations between TFs and genes.
@@ -332,12 +363,17 @@ def version():
 # max_comb: the maximal size which the largest combination size in tests set.
 # delm: delimiter of transaction_file and flag_file
 ##
-def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, delm):
+def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, alternative):
 	# read 2 files and get transaction list
 	sys.stderr.write( "Read input files ...\n" )
 	transaction_list = set()
 	try:
-		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, delm)
+		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, ',')
+		# If the alternative hypothesis is 'less',
+		# the positive and negative of observe values are reversed, 
+		# and conduct the identical procedure to 'greater'.
+		if alternative < 0:
+			transaction_list = reverseValue( transaction_list, set_method )
 		max_comb = convertMaxComb( max_comb, len(columnid2name) )
 	except ValueError, e:
 		return
@@ -354,7 +390,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		sys.stderr.write( "Compute the optimal correction factor ..." )
 		fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
 					 = runMultTest(transaction_list, transaction4lcm53, threshold, set_method, \
-								   lcm_path, max_comb, outlog)
+								   lcm_path, max_comb, outlog, alternative)
 		k = fre_pattern.getTotal( lam_star )
 		sys.stderr.write( " %s\n" % k )
 		sys.stderr.write( "Compute P-values of testable combinations ...\n" )
@@ -367,9 +403,14 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		outlog.close()
 
 	sys.stderr.write( "Output results ...\n" )
+	# If the positives and negatives are reversed, the number of positives is calculated. 
+	if ( alternative < 0 ) and ( set_method in BINARY_METHODS ):
+		for l in enrich_lst:
+			l[3] = l[2] - l[3]
+			
 	# output result
 	outputResult( transaction_file, flag_file, threshold, set_method, max_comb, \
-				  columnid2name, lam_star, k, enrich_lst, transaction_list, func_f )
+				  columnid2name, lam_star, k, enrich_lst, transaction_list, func_f, alternative )
 	# output time cost
 	sys.stdout.write("Time (sec.): Computing correction factor %.3f, Enumerating significant combinations %.3f, Total %.3f\n" \
 					 % (correction_term_time-starttime, finish_test_time - correction_term_time, finish_test_time - starttime))
@@ -388,6 +429,8 @@ if __name__ == "__main__":
 				 help = "Set the maximum size of combination to be tested.")
 	
 	p.add_option('-e', dest = "log_filename", default = "", help = "The file name to output log.\n")
+
+	p.add_option('--alternative', dest = "alternative", default = "greater", help = "Indicate which alternative hypothesis is used. Select \"greater\", \"less\" or \"two.sided\"\n, and the default is \"greater\".")
 
 #	p.add_option('-d', dest = "delimiter", default = ",", help = "The delimiter for two input files.\n")
 
@@ -420,16 +463,27 @@ if __name__ == "__main__":
 	except ValueError:
 		sys.stderr.write("Error: significance probability must be a float value from 0.0 to 1.0.\n")
 		sys.exit()
+
+	# check the value of alternative hypothesis
+	if opts.alternative == "greater":
+		opts.alternative = 1
+	elif opts.alternative == "less":
+		opts.alternative = -1
+	elif opts.alternative == "two.sided":
+		opts.alternative = 0
+	else:
+		sys.stderr.write( "Error: \"alternative\" should be one of {\"greater\", \"less\", \"two.sided\"}\n" )
+		sys.exit()
 	
 	# change log file
 	d = datetime.datetime.today()
 	log_file = "lamp_log_" + d.strftime("%Y%m%d") + "_" + d.strftime("%H%M%S") + ".txt"
 	if len(opts.log_filename) > 0:
 		log_file = opts.log_filename
-
+	
 	opts.delimiter = ','
 	
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, k, lam_star, columnid2name \
 				= run(transaction_file, flag_file, threshold, opts.pvalue_procedure, \
-					  opts.lcm_path, opts.max_comb, log_file, opts.delimiter)
+					  opts.lcm_path, opts.max_comb, log_file, opts.alternative)

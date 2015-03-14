@@ -46,6 +46,7 @@ class FunctionsSuper:
 	# return the number of pattern that select m things from n things.
 	# This function use for correcting by Bonferroni method and fisher's exact test
 	##
+	"""
 	def combination(self, n, m):
 #		print "calcluate combination ..."
 #		print str(n) + 'C' + str(m)
@@ -58,6 +59,7 @@ class FunctionsSuper:
 			c_sum = c_sum*(n-m+t)/t
 			t = t-1
 		return c_sum
+	"""
 
 	##
 	# Divide transaction_list to two groups.
@@ -113,7 +115,7 @@ class FunctionsSuper:
 
 	##
 	# Make the contingency table.
-	# This function is used by fisher and chi-square test.
+	# This function is used by fisher, chi-square test and exact logistic regression.
 	##
 	def contingencyTable( self, transaction_list, flag_transactions_id, total, total_col1 ):
 		ovalues = [ [0, 0], [0, 0] ]

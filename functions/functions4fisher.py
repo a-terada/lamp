@@ -28,13 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 # Define fuctions that is used in multiple_test.py
-# This source include calculate combination
-# and function f which is defined in paper (C(n1, x)/C(n0+n1, x)).
+# Calculate the P-value and lower bound of the combination. 
 # @author Terada, 26, June, 2011
 # @editor Terada, 24, Feb, 2012,
 #     If x > n1 in caluclation MASL, then raise error and exit (This case does not treat the case).
 # @editor Terada, 16, Apr, 2013,
 #     Acceletate of the calculation P-value by storing the calculated P-value.
+# @editor Terada, 11, Mar, 2015,
+#     Implement computation of the 'less' and 'two-sided' Fisher's exact test. 
 
 from __future__ import division
 import sys, os
@@ -51,13 +52,14 @@ import readFile
 # transaction_list: list of transactions
 ##
 class FunctionOfX(fs.FunctionsSuper):
-	def __init__(self, transaction_list, row_size):
+	def __init__(self, transaction_list, row_size, alternative):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__f_size = self.sumValue(transaction_list) # transaction size which have flag = 1 (n1)
 		self.__pvalTable = pvalTable.PvalTable( row_size ) # P-value table
 		self.__occrTable = pvalTable.PvalTable( row_size ) # occurence table for calculate P-value
 		self.calTime = 0 # Total number of calculate P-value
+		self.alternative = alternative # alternative hypothesis. greater or less -> 1, two.sided -> 0.
 		if self.__f_size == 0:
 			sys.stdout.write("Error: There is no up-regulate gene.\n")
 			sys.exit()
@@ -69,37 +71,25 @@ class FunctionOfX(fs.FunctionsSuper):
 				sys.stderr.write("Error: \"" + t.name + "\" value is " + str(t.value)+".\n")
 				sys.stderr.write("       But value is 1 or 0 if you test by fisher's exact test.\n")
 				sys.exit()
-		
-		# check the support size.
-		# If support size larger than half of all data size, raise error.
-		# Because this version does not treat x > (n1+n0)/2.
-		"""
-		if self.__f_size > (self.__t_size/2):
-			sys.stderr.write("Reduce the number of rows whose second column is 1 to be less than the half of the total rows.\n")
-			sys.stderr.write("This code cannot analyze this case.\n")
-			sys.exit()
-		"""
 
 			
 	def getN1(self):
 		return self.__f_size
 	
+	def getAllSize(self):
+		return self.__t_size
+
+	"""
 	def funcF(self, x):
 		n1 = self.__f_size
 		n1_n0 = self.__t_size # the number of all genes
-#		print "x: " + str(x)
 		# If x > n1, then print error and exit calculation.
 		# (MASL may not follow the monotonic decrease.)
 		all_x = n1_n0 - n1
-#		print "all transaction size: " + str(n1_n0)
-#		print "n1+n0-x: " + str(all_x)
-#		print "n1: " + str(n1)
-		# if x > n1+n0-x, calculate x=n1+n0-x
 		
 		# x < n1 <= n0
 		if x <= n1:
 			ans = self.__probability(x, x)
-#			print "f(" + str(x) + ") = " + str(ans)
 			return ans
 		# n1 <= x <= n0
 		elif x <= all_x:
@@ -107,11 +97,9 @@ class FunctionOfX(fs.FunctionsSuper):
 			return ans
 		# x > n0:
 		else:
-#			print x
-#			print n1
-#			print all_x
 			sys.stderr.write("Error: x > n1, n0. This code cannot consider this case.\n")
 			sys.exit()
+	"""
 			
 	##
 	# Calculate p-value by using fisher's exact test.
@@ -121,20 +109,44 @@ class FunctionOfX(fs.FunctionsSuper):
 	def calPValue(self, transaction_list, flag_transactions_id):
 		ovalues = self.contingencyTable( transaction_list, flag_transactions_id, self.__t_size, self.__f_size )
 		total_col1 = self.__f_size
-#		print ovalues
 		total_row1 = sum( ovalues[0] )
 		p = self.__pvalTable.getValue( total_row1, ovalues[0][0] )
 		if p < 0: # calculate P-value and save to the table
 			p0 = self.__probability(total_row1, ovalues[0][0])
-#			print "p0: " + str(p0)
-			p = 0
-			a = ovalues[0][0]
-			while ( a <= total_row1 ) and ( a <= total_col1 ):
-				pa = self.__probability(total_row1, a)
-				p = p + pa
-				a = a + 1
+#			sys.stdout.write("p0: %s\n" % p0)
+			p = p0; pos_max = min( total_row1, total_col1 )
+			# when the alternative hypothesis is "two.sided",
+			# the lower case probability is cumulated. 
+			if self.alternative < 1:
+				a = 0
+				# cumulate the lower case probability.
+				while a < ovalues[0][0]:
+					pa = self.__probability( total_row1, a )
+#					sys.stdout.write( "x: %d, a:%d, pa: %s\n" % (total_row1, a, pa) )
+					if (pa - p0 > 1.E-16): # pa > p0
+						break
+					p = p + pa
+					a = a + 1
+				# cumulate the upper case probability.
+				a = pos_max
+				while ( a > ovalues[0][0] ):
+					pa = self.__probability( total_row1, a )
+#					sys.stdout.write( "x: %d, a:%d, pa: %s\n" % (total_row1, a, pa) )
+					if (pa - p0 > 1.E-16): # pa > p0
+						break
+					p = p + pa
+					a = a - 1
+			# when the alternative hypothesis is "greater" or "less",
+			# the higher/less case probability is cumulated.  
+			else:
+				a = ovalues[0][0] + 1
+				while ( a <= pos_max ):
+					pa = self.__probability( total_row1, a )
+					p = p + pa
+					a = a + 1
 			self.__pvalTable.putValue( total_row1, ovalues[0][0], p )
 			self.calTime = self.calTime + 1
+#		sys.stdout.write( "x: %d, a:%d, p: %s\n" % (total_row1, ovalues[0][0], p) )
 		return p, ovalues[0][0]
 	
 	##
@@ -150,23 +162,18 @@ class FunctionOfX(fs.FunctionsSuper):
 			n1 = self.__f_size
 			n0 = n - n1
 			b = x - a
-			time = 0
+			i = 0
 			p = 1.0
-			while time < a:
-#				print "c(n1, a): " + str(n1-time) + "/" + str(a-time)
-				p = p*(n1-time)/(a-time) # c(n1, a)
-#				print "c(n1+n0, x)" + str(n1_n0-time) + "/" + str(a_b-time)
-				p = p*(x-time)/(n-time) # c(n1+n0, x)
-				time = time + 1
-			time = 0
-			while time < b:
-#				print "c(n0, b): " + str(n0-time) + "/" + str(b-time)
-				p = p*(n0-time)/(b-time) # c(n0, b)
-				minus_denominator = a+time
-#				print "c(n1+n0, x): " + str(n1_n0-minus_denominator) + "/" + str(a_b-minus_denominator)
-				p = p*(x-minus_denominator)/(n-minus_denominator) # c(n1+n0, x)
-				time = time + 1
-#				print p
+			while i < a:
+				p = p*(n1 - i)/(a - i) # c(n1, a)
+				p = p*(x - i)/(n - i) # c(n1+n0, x)
+				i = i + 1
+			i = 0
+			while i < b:
+				p = p*(n0 - i)/(b - i) # c(n0, b)
+				minus_denominator = a + i
+				p = p*(x - minus_denominator)/(n - minus_denominator) # c(n1+n0, x)
+				i = i + 1
 			self.__occrTable.putValue( x, a, p )
 		return p
 
@@ -200,9 +207,7 @@ def maxLambda(transaction_list):
 	# Count each item size
 	item_sizes = {}
 	for t in transaction_list:
-#		print t.itemset
 		for item in t.itemset:
-#			print item
 			# If item does not exist in item_size, then make mapping to 0
 			if not item_sizes.has_key(item):
 				item_sizes[item] = 0

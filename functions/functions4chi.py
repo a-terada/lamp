@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Define fuctions that is used in multiple_test.py
 # This source includes calculate P-value and MASL of the chi-square test.
 # @author Terada, 16, Apr, 2013
+# @editor Terada, 11, Mar, 2015,
+#     Implement computation of the 'less' and 'two-sided' Chi-square test. 
 
 from __future__ import division
 import sys, os
@@ -44,12 +46,14 @@ import readFile
 # Define class
 # This class calculate function f that define in paper. (C(n1, x)/C(n0+n1, x))
 # transaction_list: list of transactions
+# alternative: alternative hypothesis, 1 -> "greater" or "less", 0 -> two.sided
 ##
 class FunctionOfX(fs.FunctionsSuper):
-	def __init__(self, transaction_list, row_size):
+	def __init__(self, transaction_list, row_size, alternative):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__f_size = self.sumValue(transaction_list) # transaction size which have flag = 1 (n1)
+		self.alternative = alternative # alternative hypothesis. greater or less -> 1, two.sided -> 0.
 		self.__pvalTable = pvalTable.PvalTable( row_size ) # P-value table
 		self.__chiTable = pvalTable.PvalTable( row_size ) # P-value table
 		if self.__f_size == 0:
@@ -63,24 +67,18 @@ class FunctionOfX(fs.FunctionsSuper):
 				sys.stderr.write("Error: \"" + t.name + "\" value is " + str(t.value)+".\n")
 				sys.stderr.write("       But value is 1 or 0 if you test by fisher's exact test.\n")
 				sys.exit()
-		
-		# check the support size.
-		# If support size larger than half of all data size, raise error.
-		# Because this version does not treat x > (n1+n0)/2.
-		"""
-		if self.__f_size > (self.__t_size/2):
-			e_out = "The support size larger than half of all transaction size.\n"
-			e_out = e_out + "                 This version does not treat this case."
-			sys.exit()
-		"""
+				
 	
 	def getN1(self):
 		return self.__f_size
 
+	def getAllSize(self):
+		return self.__t_size
 
 	##
 	# calclate MASL
 	##
+	"""
 	def funcF(self, x):
 		p1 = p2 = 1.0
 		chi1 = chi2 = 0.0
@@ -102,25 +100,34 @@ class FunctionOfX(fs.FunctionsSuper):
 			return p1
 		else:
 			return p2
+	"""
 		
 			
 	##
-	# Calculate p-value by using fisher's exact test.
+	# Calculate p-value by using chi-square test.
 	# transaction_list: List of transactions
 	# flag_itemset_id: Transactions which have items
+	# alternative: alternative hypothesis, 1 -> greater, 0 -> two-sided, -1 -> less.
 	##
 	def calPValue(self, transaction_list, flag_transactions_id):
 		ovalues = self.contingencyTable( transaction_list, flag_transactions_id, self.__t_size, self.__f_size )
-#		print ovalues
 		total_col1 = self.__f_size
 		total_row1 = sum( ovalues[0] )
 		p = self.__pvalTable.getValue( total_row1, ovalues[0][0] )
 		chi = self.__chiTable.getValue( total_row1, ovalues[0][0] )
 		if p < 0: # calculate P-value and save to the table
 			p, chi = self.__probabilityTable(ovalues)
+			if (self.alternative > 0): 
+				if (ovalues[0][0] < min(self.__f_size, total_row1)/2):
+					p = 1. - p
+			# when the alternative hypothesis is "two.sided", 
+			# the P-value is doubled. 
+			else:
+				p = min( p * 2., 1.0 )
 			self.__pvalTable.putValue( total_row1, ovalues[0][0], p )
 			self.__chiTable.putValue( total_row1, ovalues[0][0], chi )
-		return p, chi
+#		sys.stdout.write( "x: %d, a:%d, chi: %s, p: %s\n" % (total_row1, ovalues[0][0], chi, p) )
+		return p, ovalues[0][0]
 	
 	def __calMeans(self, ovalues):
 		total = self.__t_size
@@ -144,9 +151,7 @@ class FunctionOfX(fs.FunctionsSuper):
 	##
 	def __probabilityTable(self, ovalues):
 		means = self.__calMeans(ovalues) # calculate the exception value
-#		print ovalues
-#		print means
-
+		
 		# Yate continuity correction
 		yate_corr = 0
 		for i in means:
@@ -160,16 +165,15 @@ class FunctionOfX(fs.FunctionsSuper):
 			row = ovalues[i]
 			for j in xrange(0, len(row)):
 				chi = chi + (abs(row[j] - means[i][j]) - yate_corr)**2/means[i][j]
-				
 		return self.__chi2pval( chi ), chi
 
 	def __chi2pval(self, chi):
 		if (chi == 0.0):
 			return 1.0
 		else: # dimension = 1
-			return (self.stdNorDistribution(chi**0.5)) * 2.0
+			return (self.stdNorDistribution(chi**0.5))
 
-
+"""
 def maxLambda(transaction_list):
 	# Count each item size
 	item_sizes = {}
@@ -222,5 +226,4 @@ if __name__ == "__main__":
 	itemset_str_lst = sys.argv[3].split(',')
 	delimiter = ','
 	p_value, down_size = run(xls_file, value_file, itemset_str_lst, delimiter)
-	
-
+"""
