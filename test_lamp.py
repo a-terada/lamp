@@ -42,14 +42,21 @@ class TestLamp(unittest.TestCase):
 	def setUp(self):
 		self.csv_file = "sample/sample_item.csv"
 		self.flag_file = "sample/sample_expression_over1.csv"
+		self.flag_less_file = "sample/sample_expression_less1.csv"
 		self.value_file = "sample/sample_expression_value.csv"
+
+		# files to test # of positives = # of negatives.
+		self.csv_file2 = "sample/sample_item2.csv"
+		self.flag_file2 = "sample/sample_expression2_over1.csv"
+		self.flag_less_file2 = "sample/sample_expression2_less1.csv"
+		
 		self.sig_level = 0.05
 		
-	def checkResults( self, csv_file, value_file, method, arity_lim, log_file, true_k, true_lam, true_comb_list ):
+	def checkResults( self, csv_file, value_file, method, arity_lim, log_file, true_k, true_lam, true_comb_list, alternative ):
 		fw = open( RESULT_FILE, 'a+' )
 		sys.stdout = fw
 		enrich_lst, k, lam, columnid2name \
-					= lamp.run( csv_file, value_file, self.sig_level, method, None, arity_lim, log_file, ',' )
+					= lamp.run( csv_file, value_file, self.sig_level, method, None, arity_lim, log_file, alternative )
 		sys.stdout.write("\n\n")
 		sys.stdout = sys.__stdout__
 		fw.close()
@@ -81,11 +88,11 @@ class TestLamp(unittest.TestCase):
 		sys.stderr.write( "\n\n#######################################\n")
 		sys.stderr.write( "  Test LAMP using Fisher's exact test\n" )
 		sys.stderr.write( "#######################################\n")
-		sys.stderr.write( "--- without arity limit ---\n" )
-		true_k = 5; true_lam = 5
+		sys.stderr.write( "--- without arity limit (default) ---\n" )
+		true_k = 5; true_lam = 5; self.sig_level = 0.05
 		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00699300699301, 5, 5 ]) ]
 		self.checkResults( self.csv_file, self.flag_file, "fisher", -1, LOG_FILE, \
-							true_k, true_lam, true_comb_list )
+							true_k, true_lam, true_comb_list, 1 )
 		
 		sys.stderr.write( "\n--- arity limit = 2 ---\n" )
 		true_k = 7; true_lam = 5
@@ -93,8 +100,81 @@ class TestLamp(unittest.TestCase):
 						   tuple( [set(["TF1", "TF3"]), 0.00699300699301, 5, 5 ]),
 						   tuple( [set(["TF2", "TF3"]), 0.00699300699301, 5, 5 ]) ]
 		self.checkResults( self.csv_file, self.flag_file, "fisher", 2, LOG_FILE, \
-							true_k, true_lam, true_comb_list )
+							true_k, true_lam, true_comb_list, 1 )
 		
+		sys.stderr.write( "\n--- alternative=\"greater\" ---\n" )
+		# # of positives != # of negatives
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00699300699301, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.034965034965, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.034965034965, 6, 5 ])]
+		self.checkResults( self.csv_file, self.flag_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.flag_less_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		
+		sys.stderr.write( "\n--- alternative=\"two.sided\" ---\n" )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00699300699301, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.0405594405594, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.0405594405594, 6, 5 ])]
+		self.checkResults( self.csv_file, self.flag_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00699300699301, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.0405594405594, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.0405594405594, 6, 1 ])]
+		self.checkResults( self.csv_file, self.flag_less_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		
+		sys.stderr.write( "\n--- alternative=\"less\" ---\n" )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.flag_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00699300699301, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.034965034965, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.034965034965, 6, 1 ])]
+		self.checkResults( self.csv_file, self.flag_less_file, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		
+		# # of positives == # of negatives (greater)
+		sys.stderr.write( "\n--- # of positives == # of negatives ---\n" )
+		true_k = 5; true_lam = 4; self.sig_level = 0.3
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0104895104895, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.0512820512821, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.0512820512821, 6, 5 ])]
+		self.checkResults( self.csv_file2, self.flag_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		true_comb_list = []
+		self.checkResults( self.csv_file2, self.flag_less_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+
+		# # of positives == # of negatives (two.sided)
+		true_k = 5; true_lam = 5; self.sig_level = 0.3
+		true_comb_list = [tuple( [set(["TF1", "TF2", "TF3"]), 0.020979020979, 5, 5 ])]
+		self.checkResults( self.csv_file2, self.flag_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		true_comb_list = [tuple( [set(["TF1", "TF2", "TF3"]), 0.020979020979, 5, 0 ])]
+		self.checkResults( self.csv_file2, self.flag_less_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+
+		# # of positives == # of negatives (less)
+		true_k = 5; true_lam = 4; self.sig_level = 0.3
+		true_comb_list = []
+		self.checkResults( self.csv_file2, self.flag_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0104895104895, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.0512820512821, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.0512820512821, 6, 1 ])]
+		self.checkResults( self.csv_file2, self.flag_less_file2, "fisher", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		
+		
+	"""
 	def testUTest(self):
 		sys.stderr.write( "\n\n#######################################\n")
 		sys.stderr.write( "  Test LAMP using Mann-Whitney U-test\n" )
@@ -112,26 +192,97 @@ class TestLamp(unittest.TestCase):
 						   tuple( [set(["TF2", "TF3"]), 0.00602414187918, 5, 2.510727 ]) ]
 		self.checkResults( self.csv_file, self.value_file, "u_test", 2, LOG_FILE, \
 						   true_k, true_lam, true_comb_list )
-
+	"""
 	def testChiSquareTest(self):
 		sys.stderr.write( "\n\n#######################################\n")
 		sys.stderr.write( "  Test LAMP using the Chi-square test\n" )
 		sys.stderr.write( "#######################################\n")
-		self.sig_level = 0.2
-		sys.stderr.write( "--- without arity limit ---\n" )
+		self.sig_level = 0.05
+		sys.stderr.write( "--- without arity limit (default) ---\n" )
 		true_k = 5; true_lam = 5
-		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0173711500544, 5, 5 ]) ]
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0086855750272, 5, 5 ]) ]
 		self.checkResults( self.csv_file, self.flag_file, "chi", -1, LOG_FILE, \
-							true_k, true_lam, true_comb_list )
+							true_k, true_lam, true_comb_list, 1 )
 		
 		sys.stderr.write( "\n--- arity limit = 2 ---\n" )
-		true_k = 7; true_lam = 5
-		true_comb_list = [ tuple( [set(["TF1", "TF2"]), 0.0173711500544, 5, 5 ]),
-						   tuple( [set(["TF1", "TF3"]), 0.0173711500544, 5, 5 ]),
-						   tuple( [set(["TF2", "TF3"]), 0.0173711500544, 5, 5 ]) ]
+		true_k = 7; true_lam = 5; self.sig_level = 0.1
+		true_comb_list = [ tuple( [set(["TF1", "TF2"]), 0.0086855750272, 5, 5 ]),
+						   tuple( [set(["TF1", "TF3"]), 0.0086855750272, 5, 5 ]),
+						   tuple( [set(["TF2", "TF3"]), 0.0086855750272, 5, 5 ]) ]
 		self.checkResults( self.csv_file, self.flag_file, "chi", 2, LOG_FILE, \
-						   true_k, true_lam, true_comb_list )
+						   true_k, true_lam, true_comb_list, 1 )
 		
+		sys.stderr.write( "\n--- alternative=\"greater\" ---\n" )
+		# # of positives != # of negatives
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0086855750272, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.036251012711, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.036251012711, 6, 5 ])]
+		self.checkResults( self.csv_file, self.flag_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.flag_less_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		
+		sys.stderr.write( "\n--- alternative=\"two.sided\" ---\n" )
+		true_k = 5; true_lam = 4; self.sig_level = 0.5
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0173711500544, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.0725020254219, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.072502025419, 6, 5 ])]
+		self.checkResults( self.csv_file, self.flag_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0173711500544, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.0725020254219, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.072502025419, 6, 1 ])]
+		self.checkResults( self.csv_file, self.flag_less_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		
+		sys.stderr.write( "\n--- alternative=\"less\" ---\n" )
+		true_k = 5; true_lam = 3; self.sig_level = 0.5
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.flag_file, "chi", -1, LOG_FILE, \
+						   true_k, true_lam, true_comb_list, -1 )
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0086855750272, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.036251012711, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.036251012711, 6, 1 ])]
+		self.checkResults( self.csv_file, self.flag_less_file, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+
+		
+		# # of positives == # of negatives (greater)
+		sys.stderr.write( "\n--- # of positives == # of negatives ---\n" )
+		true_k = 5; true_lam = 4; self.sig_level = 0.3
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0128374712894, 5, 5 ]),
+						   tuple( [set(["TF2"]), 0.05259625256, 6, 5 ]),
+						   tuple( [set(["TF3"]), 0.05259625256, 6, 5 ])]
+		self.checkResults( self.csv_file2, self.flag_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		true_comb_list = []
+		self.checkResults( self.csv_file2, self.flag_less_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+
+		# # of positives == # of negatives (two.sided)
+		true_k = 5; true_lam = 5; self.sig_level = 0.3
+		true_comb_list = [tuple( [set(["TF1", "TF2", "TF3"]), 0.0256749425788, 5, 5 ])]
+		self.checkResults( self.csv_file2, self.flag_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		true_comb_list = [tuple( [set(["TF1", "TF2", "TF3"]), 0.0256749425788, 5, 0 ])]
+		self.checkResults( self.csv_file2, self.flag_less_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		
+		
+		# # of positives == # of negatives (less)
+		true_k = 5; true_lam = 4; self.sig_level = 0.3
+		true_comb_list = []
+		self.checkResults( self.csv_file2, self.flag_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.0128374712894, 5, 0 ]),
+						   tuple( [set(["TF2"]), 0.05259625256, 6, 1 ]),
+						   tuple( [set(["TF3"]), 0.05259625256, 6, 1 ])]
+		self.checkResults( self.csv_file2, self.flag_less_file2, "chi", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
 
 if __name__ == '__main__':
 	unittest.main()
