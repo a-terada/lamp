@@ -67,6 +67,9 @@ t:transpose the input database (item i will be i-th transaction, and i-th transa
 /***********************************************************************/
 void LCM_read_param (int argc, char *argv[], PROBLEM *PP){
   ITEMSET *II = &PP->II;
+  // initialize the variables for LAMP mode.
+  II->lamp_stat = 1; // Fisher's exact test
+  
   int c=1, f=0;
   if ( argc < c+3 ){ LCM_error (); return; }
   
@@ -101,6 +104,7 @@ void LCM_read_param (int argc, char *argv[], PROBLEM *PP){
         }
       }
 	  else if ( !strcmp (argv[c], "-LAMP_P") ){ // change the statistical test in LAMP mode
+		
 		II->lamp_stat = atoi(argv[c+1]);
 	  }
       break; case 'K': if ( PP->problem & PROBLEM_MAXIMAL )
@@ -162,7 +166,14 @@ void LCM_read_param (int argc, char *argv[], PROBLEM *PP){
   PP->TT.fname = argv[c];
   II->frq_lb = (WEIGHT)atof(argv[c+1]);
   if ( argc>c+2 ) PP->output_fname = argv[c+2];
-  if ( II->flag2 & ITEMSET_LAMP ){ II->th = atof(argv[c+1]); II->frq_lb = 1; II->lamp_alpha = II->th; }
+  if ( II->flag2 & ITEMSET_LAMP ){ 
+	II->th = atof(argv[c+1]); 
+	II->frq_lb = 1; 
+	II->lamp_alpha = II->th;
+	// check the ...
+	printf ("II->lamp_stat: %d, II->lamp_alpha: %f\n", \
+			II->lamp_stat, II->lamp_alpha);
+  }
 }
 
 /*********************************************************************/

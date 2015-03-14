@@ -347,6 +347,7 @@ double stdNorDistribution ( double x ){
  */
 // topk.end: #records, topk.base: #positive records, PP.th: \alpha, topk_k: #patterns found
 void ITEMSET_lamp (ITEMSET *I, LONG s){
+  printf("I->lamp_stat: %d\n", I->lamp_stat);
   if ( I->frq >= I->topk_frq ){ // LAMP  histogram version
 	int base0 = I->topk.base - I->topk.end;
 	// topk_k: frequency, frq_lb: minimum support, th: alpha/f(lambd) (the upper bound for the frequency)
@@ -373,7 +374,7 @@ void ITEMSET_lamp (ITEMSET *I, LONG s){
 		chi += pow( fabs(base0 - means[1][1]) - YATE_CORR, 2.0)/means[1][1];
 		double pval = 1.0;
 		if (chi != 0.0){
-		  pval = stdNorDistribution( sqrt( chi ) ) * 2.;
+		  pval = stdNorDistribution( sqrt( chi ) );
 		}
 		//printf ("chi^2: %f, p-value: %e, ", chi, pval );
 		I->th = I->lamp_alpha / pval; 
