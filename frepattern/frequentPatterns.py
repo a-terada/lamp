@@ -249,8 +249,8 @@ class LCM():
 		else:
 			out_file = out_file_pre + ".lcmlamp.aritylim" + str( arity_limit )
 			outlog_lcmlamp = open( out_file, 'w' )
-			subprocess.check_call( [self.__LCMPATH, "F", "-LAMP", str(n1), "-u", str(arity_limit), \
-									input_file, str(sig_level)], \
+			subprocess.check_call( [self.__LCMPATH, "F", "-LAMP", str(n1), "-LAMP_P", str(p_mode), \
+									"-u", str(arity_limit), input_file, str(sig_level)], \
 								   stdout=outlog_lcmlamp, stderr=outlog_lcmlamp )
 			outlog_lcmlamp.close()
 		
