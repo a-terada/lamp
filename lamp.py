@@ -118,7 +118,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		if set_method == "fisher":
 			func_f = functions4fisher.FunctionOfX(transaction_list, max_lambda, abs(alternative))
 		elif set_method == "u_test":
-			func_f = functions4u_test.FunctionOfX(transaction_list)
+			func_f = functions4u_test.FunctionOfX(transaction_list, abs(alternative))
 		elif set_method == "chi":
 			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda, abs( alternative))
 		else:
@@ -140,15 +140,17 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		
 		# If Fisher's exact test or chi-square test is used for computing P-value, 
 		# LCM-LAMP is run to find optimal lambda.
-		neg_size = func_f.getAllSize() - func_f.getN1()
-		n1 = min( n1, neg_size )
 		if set_method == "fisher":
+			neg_size = func_f.getAllSize() - func_f.getN1()
+			n1 = min( n1, neg_size )
 			# # of positives == # of negatives, and two.sided hypothesis test.
 			if ( func_f.getN1() == neg_size ) and (alternative == 0):
 				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, 0.5*threshold, 1 )
 			else:
 				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, threshold, 1 )
 		elif set_method == "chi":
+			neg_size = func_f.getAllSize() - func_f.getN1()
+			n1 = min( n1, neg_size )
 			# two-sided hypothesis test
 			if alternative == 0:
 				fre_pattern, lam_star = depthFirst( trans4lcm, fre_pattern, max_comb, n1, 0.5*threshold, 2 )
@@ -158,7 +160,12 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		# If Mann-Whitney U test of Chi-square test is used,
 		# LAMP ver 1. is run for computing the optimal lambda. 
 		else:
-			fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog )
+			# two-sided hypothesis test
+			if alternative == 0:
+				fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, 0.5*threshold, lam, outlog )
+			# one-sided hypothesis test
+			else:
+				fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog )
 	except fs.TestMethodError, e:
 		sys.exit()
 	except frequentPatterns.LCMError, e:

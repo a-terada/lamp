@@ -51,10 +51,11 @@ import readFile
 # transaction_list: list of transactions
 ##
 class FunctionOfX(fs.FunctionsSuper):
-	def __init__(self, transaction_list):
+	def __init__(self, transaction_list, alternative):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__transaction_list = transaction_list[:]
+		self.alternative = alternative # alternative hypothesis. greater or less -> 1, two.sided -> 0.
 		self.calTime = 0 # Total number of calculate P-value
 #		self.__range20_1 = range(1, 21)
 #		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
@@ -274,6 +275,8 @@ class FunctionOfX(fs.FunctionsSuper):
 		all_size = self.__t_size # the number of all transaction (n1 + n0)
 		in_t_list, out_t_list = self.__divideGroup(frequent_itemset) # dvide transactions to itemset or not.
 		p_value, z_value = self.__uTest(in_t_list, out_t_list)
+		if (self.alternative == 0):
+			p_value = min( p_value * 2., 1.0 )
 		self.calTime = self.calTime + 1
 		return p_value, z_value
 	
