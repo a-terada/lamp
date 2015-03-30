@@ -174,7 +174,7 @@ class TestLamp(unittest.TestCase):
 							true_k, true_lam, true_comb_list, -1 )
 		
 		
-	"""
+	
 	def testUTest(self):
 		sys.stderr.write( "\n\n#######################################\n")
 		sys.stderr.write( "  Test LAMP using Mann-Whitney U-test\n" )
@@ -183,7 +183,7 @@ class TestLamp(unittest.TestCase):
 		true_k = 5; true_lam = 3
 		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00602414187918, 5, 2.510727 ]) ]
 		self.checkResults( self.csv_file, self.value_file, "u_test", -1, LOG_FILE, \
-							true_k, true_lam, true_comb_list )
+							true_k, true_lam, true_comb_list, 1 )
 		
 		sys.stderr.write( "\n--- arity limit = 2 ---\n" )
 		true_k = 7; true_lam = 3
@@ -191,8 +191,8 @@ class TestLamp(unittest.TestCase):
 						   tuple( [set(["TF1", "TF3"]), 0.00602414187918, 5, 2.510727 ]),
 						   tuple( [set(["TF2", "TF3"]), 0.00602414187918, 5, 2.510727 ]) ]
 		self.checkResults( self.csv_file, self.value_file, "u_test", 2, LOG_FILE, \
-						   true_k, true_lam, true_comb_list )
-	"""
+						   true_k, true_lam, true_comb_list, 1 )
+	
 	def testChiSquareTest(self):
 		sys.stderr.write( "\n\n#######################################\n")
 		sys.stderr.write( "  Test LAMP using the Chi-square test\n" )
