@@ -347,7 +347,7 @@ double stdNorDistribution ( double x ){
  */
 // topk.end: #records, topk.base: #positive records, PP.th: \alpha, topk_k: #patterns found
 void ITEMSET_lamp (ITEMSET *I, LONG s){
-  printf("I->lamp_stat: %d\n", I->lamp_stat);
+  //printf("I->lamp_stat: %d\n", I->lamp_stat);
   if ( I->frq >= I->topk_frq ){ // LAMP  histogram version
 	int base0 = I->topk.base - I->topk.end;
 	// topk_k: frequency, frq_lb: minimum support, th: alpha/f(lambd) (the upper bound for the frequency)
