@@ -1,8 +1,7 @@
-all: lcm53
+all: lcm53/lcm
 test: 
 	python -m unittest discover
-lcm53: lcm53.zip
-	unzip lcm53.zip -d lcm53
+lcm53/lcm: 
 	cd lcm53 && make && cd ..
 clean:
-	rm -rf lcm53 *.pyc frepattern/*.pyc functions/*.pyc
+	rm lcm53/lcm *.pyc frepattern/*.pyc functions/*.pyc
