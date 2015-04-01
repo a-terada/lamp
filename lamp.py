@@ -50,7 +50,7 @@ import functions.functions4chi as functions4chi
 
 #set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 BINARY_METHODS = tuple( [ "fisher", "chi" ] )
 
@@ -84,7 +84,8 @@ def reverseValue( transaction_list, set_method ):
 	if set_method in BINARY_METHODS:
 		map( lambda t: t.setValue( 1 - t.value ), transaction_list )
 	else:
-		map( lambda t: t.setValue( math.fabs( t.value ) ), transaction_list )
+		map( lambda t: t.setValue( 0 - t.value ), transaction_list )
+#		map( lambda t: t.setValue( math.fabs( t.value ) ), transaction_list )
 	transaction_list.reverse()
 	return transaction_list
 
@@ -118,7 +119,7 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 		if set_method == "fisher":
 			func_f = functions4fisher.FunctionOfX(transaction_list, max_lambda, abs(alternative))
 		elif set_method == "u_test":
-			func_f = functions4u_test.FunctionOfX(transaction_list, abs(alternative))
+			func_f = functions4u_test.FunctionOfX(transaction_list, alternative)
 		elif set_method == "chi":
 			func_f = functions4chi.FunctionOfX(transaction_list, max_lambda, abs( alternative))
 		else:

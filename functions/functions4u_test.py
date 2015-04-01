@@ -55,7 +55,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		fs.FunctionsSuper.__init__(self)
 		self.__t_size = len(transaction_list) # all transaction size
 		self.__transaction_list = transaction_list[:]
-		self.alternative = alternative # alternative hypothesis. greater or less -> 1, two.sided -> 0.
+		self.alternative = alternative # alternative hypothesis. greater -> 1, less -> -1, two.sided -> 0.
 		self.calTime = 0 # Total number of calculate P-value
 #		self.__range20_1 = range(1, 21)
 #		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
@@ -277,6 +277,11 @@ class FunctionOfX(fs.FunctionsSuper):
 		p_value, z_value = self.__uTest(in_t_list, out_t_list)
 		if (self.alternative == 0):
 			p_value = min( p_value * 2., 1.0 )
+		else:
+			if (z_value < 0):
+				p_value = 1. - p_value
+			if (self.alternative < 0):
+				z_value = -z_value
 		self.calTime = self.calTime + 1
 		return p_value, z_value
 	
