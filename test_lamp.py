@@ -44,6 +44,7 @@ class TestLamp(unittest.TestCase):
 		self.flag_file = "sample/sample_expression_over1.csv"
 		self.flag_less_file = "sample/sample_expression_less1.csv"
 		self.value_file = "sample/sample_expression_value.csv"
+		self.value_less_file = "sample/sample_expression_value_rev.csv"
 
 		# files to test # of positives = # of negatives.
 		self.csv_file2 = "sample/sample_item2.csv"
@@ -192,6 +193,33 @@ class TestLamp(unittest.TestCase):
 						   tuple( [set(["TF2", "TF3"]), 0.00602414187918, 5, 2.510727 ]) ]
 		self.checkResults( self.csv_file, self.value_file, "u_test", 2, LOG_FILE, \
 						   true_k, true_lam, true_comb_list, 1 )
+		
+		sys.stderr.write( "\n--- alternative=\"greater\" ---\n" )
+		# # of positives != # of negatives
+		true_k = 5; true_lam = 3; self.sig_level = 0.05
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.value_less_file, "u_test", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 1 )
+		
+		sys.stderr.write( "\n--- alternative=\"two.sided\" ---\n" )
+		true_k = 5; true_lam = 3; self.sig_level = 0.1
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.01204828, 5, 2.510727 ]) ]
+		self.checkResults( self.csv_file, self.value_file, "u_test", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.1
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.01204828, 5, -2.510727 ]) ]
+		self.checkResults( self.csv_file, self.value_less_file, "u_test", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, 0 )
+
+		sys.stderr.write( "\n--- alternative=\"less\" ---\n" )
+		true_k = 5; true_lam = 3; self.sig_level = 0.05
+		true_comb_list = []
+		self.checkResults( self.csv_file, self.value_file, "u_test", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
+		true_k = 5; true_lam = 3; self.sig_level = 0.05
+		true_comb_list = [ tuple( [set(["TF1", "TF2", "TF3"]), 0.00602414187918, 5, -2.510727 ]) ]
+		self.checkResults( self.csv_file, self.value_less_file, "u_test", -1, LOG_FILE, \
+							true_k, true_lam, true_comb_list, -1 )
 	
 	def testChiSquareTest(self):
 		sys.stderr.write( "\n\n#######################################\n")
