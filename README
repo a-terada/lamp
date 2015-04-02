@@ -1,3 +1,4 @@
-LAMP is a code for multiple testing correction to discover combinatorial effects. The lcm53.zip is the redistributed file that is provided in http://research.nii.ac.jp/~uno/codes.htm. 
+LAMP is a code for multiple testing correction to discover combinatorial effects. 
+The lcm.c, itemset.c, and itemset.h in lcm53 are modified from the LCM code which can be downloaded from http://research.nii.ac.jp/~uno/codes.htm. The other files in lcm53 are redistributed. 
 The usage of LAMP is described in http://a-terada.github.io/lamp/.
 

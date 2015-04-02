@@ -1,14 +1,9 @@
-/* Linear time Closed itemset Miner for Frequent Itemset Mining problems */
-/* 2004/4/10 Takeaki Uno,   e-mail:uno@nii.jp, 
-    homepage:   http://research.nii.ac.jp/~uno/index.html  */
-/* This program is available for only academic use, basically.
-   Anyone can modify this program, but he/she has to write down 
-    the change of the modification on the top of the source code.
-   Neither contact nor appointment to Takeaki Uno is needed.
-   If one wants to re-distribute this code, do not forget to 
-    refer the newest code, and show the link to homepage of 
-    Takeaki Uno, to notify the news about LCM for the users.
-   For the commercial use, please make a contact to Takeaki Uno. */
+/* Linear time Closed itemset Miner for Frequent Itemset Mining problems 
+            Apr. 2, 2015  modified by LAMP development team */
+/* This code is modified from LCM ver 5.3 
+    which is downloaded from http://research.nii.ac.jp/~uno/codes.htm.
+   LAMP and LAMP_P options are implemented for fast computation of LAMP. 
+*/
 
 
 #ifndef _lcm_c_

@@ -1,13 +1,9 @@
 /*  itemset search input/output common routines
-            25/Nov/2007   by Takeaki Uno  e-mail:uno@nii.jp, 
-    homepage:   http://research.nii.ac.jp/~uno/index.html  */
-/* This program is available for only academic use, basically.
-   Anyone can modify this program, but he/she has to write down 
-    the change of the modification on the top of the source code.
-   Neither contact nor appointment to Takeaki Uno is needed.
-   If one wants to re-distribute this code, please
-    refer the newest code, and show the link to homepage of 
-    Takeaki Uno, to notify the news about the codes for the users. */
+            Apr. 2, 2015  modified by LAMP development team */
+/* This code is modified from LCM ver 5.3 
+    which is downloaded from http://research.nii.ac.jp/~uno/codes.htm.
+   We add the structure members lamp_stat and lamp_alpha. */
+
 
 /* routines for itemset mining */
 
