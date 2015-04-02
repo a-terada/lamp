@@ -79,7 +79,7 @@ class FunctionOfX(fs.FunctionsSuper):
 	def getAllSize(self):
 		return self.__t_size
 
-	"""
+	
 	def funcF(self, x):
 		n1 = self.__f_size
 		n1_n0 = self.__t_size # the number of all genes
@@ -99,7 +99,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		else:
 			sys.stderr.write("Error: x > n1, n0. This code cannot consider this case.\n")
 			sys.exit()
-	"""
+	
 			
 	##
 	# Calculate p-value by using fisher's exact test.

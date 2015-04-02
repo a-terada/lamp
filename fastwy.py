@@ -49,7 +49,7 @@ import functions.functions4chi as functions4chi
 
 set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = lamp.__version__
+__version__ =  "1.0.1" + " (LAMP ver." + lamp.__version__ + ")"
 
 
 def version():
@@ -141,7 +141,7 @@ def calculateMinimumPValue( permute_transaction_list, trans4lcm, fre_pattern, fu
 # outlog: file object to output logs
 ##
 def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_path, \
-					 max_comb, permute_num, outlog):
+					 max_comb, permute_num, outlog, alternative):
 #	sys.stderr.write("--- original dataset ---\n")
 #	for j in transaction_list:
 #		j.output()
@@ -152,7 +152,7 @@ def generateMinPDist(transaction_list, trans4lcm, threshold, set_method, lcm_pat
 	# Initialize the apriori and functinos using LAMP. 
 	fre_pattern, lam_star, max_lambda, correction_term_time, func_f \
 				 = lamp.runMultTest( transaction_list, trans4lcm, threshold, set_method, \
-									 lcm_path, max_comb, outlog )
+									 lcm_path, max_comb, outlog, alternative )
 	
 	# calculate the set of minimum p-values using permuted data
 	min_p_list = [] # the list stores the minimum p-values
@@ -284,7 +284,7 @@ def adjustPval( pvalue, sorted_min_p_list, start_index ):
 # sorted_min_p_list: the list of minimum P-values sorted used by FastWY. This list is sorted by P-values. 
 ##
 def outputResult( transaction_file, flag_file, threshold, permute_num, set_method, max_comb, \
-				  columnid2name, enrich_lst, adjusted_threshold, transaction_list, func_f, sorted_min_p_list ):
+				  columnid2name, enrich_lst, adjusted_threshold, transaction_list, func_f, sorted_min_p_list, alternative ):
 	flag_size = -1
 	if not set_method == "u_test":
 		flag_size = func_f.getN1()
@@ -294,7 +294,13 @@ def outputResult( transaction_file, flag_file, threshold, permute_num, set_metho
 	sys.stdout.write("# item-file: %s\n" % (transaction_file))
 	sys.stdout.write("# value-file: %s\n" % (flag_file))
 	sys.stdout.write("# significance-level: %s, # of permuted datasets: %s\n" % (threshold, permute_num))
-	sys.stdout.write("# P-value computing procedure: %s\n" % set_method)
+	sys.stdout.write("# P-value computing procedure: %s" % set_method)
+	if alternative > 0:
+		sys.stdout.write(" (greater)\n")
+	elif alternative < 0:
+		sys.stdout.write(" (less)\n")
+	else:
+		sys.stdout.write(" (two.sided)\n")
 	sys.stdout.write("# # of tested elements: %d, # of samples: %d" % ( len(columnid2name), len(transaction_list) ))
 	if flag_size > 0:
 		sys.stdout.write(", # of positive samples: %d" % flag_size)
@@ -353,14 +359,19 @@ def outputMinP( min_p_list ):
 #     When the value is over than 0, the minP is run.
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 # max_comb: the maximal size which the largest combination size in tests set.
-# delm: delimiter of transaction_file and flag_file
+# alternative: alternative hypothesis. 1 -> greater, -1 -> less, 0 -> two.sided.
 ##
-def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_comb, log_file, delm):
+def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_comb, log_file, alternative):
 	# read 2 files and get transaction list
 	sys.stderr.write( "Read input files ...\n" )
 	transaction_list = set()
 	try:
-		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, delm)
+		transaction_list, columnid2name = readFile.readFiles(transaction_file, flag_file, ",")
+		# If the alternative hypothesis is 'less',
+		# the positive and negative of observe values are reversed, 
+		# and conduct the identical procedure to 'greater'.
+		if alternative < 0:
+			transaction_list = lamp.reverseValue( transaction_list, set_method )
 		max_comb = lamp.convertMaxComb( max_comb, len(columnid2name) )
 	except ValueError, e:
 		return
@@ -381,14 +392,14 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 	outlog.write("Calculate the minimum p-value distribution using the permutation test ...\n")
 	min_p_list, fre_pattern, func_f = \
 				generateMinPDist(transaction_list, trans4lcm, threshold, set_method, \
-								 lcm_path, max_comb, k, outlog)
+								 lcm_path, max_comb, k, outlog, alternative)
 	# adjusted significance level
 	outlog.write("Adjust significance level ...\n")
 	adjusted_threshold, sorted_min_p_list = adjustedThreshold( min_p_list, threshold, k )
 	outlog.write("Adjusted significance level: %s\n" % adjusted_threshold)
 	correction_term_time = time.time()
 	# enumerate combination whose P-value up to adjusted threshold
-	outlog.write("Calculate the p-values in the given data set ...\n")
+	outlog.write("Calculate the p-values in the given data set ...\n")	
 	enrich_lst, time_enumerate_freq, time_enumerate_total = \
 				enumerateSigComb( transaction_list, trans4lcm, fre_pattern, func_f, \
 								  max_comb, adjusted_threshold, outlog )
@@ -397,7 +408,7 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 
 	# output the significant combinations
 	outputResult( transaction_file, flag_file, threshold, k, set_method, max_comb, columnid2name, \
-				  enrich_lst, adjusted_threshold, transaction_list, func_f, sorted_min_p_list )
+				  enrich_lst, adjusted_threshold, transaction_list, func_f, sorted_min_p_list, alternative )
 	
 	# output time cost
 	sys.stdout.write("Time (sec.): Computing correction factor %.3f, Enumerating significant combinations %.3f, Total %.3f\n" \
@@ -424,6 +435,8 @@ if __name__ == "__main__":
 	
 	p.add_option('-e', dest = "log_filename", default = "", help = "The file name to output log.\n")
 
+	p.add_option('--alternative', dest = "alternative", default = "greater", help = "Indicate which alternative hypothesis is used. Select \"greater\", \"less\" or \"two.sided\"\n, and the default is \"greater\".")
+	
 	opts, args = p.parse_args()
 	
 	# check arguments
@@ -470,6 +483,17 @@ if __name__ == "__main__":
 	except ValueError:
 		sys.stderr.write("Error: k be an integer value.\n")
 		sys.exit()
+
+	# check the value of alternative hypothesis
+	if opts.alternative == "greater":
+		opts.alternative = 1
+	elif opts.alternative == "less":
+		opts.alternative = -1
+	elif opts.alternative == "two.sided":
+		opts.alternative = 0
+	else:
+		sys.stderr.write( "Error: \"alternative\" should be one of {\"greater\", \"less\", \"two.sided\"}\n" )
+		sys.exit()
 		
 	# change log file
 	d = datetime.datetime.today()
@@ -482,4 +506,4 @@ if __name__ == "__main__":
 	transaction_file = args[0]; flag_file = args[1]; threshold = float(args[2])
 	enrich_lst, adjusted_threshold, columnid2name \
 				= run(transaction_file, flag_file, threshold, k, opts.pvalue_procedure, \
-					  opts.lcm_path, opts.max_comb, log_file, opts.delimiter)
+					  opts.lcm_path, opts.max_comb, log_file, opts.alternative)

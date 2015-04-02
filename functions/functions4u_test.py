@@ -262,6 +262,8 @@ class FunctionOfX(fs.FunctionsSuper):
 		min_z = mean_u/math.sqrt(var_u) # minimum z-value limited x.
 #		print "  mean: " + str(mean_u) + " var: " + str(var_u) + " z-value: " + str(min_z)
 		p = self.stdNorDistribution(min_z) # p-value if transaction divided into max x and other.
+		if (self.alternative == 0):
+			p_value = min( p * 2., 1.0 )
 		return p
 	
 	##

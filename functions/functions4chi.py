@@ -78,7 +78,6 @@ class FunctionOfX(fs.FunctionsSuper):
 	##
 	# calclate MASL
 	##
-	"""
 	def funcF(self, x):
 		p1 = p2 = 1.0
 		chi1 = chi2 = 0.0
@@ -96,13 +95,14 @@ class FunctionOfX(fs.FunctionsSuper):
 			p1, chi1 = self.__probabilityTable( ovalues )
 			ovalues = [[0, x], [total_row1, total - total_row1 - x]]
 			p2, chi2 = self.__probabilityTable( ovalues )
+		if self.alternative == 0:
+			p1 = min( p1 * 2., 1.0 )
+			p2 = min( p2 * 2., 1.0 )
 		if p1 < p2:
 			return p1
 		else:
 			return p2
-	"""
-		
-			
+					
 	##
 	# Calculate p-value by using chi-square test.
 	# transaction_list: List of transactions
