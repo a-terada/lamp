@@ -94,9 +94,14 @@
 </ul>
 
 <dl>
-<dt>LAMP 2.0 is released (Sept. 9, 2014):</dt>
-
-<dd>LAMP 2.0 is faster than LAMP 1.0, and the result is identical. The technical detail of LAMP 2.0 will appear in ECML/PKDD 2014.</dd>
+  <dt>LAMP 2.0.2  (Apr. 2, 2014):</dt>
+  <dd>
+    <ul>
+      <li>The fast algorithm in <a href="http://link.springer.com/chapter/10.1007%2F978-3-662-44851-9_27">our paper</a> is applied for Chi-squared test.</li>
+      <li>--alternative option is available. 
+    </ul>
+  </dd>
+  <dd><a href="changelog.html">Older releases.</a></dd>
 </dl>
 
 
@@ -111,7 +116,7 @@
 
 <pre><code>$ git clone https://github.com/a-terada/lamp</code></pre>
 
-<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/archive/2.0.1.zip'>zip</a> or <a href='https://github.com/a-terada/lamp/archive/2.0.1.tar.gz'>tar</a> formats, you need to extract the archive with unzip or tar command.</p>
+<p>If you do not have Git, after downloading LAMP in either <a href='https://github.com/a-terada/lamp/archive/2.0.2.zip'>zip</a> or <a href='https://github.com/a-terada/lamp/archive/2.0.2.tar.gz'>tar</a> formats, you need to extract the archive with unzip or tar command.</p>
 
 
 <h3 id='install'>Install</h3>
@@ -159,17 +164,18 @@
 
 <p>When the LAMP finishes successfully, the result is printed in <code>sample_u_test_result.txt</code>:</p>
 
-<pre><code># LAMP ver. 2.0.0
+<pre><code># LAMP ver. 2.0.2
 # item-file: sample/sample_item.csv
 # value-file: sample/sample_expression_value.csv
 # significance-level: 0.05
-# P-value computing procedure: u_test
+# P-value computing procedure: u_test (greater)
 # # of tested elements: 4, # of samples: 15
 # Adjusted significance level: 0.01, Correction factor: 5 (# of target rows &gt;= 3)
 # # of significant combinations: 1
 Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	z-score
 1	0.0060241	0.030121	TF1,TF2,TF3	3	5	2.5107
-Time (sec.): Computing correction factor 0.038, Enumerating significant combinations 0.000, Total 0.038</code></pre>
+Time (sec.): Computing correction factor 0.038, Enumerating significant combinations 0.000, Total 0.038
+</code></pre>
 
 <p>The lines which starts from &#8221;#&#8221; indicates the meta-data including the following information:</p>
 
@@ -221,17 +227,20 @@ Time (sec.): Computing correction factor 0.038, Enumerating significant combinat
 
 <p>When the LAMP finishes successfully, the result is printed in <code>sample_fisher_result.txt</code>:</p>
 
-<pre><code># LAMP ver. 2.0.0
+
+<pre><code># LAMP ver. 2.0.2
 # item-file: sample/sample_item.csv
 # value-file: sample/sample_expression_over1.csv
 # significance-level: 0.05
-# P-value computing procedure: fisher
+# P-value computing procedure: fisher (greater)
 # # of tested elements: 4, # of samples: 15, # of positive samples: 7
 # Adjusted significance level: 0.01, Correction factor: 5 (# of target rows &gt;= 5)
 # # of significant combinations: 1
 Rank	Raw p-value	Adjusted p-value	Combination	Arity	# of target rows	# of positives in the targets
 1	0.006993	0.034965	TF1,TF2,TF3	3	5	5
-Time (sec.): Computing correction factor 0.011, Enumerating significant combinations 0.000, Total 0.011</code></pre>
+Time (sec.): Computing correction factor 0.011, Enumerating significant combinations 0.000, Total 0.011
+</code></pre>
+
 
 <a href='images/sample_fisher_flower.png'><img src='images/sample_fisher_flower.png' alt='flower diagram' width='220' align='right' /></a>
 <p>The eight lines which start from &#8221;#&#8221; are similar to the result file with Mann-Whitney U-test. The significant result indicates the following:</p>
@@ -309,9 +318,9 @@ Time (sec.): Computing correction factor 137.106, Enumerating significant combin
 <ul>
 <li>
 <dl>
-<dt><strong>option -p</strong></dt>
+<dt><strong>-p {"fisher", "chi", "u_test"}</strong></dt>
 
-<dd>This option selects the p-value calculation procedure. &#8220;fisher&#8221; selects the Fisher&#8217;s exact test, and &#8220;u_test&#8221; selects the Mann-Whitney U-test.</dd>
+<dd>This option selects the p-value calculation procedure. "fisher"; (Fisher's exact test), "chi" (Chi-squared test) or "u_test" (Mann-Whitney U-test) are available.</dd>
 </dl>
 </li>
 
@@ -345,7 +354,15 @@ Time (sec.): Computing correction factor 137.106, Enumerating significant combin
 <ul>
 <li>
 <dl>
-<dt><strong>--max_comb [integer]</strong></dt>
+<dt><strong>--alternative={"greater", "less", "two.sided"}</strong></dt>
+
+<dd>Indicate which alternative hypothesis is used. Select "greater", "less" or "two.sided". The default setting is "greater".</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><strong>--max_comb=[integer]</strong></dt>
 
 <dd>Set the maximum arity of the tested combinations. The default setting is no limit.</dd>
 </dl>
@@ -361,7 +378,7 @@ Time (sec.): Computing correction factor 137.106, Enumerating significant combin
 
 <li>
 <dl>
-<dt><strong>--lcm [lcm_path]</strong></dt>
+<dt><strong>--lcm=[lcm_path]</strong></dt>
 
 <dd>Set LCM program path if you do not use ./lcm53/lcm.</dd>
 </dl>
@@ -639,9 +656,9 @@ Each value means the following: -->
 <h2 id='reference'>Reference</h2>
 
 <ul>
-<li>
-<p>Shin-ichi Minato, Takeaki Uno, Koji Tsuda, Aika Terada, and Jun Sese. A Fast Method of Statistical Assessment for Combinatorial Hypotheses Based on Frequent Itemset Enumeration. To appear in Proceedings of The European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases 2014 (ECML PKDD 2014). Nancy, France. September 15-19, 2014.</p>
-</li>
+  <li>Shin-ichi Minato, Takeaki Uno, Koji Tsuda, Aika Terada, and Jun Sese. 
+<a href="http://link.springer.com/chapter/10.1007%2F978-3-662-44851-9_27">A Fast Method of Statistical Assessment for Combinatorial Hypotheses Based on Frequent Itemset Enumeration</a>. 
+In Proceedings of the European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases 2014 (ECML PKDD 2014). Nancy, France. September 15-19, 2014.</li>
 <li>Aika Terada, Koji Tsuda, and Jun Sese. <a href='http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6732479'>Fast Westfall-Young permutation procedure for combinatorial regulation discovery</a>. In Proceedings of 2013 IEEE International Conference on Bioinformatics and Biomedicine (BIBM 2013). 153-158. Shanghai, China. December 18-21, 2013.</li>
 <li>Aika Terada, Mariko Okada-Hatakeyama, Koji Tsuda and Jun Sese. <a href='http://www.pnas.org/content/110/32/12996.abstract'>Statistical significance of combinatorial regulations</a>. Proc. Natl. Acad. Sci., vol. 110, no. 32, 12996-13001, August 6, 2013.</li>
 </ul>
