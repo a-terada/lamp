@@ -427,7 +427,8 @@ if __name__ == "__main__":
 	p = OptionParser(usage = usage, version = "%s" % __version__)
 	p.add_option('-p', '--pvalue', dest = "pvalue_procedure", help = "Choose the p-value calculation procedure from 'fiehser' (Fisher's exact test), 'chi' (Chi-square test) or 'u_test' (Mann-Whitney's U-test)")
 
-	p.add_option('--lcm', dest = "lcm_path", default = "./lcm53/lcm", \
+	p.add_option('--lcm', dest = "lcm_path", \
+				 default = os.path.dirname(os.path.abspath( __file__ )) + "/lcm53/lcm", \
 				 help = "Set LCM program path if you do not use ./lcm53/lcm")
 
 	p.add_option('--max_comb', dest = "max_comb", default = "all", \
