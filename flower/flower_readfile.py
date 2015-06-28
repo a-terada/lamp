@@ -72,13 +72,13 @@ def readResult(resfname, csvfname, tabfname):
             continue
 
         # read the csv filename
-        if line.find("# item-file") == 0 and csvfname.find("csv") < 0:
+        if line.find("# item-file") == 0 and len( csvfname ) == 0:
             parts = line.split(" ")
             csvfname = parts[2]
             continue
 
         # read the tab filename
-        if line.find("# value-file") == 0 and tabfname.find("tab") < 0:
+        if line.find("# value-file") == 0 and len( tabfname ) == 0:
             parts = line.split(" ")
             tabfname = parts[2]
             continue

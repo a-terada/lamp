@@ -86,7 +86,7 @@ def main():
     csvfname = ''
     tabfname = ''
     if len(sys.argv) > 3:
-        cfvfname = sys.argv[2]
+        csvfname = sys.argv[2]
         tabfname = sys.argv[3]
     significance = -1.0
     try:
