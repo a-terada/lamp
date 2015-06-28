@@ -50,7 +50,7 @@ import functions.functions4chi as functions4chi
 
 #set_opts = ("fisher", "u_test", "chi") # methods which used each test
 
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 BINARY_METHODS = tuple( [ "fisher", "chi" ] )
 
