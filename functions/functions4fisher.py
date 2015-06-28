@@ -44,7 +44,6 @@ import pvalTable
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
-import readFile
 
 ##
 # Define class
@@ -177,10 +176,16 @@ class FunctionOfX(fs.FunctionsSuper):
 			self.__occrTable.putValue( x, a, p )
 		return p
 
-def run(xls_file, value_file, itemset_str_lst, delimiter):
+def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
+	global readFile
+	import readFile
 	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file, delimiter)
 	max_lambda = maxLambda(transaction_list)
-	func = FunctionOfX(transaction_list, max_lambda)
+	if alternative < 0:
+		global lamp
+		from lamp import reverseValue
+		transaction_list = reverseValue( transaction_list, "fisher" )
+	func = FunctionOfX(transaction_list, max_lambda, abs( alternative ) )
 	colname2id_dict = readFile.colname2id(columnid2name)
 
 	itemset = set()

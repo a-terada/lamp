@@ -43,7 +43,6 @@ import functionsSuper as fs
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
-import readFile
 
 ##
 # Define class
@@ -316,10 +315,17 @@ def comma2List(item_list_str, columnid2name):
 		item_list.append(columnid)
 	return item_list
 
-def run(xls_file, value_file, itemset_str_lst, delimiter):
+def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
+	global readFile
+	import readFile
 	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file, delimiter)
-#	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file)
-	func = FunctionOfX(transaction_list)
+	
+	if alternative < 0:
+		global lamp
+		from lamp import reverseValue
+		transaction_list = reverseValue( transaction_list, "u_test" )
+		
+	func = FunctionOfX( transaction_list, alternative )
 	colname2id_dict = readFile.colname2id(columnid2name)
 	itemset = set()
 	for i in itemset_str_lst:

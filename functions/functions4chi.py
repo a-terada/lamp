@@ -173,7 +173,6 @@ class FunctionOfX(fs.FunctionsSuper):
 		else: # dimension = 1
 			return (self.stdNorDistribution(chi**0.5))
 
-"""
 def maxLambda(transaction_list):
 	# Count each item size
 	item_sizes = {}
@@ -193,10 +192,17 @@ def maxLambda(transaction_list):
 	return max_value
 
 
-def run(xls_file, value_file, itemset_str_lst, delimiter):
+def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
+	global readFile
+	import readFile
 	transaction_list, columnid2name = readFile.readFiles(xls_file, value_file, delimiter)
 	max_lambda = maxLambda(transaction_list)
-	func = FunctionOfX(transaction_list, max_lambda)
+
+	if alternative < 0:
+		global lamp
+		from lamp import reverseValue
+		transaction_list = reverseValue( transaction_list, "chi" )
+	func = FunctionOfX(transaction_list, max_lambda, abs(alternative))
 	colname2id_dict = readFile.colname2id(columnid2name)
 
 	itemset = set()
@@ -216,6 +222,7 @@ def run(xls_file, value_file, itemset_str_lst, delimiter):
 					 % (p_value, n, n1, len(flag_transactions_id), stat_value))
 	return p_value, len(flag_transactions_id)
 
+"""
 if __name__ == "__main__":
 	if (len(sys.argv) < 4):
 		sys.stderr.write("Error: functions4chi.py [item-file] [value_file] [itemset]\n")

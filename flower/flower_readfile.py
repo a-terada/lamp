@@ -54,6 +54,7 @@ significance = 0.0
 
 def readResult(resfname, csvfname, tabfname):
     isResult = False
+    alternative = 1
 
     # open result file
     resfile = open(resfname, 'r')
@@ -92,6 +93,14 @@ def readResult(resfname, csvfname, tabfname):
         if line.find("# P-value computing procedure") == 0:
             parts = line.split(" ")
             pval_procedure = parts[4]
+            if len( parts ) > 5:
+                alternative_str = parts[5][1:-1]
+                if alternative_str == "greater":
+                    alternative = 1
+                elif alternative_str == "less":
+                    alternative = -1
+                elif alternative_str == "two.sided":
+                    alternative = 0
             continue
         
         # stop inputting the values
@@ -166,7 +175,7 @@ def readResult(resfname, csvfname, tabfname):
         mnamelist = motifName[i].split(',')
         message = '  ... retrieving values of ' + str(mnamelist)
         # print(message)
-        p_value, down_size = pval_func(csvfname, tabfname, mnamelist, ',')
+        p_value, down_size = pval_func(csvfname, tabfname, mnamelist, ',', alternative)
 #        p_value, down_size = functions4fisher.run(csvfname, tabfname, mnamelist)
         motifRpvalue[i] = p_value
         motifApvalue[i] = p_value * factor
