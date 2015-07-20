@@ -308,7 +308,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 
 
 # list up the combinations p_i <= alpha/k
-def fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, threshold, func_f, columnid2name, outlog):
+def fwerControl(transaction_list, fre_pattern, lam_star, max_lambda, threshold, func_f, columnid2name, outlog):
 	k = fre_pattern.getTotal( lam_star )
 	enrich_lst = []
 	i = 0
@@ -403,7 +403,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		sys.stderr.write( " %s\n" % k )
 		sys.stderr.write( "Compute P-values of testable combinations ...\n" )
 		enrich_lst, finish_test_time \
-					= fwerControll(transaction_list, fre_pattern, lam_star, max_lambda, \
+					= fwerControl(transaction_list, fre_pattern, lam_star, max_lambda, \
 								   threshold, func_f, columnid2name, outlog)
 		
 		outlog.close()

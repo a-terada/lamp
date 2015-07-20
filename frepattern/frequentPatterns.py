@@ -165,7 +165,7 @@ class LCM():
 	# Construct frequent patterns list.	This method use lcm53 program.
 	# input_file:
 	# low_sup: The number of minimum support. get item set that appeare abobe min_sup.
-	# arity_limit: The limit to appriori depth.
+	# arity_limit: The limit to apriori depth.
 	##
 	def frequentPatterns(self, input_file, low_sup, arity_limit):
 		# If frequent pattern has already serched, then return.
