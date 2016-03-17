@@ -906,7 +906,7 @@ void fprint_real (FILE *fp, double f){
   while ( s[i-1] == '0' ) i--;
   if ( s[i-1] == '.' ) i--;
   s[i] = 0;
-  fprintf (fp, s);
+  fprintf (fp,"%s", s);
 }
 void print_real (double f){
   fprint_real (stdout, f);
@@ -1402,7 +1402,7 @@ void structure_permute (void *tt, int unit, int num, void *pp, int weight_siz){
         it will be not deleted.
   rm  : extract, and delete
   rmall: delete all (specified) elements of an object
-  mk  : make. new+insÅB
+  mk  : make. new+ins¬ÅB
   mv  : move. move the elements from an object to another,
          or change the position.
 
