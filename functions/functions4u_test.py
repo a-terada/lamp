@@ -115,9 +115,9 @@ class FunctionOfX(fs.FunctionsSuper):
 			min_transaction = tgroup[min_index]
 			max_transaction = tgroup[max_index]
 			while (min_transaction.value >= threshold):
+				min_index = min_index - 1
 				if (min_index < 0):
 					break
-				min_index = min_index - 1
 				min_transaction = tgroup[min_index]
 			while (max_transaction.value <= threshold):				
 				max_index = max_index + 1
