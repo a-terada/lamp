@@ -24,6 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* 
+ * File:   ReadFile.h
+ * Author: miura
+ *
+ * Define methods to read transaction and flag files
+ * 
+ * Created on 2016/01/05, 13:22
+ */
 
 #ifndef READFILE_H
 #define READFILE_H

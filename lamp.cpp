@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, LAMP development team
+ * Copyright (c) 2016, LAMP development team
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

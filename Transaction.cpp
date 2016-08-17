@@ -24,6 +24,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* 
+ * File:   Transaction.cpp
+ * Author: miura
+ * 
+ * Define Class that indicate a transaction.
+ * The transaction has name and item set
+ * 
+ * Created on 2016/01/05, 15:59
+ */
 
 #include "Transaction.h"
 

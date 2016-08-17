@@ -24,6 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* 
+ * File:   test_lamp
+ * Author: ooi
+ *
+ * Created on 2016/01/22, 14:37:32
+ */
 
 #include <iostream>
 #include <sstream>
