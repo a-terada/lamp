@@ -1,0 +1,26 @@
+LAMP 3.0.0 (Aug. 17, 2016)
+  Convert Python program to C++ code.
+  FastWY codes are still written in Python.
+
+LAMP 2.0.3 (Jun. 28, 2015)
+  Change default lcm file path to absolute path
+  Fixed a bug in drawing flower diagram. The flower.py did not work in versions 2.0.2
+  flower.py can change [item-file] and [value-file] names as command line arguments
+
+LAMP 2.0.2 (Apr. 2, 2015)
+  --alternative option is available.
+  The fast algorithm by Minato et al. (2014) is applied for Chi-squared test.
+
+LAMP 2.0.1 (Feb. 6, 2015)
+  Fixed a bug occurring with flower.py.
+
+LAMP 2.0.0 (Sept. 9, 2014)
+  For Fisher's exact test, LAMP 2.0 provides faster calculation than that of LAMP 1.0, while the result is identical. Please refer to Minato et al. (2014) for the technical detail.
+  FastWY (Terada et al. (2013)) is available.
+
+LAMP 1.0.5 (Oct. 9, 2013)
+  Fixed a bug in Mann-Whitney U test.
+
+LAMP 1.0.0 (Aug. 28, 2013)
+  The first relase of LAMP is available. The technical detail of LAMP is available on our paper.
+

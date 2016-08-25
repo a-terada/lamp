@@ -1,0 +1,3 @@
+Aika Terada wrote the LAMP code, excluding LCM for enumerating frequent patterns. Takeaki Uno implemented LCM to add the LAMP option for fast computation of the optimal minimum support. The original LCM can be downloaded from Program Codes of Takeaki Uno and Hiroki Arimura. The LAMP is developed through discussions with Jun Sese, Koji Tsuda, and Shin-ichi Minato.
+
+We would like to thank Takayuki Itoh for developing the code to draw the flower diagram.
