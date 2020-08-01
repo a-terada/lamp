@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # @author Terada 10, Nov., 2011
 import sys, math
 
-class TestMethodError:
+class TestMethodError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("TestMethodError: " + e + "\n")
 
