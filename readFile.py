@@ -47,7 +47,7 @@ def readFiles(transaction_file, value_file, delm):
 	transaction_list = readValueFile(value_file, transaction_list, gene2id, delm)
 	transaction_list.sort() # sort transaction_list according to transaction_value
 	# Generate IDs to transactions
-	for i in xrange( 0, len(transaction_list) ):
+	for i in range( 0, len(transaction_list) ):
 		t = transaction_list[i]
 		t.id = i
 	# check transaction names two

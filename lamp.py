@@ -345,13 +345,18 @@ def maxLambda(transaction_list):
 	for t in transaction_list:
 		for item in t.itemset:
 			# If item does not exist in item_size, then make mapping to 0
-			if not item_sizes.has_key(item):
+                        # has_key of dict was depricated in py3x, so this is replaced as 'item in item_sizes'
+			#if not item_sizes.has_key(item):
+			if not item in item_sizes:
 				item_sizes[item] = 0
 			item_sizes[item] = item_sizes[item] + 1
 	
 	# Get max value in item_sizes
 	max_value = 0
-	for i in item_sizes.itervalues():
+        # itervalues of dict was depricated
+        # It is replaced as values for getting each of value in item_sizes
+	# for i in item_sizes.itervalues():
+	for i in item_sizes.values():
 		if i > max_value:
 			max_value = i
 
