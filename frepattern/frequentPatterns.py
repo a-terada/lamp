@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #     
 
 import subprocess, os, time, sys
-import nodeClass
+from . import nodeClass
 
 class LCMError(Exception):
 	def __init__(self, e):
