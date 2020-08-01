@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #     Acceletate of the calculation P-value by storing the calculated P-value.
 # @editor Terada, 11, Mar, 2015,
 #     Implement computation of the 'less' and 'two-sided' Fisher's exact test. 
-
 from __future__ import division
 import sys, os
 from . import functionsSuper as fs
@@ -44,6 +43,7 @@ from . import pvalTable
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
+
 
 ##
 # Define class

@@ -333,7 +333,7 @@ def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
 		itemset.add(item_id + 1)
 
 	flag_transactions_id = []
-	for i in xrange( len(transaction_list) ):
+	for i in range( len(transaction_list) ):
 		t = transaction_list[i]
 		if len( itemset & t.itemset ) == len(itemset):
 			flag_transactions_id.append( i )
