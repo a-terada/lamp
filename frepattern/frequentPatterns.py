@@ -156,7 +156,7 @@ class LCM():
 					node.addItemSet( tuple([itemset, transactions]) )
 				itemset_line = f.readline()
 			f.close()
-		except IOError, e:
+		except IOError as e:
 			sys.stderr.write("%s" % e)
 			sys.exit()
 	
@@ -203,7 +203,7 @@ class LCM():
 				subprocess.check_call([self.__LCMPATH, "FIf", "-u", str( arity_limit ), \
 									   input_file, str(low_sup), out_file], \
 									  stdout=self.outlog, stderr = self.outlog)
-		except subprocess.CalledProcessError, (p):
+		except subprocess.CalledProcessError as p:
 			sys.stderr.write('subprocess.CalledProcessError: cmd:%s returncode:%s\n' % (p.cmd, p.returncode) )
 			sys.exit()
 		# Read the file of LCM result
