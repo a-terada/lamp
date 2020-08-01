@@ -102,7 +102,7 @@ def readTransactionFile(transaction_file, delm):
 									 % (line_num, transaction_file) )
 					sys.exit()
 			transaction_list.append(t)
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error: %s\n" % e)
 		sys.exit()
 	return transaction_list, gene2id, columnid2name
@@ -154,7 +154,7 @@ def readValueFile(value_file, transaction_list, gene2id, delm):
 			geneid = gene2id[genename]
 			t = transaction_list[geneid]
 			t.value = exp_value
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error: %s cannot be found.\n" % value_file)
 		sys.exit()
 	return transaction_list

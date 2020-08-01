@@ -80,7 +80,7 @@ def readResult( filename ):
 			sys.stderr.write("%s is broken.\n" % filename)
 		f.close()
 		return detections_list, meta_line_list, time_line, minp_line_list
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("'%s' cannot be opened.\n" % filename)
 		sys.exit()
 
@@ -123,7 +123,7 @@ def output( out_filename, detections_list, meta_line_list, time_line, minp_line_
 	if len( out_filename ) > 0:
 		try:
 			sys.stdout = open(out_filename, 'w')
-		except IOError, e:
+		except IOError as e:
 			sys.stderr.write("Error: Cannot output to %s'\n" % out_filename)
 			sys.exit()
 	sys.stdout.write("# Non-redundant combinations\n")

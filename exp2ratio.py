@@ -76,7 +76,7 @@ def readExpFile( exp_file, control_column, target_column, obj_cols ):
 			exp_list.append( tuple( [s[NAME_COLUMN], log_values[ control_column - 1 ], log_values[target_column - 1]] ) )
 		f.close()
 		return exp_list
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % exp_file)
 		sys.exit()
 
@@ -112,7 +112,7 @@ def output( ratio_list, output_file ):
 		for t in ratio_list:
 			f.write("%s%s%s\n" % (t[0], SEPARATOR, t[1]))
 		f.close()
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error during output the result to %s" % output_file)
 		sys.exit()
 

@@ -167,15 +167,15 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 			# one-sided hypothesis test
 			else:
 				fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog )
-	except fs.TestMethodError, e:
+	except fs.TestMethodError as e:
 		sys.exit()
-	except frequentPatterns.LCMError, e:
+	except frequentPatterns.LCMError as e:
 		sys.exit()
 	
 	try:
 		fre_pattern.frequentPatterns( trans4lcm, lam_star, max_comb ) # P_lambda* at line 13
 		k = fre_pattern.getTotal( lam_star )
-	except frequentPatterns.LCMError, e:
+	except frequentPatterns.LCMError as e:
 		sys.exit()
 	
 	
@@ -383,9 +383,9 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		if alternative < 0:
 			transaction_list = reverseValue( transaction_list, set_method )
 		max_comb = convertMaxComb( max_comb, len(columnid2name) )
-	except ValueError, e:
+	except ValueError as e:
 		return
-	except KeyError, e:
+	except KeyError as e:
 		return
 	
 	# run multiple test
@@ -407,7 +407,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 								   threshold, func_f, columnid2name, outlog)
 		
 		outlog.close()
-	except IOError, e:
+	except IOError as e:
 		outlog.close()
 
 	sys.stderr.write( "Output results ...\n" )

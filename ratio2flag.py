@@ -58,7 +58,7 @@ def readExpFile( exp_file ):
 			exp_list.append( tuple( [s[NAME_COLUMN], float(s[EXPRESSION_COLUMN])]) )
 		f.close()
 		return exp_list
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % exp_file)
 		sys.exit()
 
@@ -89,7 +89,7 @@ def output( flag_list, output_file ):
 		for t in flag_list:
 			f.write("%s%s%s\n" % (t[0], SEPARATOR, t[1]))
 		f.close()
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error during output the result to %s" % output_file)
 		sys.exit()
 	

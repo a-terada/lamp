@@ -91,7 +91,7 @@ def main():
     significance = -1.0
     try:
         significance = readfile.readResult(sys.argv[1], csvfname, tabfname)
-    except IOError, e:
+    except IOError as e:
         sys.stderr.write( "Error: \"%s\" cannot be found.\n" % sys.argv[1] )
         return
     colorvalMin = -math.log(1.0 / significance)

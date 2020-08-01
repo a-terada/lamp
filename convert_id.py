@@ -66,7 +66,7 @@ def readMapFile(filename):
 					old2new[old_id] = new_ids[0]
 		f.close()
 		return old2new
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % filename)
 		sys.exit()
 
@@ -92,7 +92,7 @@ def convertID( old2new, converted_file, output_file ):
 		fr.close()
 		fw.close()
 		return converted_size, total_size
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in convert %s\n" % filename)
 		sys.exit()
 
