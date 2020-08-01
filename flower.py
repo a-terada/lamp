@@ -40,7 +40,7 @@ __author__ = "Takayuki ITOH"
 def main():
 
     if len(sys.argv) < 2:
-        print 'Usage: # python %s resultfilename (target(csv)filename) (value(tab)filename)' % sys.argv[0]
+        print('Usage: # python %s resultfilename (target(csv)filename) (value(tab)filename)' % sys.argv[0])
         quit()
 
     # default values of sizes of petals

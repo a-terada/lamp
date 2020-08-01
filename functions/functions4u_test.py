@@ -360,10 +360,10 @@ if __name__ == "__main__":
 
 	# check existance of files
 	if (not os.path.isfile(transaction_file)):
-		print "IOError: No such file: \'" + transaction_file + "\'"
+		print("IOError: No such file: \'" + transaction_file + "\'")
 		sys.exit()
 	if (not os.path.isfile(value_file)):
-		print "IOError: No such file: \'" + value_file + "\'"
+		print("IOError: No such file: \'" + value_file + "\'")
 		sys.exit()
 	
 	delimiter = ','

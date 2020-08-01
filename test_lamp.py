@@ -77,7 +77,7 @@ class TestLamp(unittest.TestCase):
 				if detect_set.issubset( true_comb ) and true_comb.issubset( detect_set ):
 					flag = True
 					break
-			print comb
+			print(comb)
 			self.assertTrue( flag )
 			self.assertAlmostEqual( comb[1], true_p )
 			self.assertEqual( comb[2], true_support )

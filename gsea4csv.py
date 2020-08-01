@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	
 	# check arguments
 	if (len(args) < 2):
-		print "Error: input gmt-file output_file"
+		print("Error: input gmt-file output_file")
 		sys.exit()
 
 	run( args[0], args[1] )
