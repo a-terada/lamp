@@ -73,8 +73,8 @@ class FunctionsSuper:
 		# Else, t puts out_t_list
 		for t in self.transaction_list:
 			if len(t.itemset & itemset) == len(itemset):
-				print t.itemset,
-				print "value: " + str(t.value)
+				print(t.itemset),
+				print("value: " + str(t.value))
 				in_t_list.append(t)
 			else:
 				out_t_list.append(t)

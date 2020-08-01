@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # significance-level: The statistical significance threshold.
 # @author Terada 26, June, 2011
 
+from __future__ import print_function
+
 import sys, os.path, time, datetime, math
 import transaction
 import readFile
