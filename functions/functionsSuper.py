@@ -38,8 +38,11 @@ class TestMethodError(Exception):
 
 class FunctionsSuper:
 	def __init__(self):
-		self.__range20_1 = range(1, 21)
-		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
+		## self.__range20_1 = range(1, 21)
+		## self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
+                # For compatiable statement between py2x and py3x
+		self.__range20_1 = list( range(1, 21) )
+		self.__range20_1 = self.__range20_1[::-1] # the integer list from 20 to 1. this is used by standard normal probability
 	
 	##
 	# Calculate combination C(n, m)
