@@ -315,7 +315,7 @@ def fwerControl(transaction_list, fre_pattern, lam_star, max_lambda, threshold, 
 	enrich_lst = []
 	i = 0
 	max_itemset_size = 0 # the maximum itemset size in detection of our method. This value is used for Bonferroni correction.
-	for l in reversed( xrange( lam_star, max_lambda + 1 )):
+	for l in reversed( range( lam_star, max_lambda + 1 )):
 		item_trans_list = fre_pattern.getFrequentList( l )
 		for item_set_and_size in item_trans_list:
 			i = i + 1

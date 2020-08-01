@@ -57,7 +57,7 @@ class LCM():
 		self.outlog = outlog
 	
 		# Initialize the frequent_list.
-		for i in xrange(0, self.max_support):
+		for i in range(0, self.max_support):
 			self.frequent_list.append( nodeClass.Node() )
 		
 		# set LCM code path
@@ -118,7 +118,7 @@ class LCM():
 	##
 	def readResultLCMFile(self, result_lcm_file, low_sup, upper_sup):
 		# Initialize re-constructed nodes
-		for i in xrange( low_sup, upper_sup + 1 ):
+		for i in range( low_sup, upper_sup + 1 ):
 			node = nodeClass.Node()
 			self.frequent_list[ self.getIndex( i ) ] = node
 		
@@ -213,7 +213,7 @@ class LCM():
 		total = 0
 		if (low_sup < self.max_support) and (self.constructed_index > -1):
 			total = self.frequent_list[ self.getIndex( low_sup ) - 1 ].total
-		for i in xrange( upper_sup, low_sup - 1, -1 ):
+		for i in range( upper_sup, low_sup - 1, -1 ):
 			node = self.frequent_list[ self.getIndex( i ) ]
 			total = total + len( node.itemset_list )
 			node.total = total
