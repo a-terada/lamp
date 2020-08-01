@@ -158,7 +158,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		previous_value = None # The previous expression value
 		left_index = 0 # The start point of searching value.
 		right_index = len(tgroup_y) - 1 # The end point of searching value.
- 		for t_x in tgroup_x:
+		for t_x in tgroup_x:
 #			print t_x.value
 			# u_x_min: rank sum of transaction which the value < t_x in tgroup_y
 			# u_x_max: rank sum of transaction which the value <= t_x in tgroup_y
