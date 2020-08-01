@@ -294,7 +294,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 			sys.stdout.write("z-score\n")
 		else:
 			sys.stdout.write("# of positives in the targets\n")
-		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
+		enrich_lst.sort(key=lambda x:x[1])
 		rank = 0
 		for l in enrich_lst:
 			rank = rank + 1
