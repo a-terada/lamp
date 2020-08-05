@@ -214,7 +214,7 @@ def maxLambda(transaction_list):
 	for t in transaction_list:
 		for item in t.itemset:
 			# If item does not exist in item_size, then make mapping to 0
-			if not item_sizes.has_key(item):
+			if not item in item_sizes.has_key(item):
 				item_sizes[item] = 0
 			item_sizes[item] = item_sizes[item] + 1
 	
