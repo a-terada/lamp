@@ -110,7 +110,7 @@ def output( ratio_list, output_file ):
 	try:
 		f = open( output_file, 'w' )
 		for t in ratio_list:
-			f.write("%s%s%s\n" % (t[0], SEPARATOR, t[1]))
+			f.write("%s%s%f\n" % (t[0], SEPARATOR, t[1]))
 		f.close()
 	except IOError as e:
 		sys.stderr.write("Error during output the result to %s" % output_file)
