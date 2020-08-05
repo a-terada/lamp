@@ -60,9 +60,9 @@ def readMapFile(filename):
 			else:
 				s = line.split(MAP_SEPARATOR)
 				old_id = s[ORIG_COLUMN_ID].strip('"') # String of an old ID
-				new_ids = map(str.strip, s[TO_COLUMN_ID].strip('"').split('///')) # List of new IDs
+				new_ids = list( map(str.strip, s[TO_COLUMN_ID].strip('"').split('///'))) # List of new IDs
 				if not (new_ids[0] == "---"):
-					new_ids.reverse()
+					new_ids = list( reversed( new_ids ) )
 					old2new[old_id] = new_ids[0]
 		f.close()
 		return old2new
