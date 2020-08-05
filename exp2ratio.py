@@ -69,7 +69,7 @@ def readExpFile( exp_file, control_column, target_column, obj_cols ):
 		line = None
 		for line in f:
 			s = line[:-1].split(SEPARATOR)
-			log_values = map(lambda x: log2(float(x)), s[1:]) # log2 expression values
+			log_values = list( map(lambda x: log2(float(x)), s[1:])) # log2 expression values
 			# If the gene expresses lower than the given threshold, then continue.
 			if len([x for x in obj_cols if log_values[x-1] > MIN_THRESHOLD]) == 0:
 				continue
