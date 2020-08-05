@@ -89,7 +89,7 @@ def makeCSVFile( out_csv_file, gene_list, association_dict, column_line ):
 				fo.write("%s\n" % association_dict[gene])
 			else:
 				fo.write("%s" % gene)
-				for i in xrange(0, tf_size):
+				for i in range(0, tf_size):
 					fo.write(",0")
 				fo.write("\n")
 		fo.close()
