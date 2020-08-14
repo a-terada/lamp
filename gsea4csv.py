@@ -70,7 +70,7 @@ def readGmtFile( gmt_file ):
 				if not motif in motif_set:
 					motif_set.append(motif)
 					gene_dict[gene] = motif_set
-			except KeyError, e:
+			except KeyError as e:
 				gene_dict[gene] = [motif]
 	return all_motif_lst, gene_dict
 	
@@ -98,7 +98,7 @@ def outCSVFormat( all_tf_lst, gene_dict, output_file ):
 				else:
 					f.write( ",0" )
 			f.write("\n")
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in output CSV file.\n")
 		sys.exit()
 	
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	
 	# check arguments
 	if (len(args) < 2):
-		print "Error: input gmt-file output_file"
+		print("Error: input gmt-file output_file")
 		sys.exit()
 
 	run( args[0], args[1] )

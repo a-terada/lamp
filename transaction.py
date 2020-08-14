@@ -54,10 +54,24 @@ class Transaction:
 	##
 	# This function is used for sort transaction list in u_test
 	##
-	def __cmp__( self, other ):
-#		print str(self.value) + " " + str(other.value)
-#		print cmp(self.value, other.value)
-		return cmp(self.value, other.value)
+        # __cmp__ is depricated from Py3x
+        # instead of it, rich comparison method (such as __lt__) is implemented
+# 	def __cmp__( self, other ):
+# #		print str(self.value) + " " + str(other.value)
+# #		print cmp(self.value, other.value)
+# 		return cmp(self.value, other.value)
+	def __eq__( self, other ):
+ 		return ( self.value == other.value )
+	def __ne__( self, other ):
+ 		return not (self.value == other.value)
+	def __lt__( self, other ):
+ 		return ( self.value < other.value )
+	def __le__( self, other ):
+ 		return ( self.value <= other.value )
+	def __gt__( self, other ):
+ 		return ( self.value > other.value )
+	def __ge__( self, other ):
+ 		return ( self.value >= other.value )
 
 	def setID( self, id ):
 		self.id = id

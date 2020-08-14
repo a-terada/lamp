@@ -54,7 +54,7 @@ def readEXPFile( exp_file ):
 			gene_list.append(s[0] )
 		f.close()
 		return gene_list
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write( "Error in read expression-file.\n" )
 		sys.exit()
 
@@ -72,7 +72,7 @@ def readCSVFile( csv_file ):
 			association_dict[ gene ] = line
 		f.close()
 		return column_line, association_dict
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write( "Error in read csv-file.\n" )
 		sys.exit()
 		
@@ -89,11 +89,11 @@ def makeCSVFile( out_csv_file, gene_list, association_dict, column_line ):
 				fo.write("%s\n" % association_dict[gene])
 			else:
 				fo.write("%s" % gene)
-				for i in xrange(0, tf_size):
+				for i in range(0, tf_size):
 					fo.write(",0")
 				fo.write("\n")
 		fo.close()
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write( "Error in make a new csv file.\n" )
 		sys.exit()
 

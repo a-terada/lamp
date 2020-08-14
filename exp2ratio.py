@@ -69,14 +69,14 @@ def readExpFile( exp_file, control_column, target_column, obj_cols ):
 		line = None
 		for line in f:
 			s = line[:-1].split(SEPARATOR)
-			log_values = map(lambda x: log2(float(x)), s[1:]) # log2 expression values
+			log_values = list( map(lambda x: log2(float(x)), s[1:])) # log2 expression values
 			# If the gene expresses lower than the given threshold, then continue.
 			if len([x for x in obj_cols if log_values[x-1] > MIN_THRESHOLD]) == 0:
 				continue
 			exp_list.append( tuple( [s[NAME_COLUMN], log_values[ control_column - 1 ], log_values[target_column - 1]] ) )
 		f.close()
 		return exp_list
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % exp_file)
 		sys.exit()
 
@@ -110,9 +110,9 @@ def output( ratio_list, output_file ):
 	try:
 		f = open( output_file, 'w' )
 		for t in ratio_list:
-			f.write("%s%s%s\n" % (t[0], SEPARATOR, t[1]))
+			f.write("%s%s%f\n" % (t[0], SEPARATOR, t[1]))
 		f.close()
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error during output the result to %s" % output_file)
 		sys.exit()
 

@@ -52,7 +52,7 @@ def readFile( input_file, separator ):
 			genes_set.add( line.split(separator)[0] )
 		f.close()
 		return genes_set
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % input_file)
 		sys.exit()
 
