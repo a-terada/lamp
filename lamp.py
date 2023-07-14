@@ -362,7 +362,7 @@ def maxLambda(transaction_list):
 
 	# check the max lambda to the nuber of transactions
 	if max_value > ( len(transaction_list)/2 ):
-		max_value = len(transaction_list)/2
+		max_value = int( len(transaction_list)/2 )
 	
 	return max_value
 
@@ -377,7 +377,7 @@ def maxLambda(transaction_list):
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 # max_comb: the maximal size which the largest combination size in tests set.
 # delm: delimiter of transaction_file and flag_file
-##
+##s
 def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, alternative):
 	# read 2 files and get transaction list
 	sys.stderr.write( "Read input files ...\n" )
