@@ -60,13 +60,13 @@ def readMapFile(filename):
 			else:
 				s = line.split(MAP_SEPARATOR)
 				old_id = s[ORIG_COLUMN_ID].strip('"') # String of an old ID
-				new_ids = map(str.strip, s[TO_COLUMN_ID].strip('"').split('///')) # List of new IDs
+				new_ids = list( map(str.strip, s[TO_COLUMN_ID].strip('"').split('///'))) # List of new IDs
 				if not (new_ids[0] == "---"):
-					new_ids.reverse()
+					new_ids = list( reversed( new_ids ) )
 					old2new[old_id] = new_ids[0]
 		f.close()
 		return old2new
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in read %s\n" % filename)
 		sys.exit()
 
@@ -92,7 +92,7 @@ def convertID( old2new, converted_file, output_file ):
 		fr.close()
 		fw.close()
 		return converted_size, total_size
-	except IOError, e:
+	except IOError as e:
 		sys.stderr.write("Error in convert %s\n" % filename)
 		sys.exit()
 

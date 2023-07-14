@@ -373,9 +373,9 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 		if alternative < 0:
 			transaction_list = lamp.reverseValue( transaction_list, set_method )
 		max_comb = lamp.convertMaxComb( max_comb, len(columnid2name) )
-	except ValueError, e:
+	except ValueError as e:
 		return
-	except KeyError, e:
+	except KeyError as e:
 		return
 
 	trans4lcm = transaction_file + ".4lcm53" # the filename for outputting logs 
@@ -383,7 +383,7 @@ def run(transaction_file, flag_file, threshold, k, set_method, lcm_path, max_com
 	# run multiple test
 	try:
 		outlog = open( log_file, 'w' )
-	except IOError, e:
+	except IOError as e:
 		outlog.close()
 
 	start_time = time.time()

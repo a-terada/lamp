@@ -36,14 +36,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #     Acceletate of the calculation P-value by storing the calculated P-value.
 # @editor Terada, 11, Mar, 2015,
 #     Implement computation of the 'less' and 'two-sided' Fisher's exact test. 
-
 from __future__ import division
 import sys, os
-import functionsSuper as fs
-import pvalTable
+from . import functionsSuper as fs
+from . import pvalTable
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
+
 
 ##
 # Define class
@@ -194,7 +194,7 @@ def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
 		itemset.add(item_id + 1)
 		
 	flag_transactions_id = []
-	for i in xrange( len(transaction_list) ):
+	for i in range( len(transaction_list) ):
 		t = transaction_list[i]
 		if len( itemset & t.itemset ) == len(itemset):
 			flag_transactions_id.append( i )
@@ -214,13 +214,16 @@ def maxLambda(transaction_list):
 	for t in transaction_list:
 		for item in t.itemset:
 			# If item does not exist in item_size, then make mapping to 0
-			if not item_sizes.has_key(item):
+			if not item in item_sizes:
 				item_sizes[item] = 0
 			item_sizes[item] = item_sizes[item] + 1
 	
 	# Get max value in item_sizes
 	max_value = 0
-	for i in item_sizes.itervalues():
+        # itervalues of dict was depricated
+        # It is replaced as values for getting each of value in item_sizes
+	# for i in item_sizes.itervalues():
+	for i in item_sizes.values():
 		if i > max_value:
 			max_value = i
 			

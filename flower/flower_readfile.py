@@ -28,10 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import sys, os
+
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
 sys.path.append(pardir + '/functions')
-import functions4fisher, functions4u_test, functions4chi
+from functions import functions4fisher, functions4u_test, functions4chi
 
 __author__ = "Takayuki ITOH"
 

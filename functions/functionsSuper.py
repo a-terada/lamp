@@ -32,14 +32,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # @author Terada 10, Nov., 2011
 import sys, math
 
-class TestMethodError:
+class TestMethodError(Exception):
 	def __init__(self, e):
 		sys.stderr.write("TestMethodError: " + e + "\n")
 
 class FunctionsSuper:
 	def __init__(self):
-		self.__range20_1 = range(1, 21)
-		self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
+		## self.__range20_1 = range(1, 21)
+		## self.__range20_1.reverse() # the integer list from 20 to 1. this is used by standard normal probability
+                # For compatiable statement between py2x and py3x
+		self.__range20_1 = list( range(1, 21) )
+		self.__range20_1 = self.__range20_1[::-1] # the integer list from 20 to 1. this is used by standard normal probability
 	
 	##
 	# Calculate combination C(n, m)
@@ -73,8 +76,8 @@ class FunctionsSuper:
 		# Else, t puts out_t_list
 		for t in self.transaction_list:
 			if len(t.itemset & itemset) == len(itemset):
-				print t.itemset,
-				print "value: " + str(t.value)
+				print(t.itemset),
+				print("value: " + str(t.value))
 				in_t_list.append(t)
 			else:
 				out_t_list.append(t)

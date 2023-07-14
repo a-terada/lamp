@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # significance-level: The statistical significance threshold.
 # @author Terada 26, June, 2011
 
+from __future__ import print_function
+
 import sys, os.path, time, datetime, math
 import transaction
 import readFile
@@ -167,15 +169,15 @@ def runMultTest(transaction_list, trans4lcm, threshold, set_method, lcm_path, ma
 			# one-sided hypothesis test
 			else:
 				fre_pattern, lam_star = breadthFirst( trans4lcm, fre_pattern, func_f, max_comb, threshold, lam, outlog )
-	except fs.TestMethodError, e:
+	except fs.TestMethodError as e:
 		sys.exit()
-	except frequentPatterns.LCMError, e:
+	except frequentPatterns.LCMError as e:
 		sys.exit()
 	
 	try:
 		fre_pattern.frequentPatterns( trans4lcm, lam_star, max_comb ) # P_lambda* at line 13
 		k = fre_pattern.getTotal( lam_star )
-	except frequentPatterns.LCMError, e:
+	except frequentPatterns.LCMError as e:
 		sys.exit()
 	
 	
@@ -292,7 +294,7 @@ def outputResult( transaction_file, flag_file, threshold, set_method, max_comb, 
 			sys.stdout.write("z-score\n")
 		else:
 			sys.stdout.write("# of positives in the targets\n")
-		enrich_lst.sort(lambda x,y:cmp(x[1], y[1]))
+		enrich_lst.sort(key=lambda x:x[1])
 		rank = 0
 		for l in enrich_lst:
 			rank = rank + 1
@@ -313,7 +315,7 @@ def fwerControl(transaction_list, fre_pattern, lam_star, max_lambda, threshold, 
 	enrich_lst = []
 	i = 0
 	max_itemset_size = 0 # the maximum itemset size in detection of our method. This value is used for Bonferroni correction.
- 	for l in reversed( xrange( lam_star, max_lambda + 1 )):
+	for l in reversed( range( lam_star, max_lambda + 1 )):
 		item_trans_list = fre_pattern.getFrequentList( l )
 		for item_set_and_size in item_trans_list:
 			i = i + 1
@@ -343,19 +345,24 @@ def maxLambda(transaction_list):
 	for t in transaction_list:
 		for item in t.itemset:
 			# If item does not exist in item_size, then make mapping to 0
-			if not item_sizes.has_key(item):
+                        # has_key of dict was depricated in py3x, so this is replaced as 'item in item_sizes'
+			#if not item_sizes.has_key(item):
+			if not item in item_sizes:
 				item_sizes[item] = 0
 			item_sizes[item] = item_sizes[item] + 1
 	
 	# Get max value in item_sizes
 	max_value = 0
-	for i in item_sizes.itervalues():
+        # itervalues of dict was depricated
+        # It is replaced as values for getting each of value in item_sizes
+	# for i in item_sizes.itervalues():
+	for i in item_sizes.values():
 		if i > max_value:
 			max_value = i
 
 	# check the max lambda to the nuber of transactions
-	if max_value > ( len(transaction_list)):
-		max_value = len(transaction_list)
+	if max_value > ( len(transaction_list)/2 ):
+		max_value = int( len(transaction_list)/2 )
 	
 	return max_value
 
@@ -370,7 +377,7 @@ def maxLambda(transaction_list):
 # set_method: The procedure name for calibration p-value (fisher/u_test).
 # max_comb: the maximal size which the largest combination size in tests set.
 # delm: delimiter of transaction_file and flag_file
-##
+##s
 def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, log_file, alternative):
 	# read 2 files and get transaction list
 	sys.stderr.write( "Read input files ...\n" )
@@ -383,9 +390,9 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 		if alternative < 0:
 			transaction_list = reverseValue( transaction_list, set_method )
 		max_comb = convertMaxComb( max_comb, len(columnid2name) )
-	except ValueError, e:
+	except ValueError as e:
 		return
-	except KeyError, e:
+	except KeyError as e:
 		return
 	
 	# run multiple test
@@ -407,7 +414,7 @@ def run(transaction_file, flag_file, threshold, set_method, lcm_path, max_comb, 
 								   threshold, func_f, columnid2name, outlog)
 		
 		outlog.close()
-	except IOError, e:
+	except IOError as e:
 		outlog.close()
 
 	sys.stderr.write( "Output results ...\n" )

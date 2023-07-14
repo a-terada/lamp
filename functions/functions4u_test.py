@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from __future__ import division
 import sys, math, os
-import functionsSuper as fs
+from . import functionsSuper as fs
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
 sys.path.append(pardir)
@@ -158,7 +158,7 @@ class FunctionOfX(fs.FunctionsSuper):
 		previous_value = None # The previous expression value
 		left_index = 0 # The start point of searching value.
 		right_index = len(tgroup_y) - 1 # The end point of searching value.
- 		for t_x in tgroup_x:
+		for t_x in tgroup_x:
 #			print t_x.value
 			# u_x_min: rank sum of transaction which the value < t_x in tgroup_y
 			# u_x_max: rank sum of transaction which the value <= t_x in tgroup_y
@@ -333,7 +333,7 @@ def run(xls_file, value_file, itemset_str_lst, delimiter, alternative):
 		itemset.add(item_id + 1)
 
 	flag_transactions_id = []
-	for i in xrange( len(transaction_list) ):
+	for i in range( len(transaction_list) ):
 		t = transaction_list[i]
 		if len( itemset & t.itemset ) == len(itemset):
 			flag_transactions_id.append( i )
@@ -360,10 +360,10 @@ if __name__ == "__main__":
 
 	# check existance of files
 	if (not os.path.isfile(transaction_file)):
-		print "IOError: No such file: \'" + transaction_file + "\'"
+		print("IOError: No such file: \'" + transaction_file + "\'")
 		sys.exit()
 	if (not os.path.isfile(value_file)):
-		print "IOError: No such file: \'" + value_file + "\'"
+		print("IOError: No such file: \'" + value_file + "\'")
 		sys.exit()
 	
 	delimiter = ','
