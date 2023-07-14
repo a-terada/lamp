@@ -354,8 +354,8 @@ def maxLambda(transaction_list):
 			max_value = i
 
 	# check the max lambda to the nuber of transactions
-	if max_value > ( len(transaction_list)/2 ):
-		max_value = len(transaction_list)/2
+	if max_value > ( len(transaction_list)):
+		max_value = len(transaction_list)
 	
 	return max_value
 
